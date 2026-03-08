@@ -331,23 +331,23 @@ export default function AdminDashboard() {
               <div className="flex gap-2">
                 <Input
                   readOnly
-                  value={window.location.origin}
+                  value="https://sewsheek.academy"
                   className="bg-white text-gray-800 font-mono text-sm border-pink-200"
                 />
                 <Button
                   variant="outline"
                   className="border-pink-300 text-pink-600 hover:bg-pink-50 shrink-0 gap-1"
                   onClick={() => {
-                    navigator.clipboard.writeText(window.location.origin);
-                    setLinkCopied(true);
-                    setTimeout(() => setLinkCopied(false), 2000);
-                  }}
+                   navigator.clipboard.writeText("https://sewsheek.academy");
+                   setLinkCopied(true);
+                   setTimeout(() => setLinkCopied(false), 2000);
+                 }}
                 >
                   {linkCopied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                   {linkCopied ? "Copied!" : "Copy"}
                 </Button>
               </div>
-              <p className="text-xs text-gray-400">Share this link. New visitors will be asked to request access — you approve them from your Base44 dashboard notifications 🔔.</p>
+              <p className="text-xs text-gray-400">Share this link with students. Invited users via email will be automatically approved.</p>
             </div>
 
             {/* Invite by email */}
