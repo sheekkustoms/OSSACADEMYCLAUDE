@@ -53,14 +53,14 @@ function QuestionEditor({ question, quizId, onDelete, index }) {
       </div>
 
       {expanded && (
-        <div className="border-t border-gray-100 p-4 space-y-3 bg-gray-50/50">
-          <Textarea placeholder="Question text..." value={form.question_text} onChange={e => setForm({ ...form, question_text: e.target.value })} className="border-gray-200 bg-white" />
+        <div className="border-t border-gray-100 p-4 space-y-3 bg-gray-50">
+          <Textarea placeholder="Question text..." value={form.question_text} onChange={e => setForm({ ...form, question_text: e.target.value })} className="border-gray-200 bg-white text-gray-900 placeholder:text-gray-400" />
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-xs text-gray-500 mb-1 block">Type</label>
+              <label className="text-xs font-semibold text-gray-700 mb-1 block">Type</label>
               <Select value={form.question_type} onValueChange={v => setForm({ ...form, question_type: v })}>
-                <SelectTrigger className="border-gray-200 bg-white h-9 text-sm"><SelectValue /></SelectTrigger>
+                <SelectTrigger className="border-gray-200 bg-white h-9 text-sm text-gray-900"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="multiple_choice">Multiple Choice</SelectItem>
                   <SelectItem value="true_false">True / False</SelectItem>
@@ -69,26 +69,26 @@ function QuestionEditor({ question, quizId, onDelete, index }) {
               </Select>
             </div>
             <div>
-              <label className="text-xs text-gray-500 mb-1 block">Time Limit (sec)</label>
-              <Input type="number" value={form.time_limit} onChange={e => setForm({ ...form, time_limit: +e.target.value })} className="border-gray-200 bg-white h-9" />
+              <label className="text-xs font-semibold text-gray-700 mb-1 block">Time Limit (sec)</label>
+              <Input type="number" value={form.time_limit} onChange={e => setForm({ ...form, time_limit: +e.target.value })} className="border-gray-200 bg-white h-9 text-gray-900" />
             </div>
             <div>
-              <label className="text-xs text-gray-500 mb-1 block">Points</label>
-              <Input type="number" value={form.points} onChange={e => setForm({ ...form, points: +e.target.value })} className="border-gray-200 bg-white h-9" />
+              <label className="text-xs font-semibold text-gray-700 mb-1 block">Points</label>
+              <Input type="number" value={form.points} onChange={e => setForm({ ...form, points: +e.target.value })} className="border-gray-200 bg-white h-9 text-gray-900" />
             </div>
             <div>
-              <label className="text-xs text-gray-500 mb-1 block">Correct Answer #</label>
-              <Input type="number" min={0} max={opts.length - 1} value={form.correct_answer_index} onChange={e => setForm({ ...form, correct_answer_index: +e.target.value })} className="border-gray-200 bg-white h-9" />
+              <label className="text-xs font-semibold text-gray-700 mb-1 block">Correct Answer # (0-based)</label>
+              <Input type="number" min={0} max={opts.length - 1} value={form.correct_answer_index} onChange={e => setForm({ ...form, correct_answer_index: +e.target.value })} className="border-gray-200 bg-white h-9 text-gray-900" />
             </div>
           </div>
 
           {form.question_type === "image_question" && (
-            <Input placeholder="Image URL..." value={form.image_url || ""} onChange={e => setForm({ ...form, image_url: e.target.value })} className="border-gray-200 bg-white" />
+            <Input placeholder="Image URL..." value={form.image_url || ""} onChange={e => setForm({ ...form, image_url: e.target.value })} className="border-gray-200 bg-white text-gray-900 placeholder:text-gray-400" />
           )}
 
           {form.question_type !== "true_false" && (
             <div className="space-y-2">
-              <label className="text-xs text-gray-500">Answer Options</label>
+              <label className="text-xs font-semibold text-gray-700">Answer Options</label>
               {(form.options || ["", "", "", ""]).map((opt, i) => (
                 <div key={i} className="flex items-center gap-2">
                   <span className={`w-6 h-6 rounded text-white text-xs flex items-center justify-center font-bold shrink-0 ${["bg-red-500", "bg-blue-500", "bg-yellow-500", "bg-emerald-500"][i]}`}>{i + 1}</span>
@@ -96,7 +96,7 @@ function QuestionEditor({ question, quizId, onDelete, index }) {
                     const opts = [...(form.options || ["", "", "", ""])];
                     opts[i] = e.target.value;
                     setForm({ ...form, options: opts });
-                  }} placeholder={`Option ${i + 1}`} className="border-gray-200 bg-white h-8 text-sm" />
+                  }} placeholder={`Option ${i + 1}`} className="border-gray-200 bg-white h-8 text-sm text-gray-900 placeholder:text-gray-400" />
                 </div>
               ))}
             </div>
