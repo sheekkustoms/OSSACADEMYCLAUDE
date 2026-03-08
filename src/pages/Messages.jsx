@@ -174,21 +174,24 @@ export default function Messages() {
 
               {/* Messages */}
               <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
-                {currentConversation.messages.map((msg) => (
-                  <div key={msg.id} className="flex gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-violet-400 flex items-center justify-center text-white font-bold text-sm shrink-0">
-                      {(msg.sender_name || msg.sender_email)?.[0]?.toUpperCase()}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-baseline gap-2 mb-1">
-                        <p className="font-semibold text-gray-900">{msg.sender_name || "User"}</p>
+                {currentConversation.messages.map((msg) => {
+                  const isOwn = msg.sender_email === user?.email;
+                  return (
+                    <div key={msg.id} className={`flex gap-3 ${isOwn ? "flex-row-reverse" : ""}`}>
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-violet-400 flex items-center justify-center text-white font-bold text-sm shrink-0">
+                        {(msg.sender_name || msg.sender_email)?.[0]?.toUpperCase()}
                       </div>
-                      <div className="bg-gray-50 rounded-lg px-4 py-2 inline-block max-w-md">
-                        <p className="text-sm text-gray-900">{msg.content}</p>
+                      <div className={`flex-1 ${isOwn ? "text-right" : ""}`}>
+                        <div className="flex items-baseline gap-2 mb-1" style={{ flexDirection: isOwn ? "row-reverse" : "row" }}>
+                          <p className="font-semibold text-gray-900">{msg.sender_name || "User"}</p>
+                        </div>
+                        <div className={`rounded-lg px-4 py-2 inline-block ${isOwn ? "bg-blue-500 text-white" : "bg-gray-100 text-gray-900"}`}>
+                          <p className="text-sm">{msg.content}</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
                 <div ref={messagesEndRef} />
               </div>
 
