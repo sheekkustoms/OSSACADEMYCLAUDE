@@ -51,6 +51,9 @@ export async function awardXP(userPointsId, currentPoints, amount, extraUpdates 
 
   if (streakDays >= 7 && !badges.includes("On Fire")) badges.push("On Fire");
 
+  const quizMaster = extraUpdates.quiz_master_badge;
+  if (quizMaster && !badges.includes("Quiz Master")) badges.push("Quiz Master");
+
   await base44.entities.UserPoints.update(userPointsId, {
     total_xp: newXP,
     level: newLevel,

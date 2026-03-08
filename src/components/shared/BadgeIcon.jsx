@@ -1,7 +1,8 @@
 import React from "react";
-import { Award, BookOpen, MessageSquare, Flame, Star, Trophy, Target, Rocket, Crown, Heart } from "lucide-react";
+import { Award, BookOpen, MessageSquare, Flame, Star, Trophy, Target, Rocket, Crown, Heart, Brain } from "lucide-react";
 
 const BADGE_CONFIG = {
+  "Quiz Master": { icon: Brain, color: "from-fuchsia-500 to-violet-500", description: "Score 5/5 on a Daily Challenge" },
   "First Lesson": { icon: BookOpen, color: "from-blue-500 to-cyan-400", description: "Complete your first lesson" },
   "Course Complete": { icon: Trophy, color: "from-amber-500 to-yellow-400", description: "Complete a full course" },
   "Community Star": { icon: Star, color: "from-purple-500 to-pink-400", description: "Create 5 community posts" },
