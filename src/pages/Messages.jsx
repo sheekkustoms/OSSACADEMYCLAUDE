@@ -174,20 +174,20 @@ export default function Messages() {
               </div>
 
               {/* Messages */}
-              <div className="flex-1 overflow-y-auto px-6 py-4 space-y-3">
+              <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
                 {currentConversation.messages.map((msg) => (
-                  <div key={msg.id} className={`flex ${msg.sender_email === user.email ? "justify-end" : "justify-start"}`}>
-                    <div
-                      className={`max-w-xs px-4 py-2 rounded-2xl ${
-                        msg.sender_email === user.email
-                          ? "bg-blue-500 text-white rounded-br-none"
-                          : "bg-gray-100 text-gray-900 rounded-bl-none"
-                      }`}
-                    >
-                      <p className="text-sm">{msg.content}</p>
-                      <p className={`text-[10px] mt-1 ${msg.sender_email === user.email ? "text-blue-100" : "text-gray-400"}`}>
-                        {moment(msg.created_date).format("HH:mm")}
-                      </p>
+                  <div key={msg.id} className="flex gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-violet-400 flex items-center justify-center text-white font-bold text-sm shrink-0">
+                      {(msg.sender_name || msg.sender_email)?.[0]?.toUpperCase()}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-baseline gap-2 mb-1">
+                        <p className="font-semibold text-gray-900">{msg.sender_name || "User"}</p>
+                        <p className="text-xs text-gray-400">{moment(msg.created_date).tz("America/New_York").format("h:mma")}</p>
+                      </div>
+                      <div className="bg-gray-50 rounded-lg px-4 py-2 inline-block max-w-md">
+                        <p className="text-sm text-gray-900">{msg.content}</p>
+                      </div>
                     </div>
                   </div>
                 ))}
