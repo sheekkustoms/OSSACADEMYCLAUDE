@@ -77,8 +77,17 @@ function QuestionEditor({ question, quizId, onDelete, index }) {
               <Input type="number" value={form.points} onChange={e => setForm({ ...form, points: +e.target.value })} className="border-gray-200 bg-white h-9 text-gray-900" />
             </div>
             <div>
-              <label className="text-xs font-semibold text-gray-700 mb-1 block">Correct Answer # (0-based)</label>
-              <Input type="number" min={0} max={opts.length - 1} value={form.correct_answer_index} onChange={e => setForm({ ...form, correct_answer_index: +e.target.value })} className="border-gray-200 bg-white h-9 text-gray-900" />
+              <label className="text-xs font-semibold text-gray-700 mb-1 block">Correct Answer</label>
+              <Select value={String(form.correct_answer_index)} onValueChange={v => setForm({ ...form, correct_answer_index: +v })}>
+                <SelectTrigger className="border-gray-200 bg-white h-9 text-sm text-gray-900"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {(form.question_type === "true_false" ? ["True", "False"] : (form.options || ["", "", "", ""])).map((opt, i) => (
+                    <SelectItem key={i} value={String(i)}>
+                      <span className="font-bold text-gray-700">#{i + 1}</span> {opt || `Option ${i + 1}`}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
