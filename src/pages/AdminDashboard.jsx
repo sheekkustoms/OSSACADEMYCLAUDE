@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Shield, Users, FileText, Pin, Trash2, CheckCircle, XCircle, Megaphone, BarChart2, Ban, Gamepad2 } from "lucide-react";
+import { Shield, Users, FileText, Pin, Trash2, CheckCircle, XCircle, Megaphone, BarChart2, Ban, Gamepad2, BookOpen } from "lucide-react";
 import QuizBuilder from "../components/admin/QuizBuilder";
+import CourseManager from "../components/admin/CourseManager";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -138,6 +139,9 @@ export default function AdminDashboard() {
           <TabsTrigger value="quizzes" className="flex items-center gap-1">
             <Gamepad2 className="w-3.5 h-3.5" /> Quizzes
           </TabsTrigger>
+          <TabsTrigger value="courses" className="flex items-center gap-1">
+            <BookOpen className="w-3.5 h-3.5" /> Courses
+          </TabsTrigger>
         </TabsList>
 
         {/* Posts moderation */}
@@ -226,6 +230,11 @@ export default function AdminDashboard() {
         {/* Quiz Builder */}
         <TabsContent value="quizzes" className="mt-4">
           <QuizBuilder />
+        </TabsContent>
+
+        {/* Course Manager */}
+        <TabsContent value="courses" className="mt-4">
+          <CourseManager />
         </TabsContent>
 
         {/* Top members */}
