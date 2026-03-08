@@ -5,7 +5,7 @@ import { Send, Archive, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import moment from "moment";
+import { formatDistanceToNow, format } from "date-fns";
 
 export default function Messages() {
   const queryClient = useQueryClient();
