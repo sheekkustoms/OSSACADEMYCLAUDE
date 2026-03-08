@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Trash2, Plus, Video } from "lucide-react";
+import { Trash2, Plus, Video, Edit2, X } from "lucide-react";
 import moment from "moment";
 
 const EMPTY = { title: "", description: "", scheduled_at: "", zoom_url: "", is_active: true };
