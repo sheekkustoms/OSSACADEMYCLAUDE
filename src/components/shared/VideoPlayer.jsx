@@ -47,8 +47,9 @@ export default function VideoPlayer({ url, lessonId, enrollmentRequired }) {
         key={lessonId}
         className="w-full h-full"
         src={embed.src}
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+        allow={embed.allowExtra || "fullscreen"}
         allowFullScreen
+        referrerPolicy="no-referrer-when-downgrade"
       />
     );
   }
