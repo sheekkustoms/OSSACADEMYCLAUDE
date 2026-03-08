@@ -184,6 +184,9 @@ export default function AdminDashboard() {
           <TabsTrigger value="categories" className="flex items-center gap-1">
             <Tags className="w-3.5 h-3.5" /> Categories
           </TabsTrigger>
+          <TabsTrigger value="messaging" className="flex items-center gap-1">
+            <Mail className="w-3.5 h-3.5" /> Messages
+          </TabsTrigger>
         </TabsList>
 
         {/* Posts moderation */}
