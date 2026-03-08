@@ -58,6 +58,7 @@ import LiveClasses from './pages/LiveClasses';
 import Notifications from './pages/Notifications';
 import QuizGame from './pages/QuizGame';
 import QuizHome from './pages/QuizHome';
+import UserProgress from './pages/UserProgress';
 import __Layout from './Layout.jsx';
 
 
@@ -73,6 +74,7 @@ export const PAGES = {
     "Notifications": Notifications,
     "QuizGame": QuizGame,
     "QuizHome": QuizHome,
+    "UserProgress": UserProgress,
 }
 
 export const pagesConfig = {
