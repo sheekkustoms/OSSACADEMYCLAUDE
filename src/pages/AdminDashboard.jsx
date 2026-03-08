@@ -231,7 +231,9 @@ export default function AdminDashboard() {
                   {userPointsMap[u.email] && (
                     <p className="text-[10px] text-gray-400 mt-0.5">
                       Last active: {userPointsMap[u.email].last_activity_date
-                        ? moment(userPointsMap[u.email].last_activity_date).format("MMM D, YYYY [at] h:mm A")
+                        ? userPointsMap[u.email].last_activity_date.includes("T") 
+                          ? moment(userPointsMap[u.email].last_activity_date).tz("America/New_York").format("MMM D, YYYY [at] h:mm A z")
+                          : moment(userPointsMap[u.email].last_activity_date).format("MMM D, YYYY")
                         : "never"} · {userPointsMap[u.email].total_xp || 0} XP
                     </p>
                   )}
