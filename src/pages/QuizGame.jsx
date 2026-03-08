@@ -252,7 +252,7 @@ export default function QuizGame() {
             <motion.button key={i} initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.07 }}
               onClick={() => handleAnswer(i)}
               disabled={selectedAnswer !== null}
-              className={`bg-gradient-to-br ${ANSWER_COLORS[i % 4]} text-white rounded-2xl p-4 min-h-[80px] flex flex-col items-center justify-center gap-1 font-bold text-sm shadow-md hover:scale-105 active:scale-95 transition-transform disabled:opacity-70`}
+              className={`bg-gradient-to-br ${ANSWER_COLORS[i % 4]} text-black rounded-2xl p-4 min-h-[80px] flex flex-col items-center justify-center gap-1 font-bold text-sm shadow-md hover:scale-105 active:scale-95 transition-transform disabled:opacity-70`}
             >
               <span className="text-2xl opacity-70">{ANSWER_SHAPES[i % 4]}</span>
               <span>{opt}</span>
