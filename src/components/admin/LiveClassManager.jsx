@@ -61,7 +61,7 @@ export default function LiveClassManager() {
   return (
     <div className="space-y-6">
       <div className="bg-white border border-gray-100 rounded-2xl p-5 shadow-sm space-y-4">
-        <h3 className="font-semibold text-gray-800 flex items-center gap-2"><Video className="w-4 h-4 text-violet-500" /> Schedule New Class</h3>
+        <h3 className="font-semibold text-gray-800 flex items-center gap-2"><Video className="w-4 h-4 text-violet-500" /> {editingId ? "Edit Class" : "Schedule New Class"}</h3>
         <Input placeholder="Class title..." value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} />
         <Textarea placeholder="Description (optional)..." value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} className="min-h-[70px]" />
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
