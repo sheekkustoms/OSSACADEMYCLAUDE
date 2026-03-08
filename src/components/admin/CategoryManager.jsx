@@ -11,7 +11,22 @@ export default function CategoryManager() {
 
   const { data: settings = [] } = useQuery({
     queryKey: ["categorySettings"],
-    queryFn: () => base44.entities.CategorySettings.list(),
+    queryFn: async () => {
+      const list = await base44.entities.CategorySettings.list();
+      // Initialize with default categories if none exist
+      if (list.length === 0) {
+        const defaults = {
+          categories: [
+            { id: "announcement", label: "Announcements", emoji: "📢" },
+            { id: "discussion", label: "Discussion", emoji: "💬" },
+            { id: "resource", label: "Resources", emoji: "📚" }
+          ]
+        };
+        await base44.entities.CategorySettings.create(defaults);
+        return [defaults];
+      }
+      return list;
+    },
   });
 
   const config = settings[0] || { categories: [] };
