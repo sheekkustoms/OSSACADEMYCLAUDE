@@ -395,6 +395,11 @@ export default function AdminDashboard() {
           <LevelSettingsManager />
         </TabsContent>
 
+        {/* Category Manager */}
+        <TabsContent value="categories" className="mt-4">
+          <CategoryManager />
+        </TabsContent>
+
         {/* Top members */}
         <TabsContent value="leaderboard" className="mt-4">
           <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
