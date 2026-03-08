@@ -161,7 +161,7 @@ export default function Dashboard() {
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {inProgressCourses.slice(0, 3).map((course, i) => (
-              <CourseCard key={course.id} course={course} enrollment={enrollments.find((e) => e.course_id === course.id)} index={i} />
+              <CourseCard key={course.id} course={course} enrollment={enrollments.find((e) => e.course_id === course.id)} index={i} userLevel={getLevelFromXP(myPoints?.total_xp || 0)} />
             ))}
           </div>
         </div>
