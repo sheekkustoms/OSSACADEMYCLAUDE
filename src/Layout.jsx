@@ -117,7 +117,7 @@ export default function Layout({ children, currentPageName }) {
       )}
 
       {/* Mobile top bar */}
-      <div className={`lg:hidden fixed left-0 right-0 z-50 bg-white border-b border-gray-200 px-4 h-14 flex items-center justify-between shadow-sm ${showPWA ? "top-10" : "top-0"}`}>
+      <div className={`md:hidden fixed left-0 right-0 z-50 bg-white border-b border-gray-200 px-4 h-14 flex items-center justify-between shadow-sm ${showPWA ? "top-10" : "top-0"}`}>
         <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(true)} className="text-gray-500">
           <Menu className="w-5 h-5" />
         </Button>
