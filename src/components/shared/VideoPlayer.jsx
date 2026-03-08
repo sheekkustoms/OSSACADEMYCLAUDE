@@ -42,6 +42,27 @@ export default function VideoPlayer({ url, lessonId, enrollmentRequired }) {
     );
   }
 
+  if (embed.type === "gdrive") {
+    return (
+      <div className="relative w-full h-full" onContextMenu={(e) => e.preventDefault()}>
+        <iframe
+          key={lessonId}
+          className="w-full h-full"
+          src={embed.src}
+          allow="fullscreen"
+          allowFullScreen
+          referrerPolicy="no-referrer"
+          sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+        />
+        {/* Transparent overlay on the top-right corner to block the Google Drive toolbar/download button */}
+        <div
+          className="absolute top-0 right-0 bg-black"
+          style={{ width: "220px", height: "48px", zIndex: 10 }}
+        />
+      </div>
+    );
+  }
+
   if (embed.type === "iframe") {
     return (
       <iframe
