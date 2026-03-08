@@ -146,7 +146,7 @@ export default function Layout({ children, currentPageName }) {
           {/* Logo */}
           <div className="px-6 h-16 flex items-center justify-between border-b border-gray-100">
             <span className="text-xl font-extrabold bg-gradient-to-r from-pink-500 via-fuchsia-500 to-violet-500 bg-clip-text text-transparent">
-              LearnXP
+              Sew Sheek Sewing
             </span>
             <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(false)} className="lg:hidden text-gray-400">
               <X className="w-4 h-4" />
