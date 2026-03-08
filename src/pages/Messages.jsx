@@ -27,13 +27,15 @@ export default function Messages() {
 
   const messages = allMessages;
 
-  // Group messages by conversation
+  // Group messages by conversation (both sent and received)
   const conversations = messages.reduce((acc, msg) => {
-    const key = msg.sender_email;
-    if (!acc[key]) {
-      acc[key] = { sender_name: msg.sender_name, sender_email: msg.sender_email, messages: [] };
+    const otherUserEmail = msg.sender_email === user?.email ? msg.recipient_email : msg.sender_email;
+    const otherUserName = msg.sender_email === user?.email ? msg.recipient_name : msg.sender_name;
+    
+    if (!acc[otherUserEmail]) {
+      acc[otherUserEmail] = { sender_name: otherUserName, sender_email: otherUserEmail, messages: [] };
     }
-    acc[key].messages.push(msg);
+    acc[otherUserEmail].messages.push(msg);
     return acc;
   }, {});
 
