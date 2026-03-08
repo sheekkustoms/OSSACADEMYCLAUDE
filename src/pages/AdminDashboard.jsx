@@ -180,6 +180,9 @@ export default function AdminDashboard() {
           <TabsTrigger value="levels" className="flex items-center gap-1">
             <Zap className="w-3.5 h-3.5" /> Levels
           </TabsTrigger>
+          <TabsTrigger value="categories" className="flex items-center gap-1">
+            <Tags className="w-3.5 h-3.5" /> Categories
+          </TabsTrigger>
         </TabsList>
 
         {/* Posts moderation */}
