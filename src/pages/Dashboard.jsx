@@ -26,7 +26,20 @@ function StatCard({ icon: Icon, label, value, gradient, delay }) {
 }
 
 export default function Dashboard() {
+  const queryClient = useQueryClient();
+  const fileInputRef = useRef(null);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const { data: user } = useQuery({ queryKey: ["currentUser"], queryFn: () => base44.auth.me() });
+
+  const handlePhotoUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingPhoto(true);
+    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    await base44.auth.updateMe({ avatar_url: file_url });
+    queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+    setUploadingPhoto(false);
+  };
 
   const { data: myPoints } = useQuery({
     queryKey: ["dashboardPoints", user?.email],
