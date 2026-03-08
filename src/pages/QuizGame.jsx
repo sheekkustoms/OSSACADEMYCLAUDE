@@ -291,12 +291,12 @@ export default function QuizGame() {
           {opts.map((opt, i) => (
             <div key={i}
               className={`rounded-2xl p-4 min-h-[80px] flex flex-col items-center justify-center gap-1 font-bold text-sm border-2 transition-all ${
-                i === currentQ.correct_answer_index ? "bg-emerald-100 border-emerald-400 text-emerald-800" :
-                i === selectedAnswer && selectedAnswer !== currentQ.correct_answer_index ? "bg-red-100 border-red-400 text-red-700" :
-                "bg-gray-50 border-gray-200 text-gray-400"
+                i === currentQ.correct_answer_index ? "bg-emerald-500 border-emerald-600 text-white" :
+                i === selectedAnswer && selectedAnswer !== currentQ.correct_answer_index ? "bg-red-500 border-red-600 text-white" :
+                "bg-gray-100 border-gray-200 text-gray-500"
               }`}
             >
-              <span className="text-2xl opacity-50">{ANSWER_SHAPES[i % 4]}</span>
+              <span className="text-2xl opacity-70">{ANSWER_SHAPES[i % 4]}</span>
               <span>{opt}</span>
             </div>
           ))}
