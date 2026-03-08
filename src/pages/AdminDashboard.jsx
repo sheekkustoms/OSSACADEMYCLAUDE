@@ -16,7 +16,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import moment from "moment";
-import "moment-timezone";
 
 function StatCard({ icon: Icon, label, value, color }) {
   return (
@@ -231,11 +230,7 @@ export default function AdminDashboard() {
                   <p className="text-xs text-gray-400">{u.email} · {u.role}</p>
                   {userPointsMap[u.email] && (
                     <p className="text-[10px] text-gray-400 mt-0.5">
-                      Last active: {userPointsMap[u.email].last_activity_date
-                        ? userPointsMap[u.email].last_activity_date.includes("T") 
-                          ? moment(userPointsMap[u.email].last_activity_date).tz("America/New_York").format("MMM D, YYYY [at] h:mm A z")
-                          : moment(userPointsMap[u.email].last_activity_date).format("MMM D, YYYY")
-                        : "never"} · {userPointsMap[u.email].total_xp || 0} XP
+                      Last active: {userPointsMap[u.email].last_activity_date ? moment(userPointsMap[u.email].last_activity_date).format("MMM D, YYYY") : "never"} · {userPointsMap[u.email].total_xp || 0} XP
                     </p>
                   )}
                 </div>
