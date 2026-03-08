@@ -203,12 +203,18 @@ export default function AdminDashboard() {
                   <p className="text-xs text-gray-400">{u.email} · {u.role}</p>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap justify-end">
                 {u.is_banned && <Badge className="bg-red-100 text-red-600 text-[10px]">Banned</Badge>}
+                {u.role === "admin" && <Badge className="bg-violet-100 text-violet-700 text-[10px]">Admin</Badge>}
                 {u.email !== user?.email && !ADMIN_EMAILS.includes(u.email) && (
-                  <Button size="sm" variant="outline" className={`h-8 text-xs gap-1 ${u.is_banned ? "text-green-600 hover:bg-green-50" : "text-red-500 hover:bg-red-50"}`} onClick={() => banUserMutation.mutate({ id: u.id, banned: u.is_banned })}>
-                    <Ban className="w-3 h-3" /> {u.is_banned ? "Unban" : "Ban"}
-                  </Button>
+                  <>
+                    <Button size="sm" variant="outline" className={`h-8 text-xs gap-1 ${u.role === "admin" ? "text-violet-600 hover:bg-violet-50 border-violet-200" : "text-gray-500 hover:bg-gray-50"}`} onClick={() => toggleAdminMutation.mutate({ id: u.id, currentRole: u.role })}>
+                      <Shield className="w-3 h-3" /> {u.role === "admin" ? "Remove Admin" : "Make Admin"}
+                    </Button>
+                    <Button size="sm" variant="outline" className={`h-8 text-xs gap-1 ${u.is_banned ? "text-green-600 hover:bg-green-50" : "text-red-500 hover:bg-red-50"}`} onClick={() => banUserMutation.mutate({ id: u.id, banned: u.is_banned })}>
+                      <Ban className="w-3 h-3" /> {u.is_banned ? "Unban" : "Ban"}
+                    </Button>
+                  </>
                 )}
               </div>
             </div>
