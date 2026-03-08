@@ -6,7 +6,7 @@ import { createPageUrl } from "@/utils";
 import { motion } from "framer-motion";
 import { BookOpen, Trophy, Flame, Target, ArrowRight, Zap, Star, Brain, Camera } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import XPBar from "../components/shared/XPBar";
+import XPBar, { getLevelFromXP } from "../components/shared/XPBar";
 import BadgeIcon from "../components/shared/BadgeIcon";
 import CourseCard from "../components/shared/CourseCard";
 import { getOrCreateUserPoints } from "../components/shared/useUserPoints";
