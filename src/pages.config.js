@@ -48,10 +48,12 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import AdminDashboard from './pages/AdminDashboard';
+import CourseDetail from './pages/CourseDetail';
 
 
 export const PAGES = {
     "AdminDashboard": AdminDashboard,
+    "CourseDetail": CourseDetail,
 }
 
 export const pagesConfig = {
