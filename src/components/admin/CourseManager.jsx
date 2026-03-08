@@ -30,21 +30,7 @@ function LessonEditor({ lesson, courseId, onDelete, index }) {
   const [expanded, setExpanded] = useState(false);
   const [form, setForm] = useState({ ...lesson });
   const [saving, setSaving] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState("");
   const queryClient = useQueryClient();
-
-  const handleVideoUpload = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploading(true);
-    setUploadProgress("Uploading video...");
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
-    setForm(f => ({ ...f, video_url: file_url }));
-    setUploadProgress("Upload complete!");
-    setUploading(false);
-    setTimeout(() => setUploadProgress(""), 2000);
-  };
 
   const save = async () => {
     setSaving(true);
@@ -91,41 +77,30 @@ function LessonEditor({ lesson, courseId, onDelete, index }) {
             </div>
           </div>
 
-          {/* Video upload */}
+          {/* Video URL */}
           <div>
-            <label className="text-xs text-gray-500 mb-1 block">Lesson Video</label>
-            {form.video_url ? (
-              <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
-                <span className="text-xs text-emerald-700 flex-1 truncate">Video uploaded</span>
-                <Button variant="ghost" size="icon" className="w-6 h-6 text-gray-400 hover:text-red-500"
-                  onClick={() => setForm({ ...form, video_url: "" })}>
-                  <X className="w-3 h-3" />
-                </Button>
-              </div>
-            ) : (
-              <label className={`flex flex-col items-center gap-2 p-4 border-2 border-dashed rounded-xl cursor-pointer transition-colors ${uploading ? "border-violet-300 bg-violet-50" : "border-gray-200 hover:border-pink-300 hover:bg-pink-50"}`}>
-                {uploading ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
-                    <span className="text-xs text-violet-600">{uploadProgress}</span>
-                  </>
-                ) : (
-                  <>
-                    <Upload className="w-5 h-5 text-gray-400" />
-                    <span className="text-xs text-gray-500">Click to upload video file</span>
-                    <span className="text-[10px] text-gray-400">MP4, MOV, WebM, AVI supported</span>
-                  </>
-                )}
-                <input type="file" accept="video/*" className="hidden" onChange={handleVideoUpload} disabled={uploading} />
-              </label>
-            )}
-            {/* Or paste URL */}
-            <Input placeholder="Or paste video URL..." value={form.video_url || ""} onChange={e => setForm({ ...form, video_url: e.target.value })}
-              className="bg-white border-gray-200 h-9 mt-2 text-xs" />
+            <label className="text-xs text-gray-500 mb-1 block">Lesson Video URL</label>
+            <div className="space-y-1.5">
+              <Input
+                placeholder="Paste YouTube, Vimeo, or direct video URL..."
+                value={form.video_url || ""}
+                onChange={e => setForm({ ...form, video_url: e.target.value })}
+                className="bg-white border-gray-200"
+              />
+              <p className="text-[10px] text-gray-400">Supports: YouTube (youtube.com/watch, youtu.be), Vimeo, or direct .mp4/.mov links</p>
+              {form.video_url && (
+                <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                  <span className="text-xs text-emerald-700 flex-1 truncate">{form.video_url}</span>
+                  <button onClick={() => setForm({ ...form, video_url: "" })} className="text-gray-400 hover:text-red-500">
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
 
-          <Button onClick={save} disabled={saving || uploading} className="w-full bg-gradient-to-r from-pink-500 to-violet-500 text-white">
+          <Button onClick={save} disabled={saving} className="w-full bg-gradient-to-r from-pink-500 to-violet-500 text-white">
             {saving ? "Saving..." : "Save Lesson"}
           </Button>
         </div>
