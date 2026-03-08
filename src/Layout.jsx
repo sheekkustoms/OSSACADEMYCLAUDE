@@ -116,7 +116,19 @@ export default function Layout({ children, currentPageName }) {
             <span>Install this app on your phone for the best experience!</span>
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            <Button size="sm" variant="secondary" className="h-7 text-xs bg-white/20 hover:bg-white/30 text-white border-0">
+            <Button size="sm" variant="secondary" className="h-7 text-xs bg-white/20 hover:bg-white/30 text-white border-0"
+              onClick={async () => {
+                if (deferredInstallPrompt) {
+                  deferredInstallPrompt.prompt();
+                  await deferredInstallPrompt.userChoice;
+                  setDeferredInstallPrompt(null);
+                  setShowPWA(false);
+                  localStorage.setItem("pwa_dismissed", "1");
+                } else {
+                  alert("To install: tap the Share button in your browser, then 'Add to Home Screen'.");
+                }
+              }}
+            >
               Install
             </Button>
             <button onClick={() => { setShowPWA(false); localStorage.setItem("pwa_dismissed", "1"); }} className="text-white/70 hover:text-white">
