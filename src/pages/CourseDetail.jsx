@@ -108,11 +108,6 @@ export default function CourseDetail() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      {/* Back */}
-      <Link to={createPageUrl("Courses")} className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 transition-colors">
-        <ArrowLeft className="w-4 h-4" /> Back to Courses
-      </Link>
-
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Main content */}
         <div className="lg:col-span-2 space-y-4">
