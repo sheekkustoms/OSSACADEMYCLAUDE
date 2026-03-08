@@ -23,7 +23,10 @@ const NAV_ITEMS = [
 
 export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [showPWA, setShowPWA] = useState(() => !localStorage.getItem("pwa_dismissed"));
+  const [showPWA, setShowPWA] = useState(false);
+  useEffect(() => {
+    if (!localStorage.getItem("pwa_dismissed")) setShowPWA(true);
+  }, []);
   const [deferredInstallPrompt, setDeferredInstallPrompt] = useState(null);
 
   useEffect(() => {
