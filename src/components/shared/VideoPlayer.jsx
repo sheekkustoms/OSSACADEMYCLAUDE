@@ -5,16 +5,16 @@ function getVideoEmbed(url) {
   if (!url) return null;
 
   // YouTube
-  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-  if (ytMatch) return { type: "iframe", src: `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1` };
+  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+  if (ytMatch) return { type: "iframe", src: `https://www.youtube.com/embed/${ytMatch[1]}?autoplay=1`, allowExtra: "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" };
 
   // Vimeo
-  const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
-  if (vimeoMatch) return { type: "iframe", src: `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1` };
+  const vimeoMatch = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+  if (vimeoMatch) return { type: "iframe", src: `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1`, allowExtra: "autoplay; fullscreen; picture-in-picture" };
 
-  // Google Drive  (handles /view, /preview, sharing links)
-  const gdriveMatch = url.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?id=)([a-zA-Z0-9_-]+)/);
-  if (gdriveMatch) return { type: "iframe", src: `https://drive.google.com/file/d/${gdriveMatch[1]}/preview` };
+  // Google Drive — handle all share/view/open/uc formats
+  const gdriveMatch = url.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=view&)?id=)([a-zA-Z0-9_-]+)/);
+  if (gdriveMatch) return { type: "iframe", src: `https://drive.google.com/file/d/${gdriveMatch[1]}/preview`, allowExtra: "fullscreen" };
 
   // Direct video file
   return { type: "video", src: url };
