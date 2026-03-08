@@ -128,8 +128,11 @@ export default function Layout({ children, currentPageName }) {
                       : "text-slate-400 hover:text-white hover:bg-slate-800/50"
                   }`}
                 >
-                  <item.icon className={`w-4.5 h-4.5 ${isActive ? "text-indigo-400" : ""}`} />
-                  {item.name}
+                  <item.icon className={`w-4.5 h-4.5 ${isActive ? "text-indigo-400" : item.highlight ? "text-fuchsia-400" : ""}`} />
+                  <span className={item.highlight && !isActive ? "text-fuchsia-300" : ""}>{item.name}</span>
+                  {item.highlight && !isActive && (
+                    <span className="ml-auto text-[9px] bg-fuchsia-500/20 text-fuchsia-300 border border-fuchsia-500/30 px-1.5 py-0.5 rounded-full font-semibold uppercase tracking-wide">Daily</span>
+                  )}
                   {isActive && <ChevronRight className="w-3.5 h-3.5 ml-auto text-indigo-400/50" />}
                 </Link>
               );
