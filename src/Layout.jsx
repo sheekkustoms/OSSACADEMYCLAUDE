@@ -85,6 +85,13 @@ export default function Layout({ children, currentPageName }) {
     <div className="min-h-screen bg-rose-50/30 text-gray-900">
       <Toaster position="top-right" richColors />
       <style>{`
+        video, iframe {
+          -webkit-user-select: none;
+          user-select: none;
+        }
+        @media print {
+          video, iframe, .no-print { display: none !important; }
+        }
         :root {
           --background: 0 0% 98%;
           --foreground: 222 47% 11%;
