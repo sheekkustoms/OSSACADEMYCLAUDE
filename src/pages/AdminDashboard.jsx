@@ -28,6 +28,9 @@ export default function AdminDashboard() {
   const queryClient = useQueryClient();
   const [announcement, setAnnouncement] = useState("");
   const [announcementTitle, setAnnouncementTitle] = useState("");
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteSent, setInviteSent] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
 
   const { data: user } = useQuery({ queryKey: ["currentUser"], queryFn: () => base44.auth.me() });
 
