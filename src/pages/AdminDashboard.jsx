@@ -97,6 +97,19 @@ export default function AdminDashboard() {
     },
   });
 
+  if (user?.role !== "admin") {
+    return (
+      <div className="max-w-lg mx-auto text-center py-20">
+        <Shield className="w-12 h-12 text-red-300 mx-auto mb-3" />
+        <h2 className="text-xl font-bold text-gray-800">Access Denied</h2>
+        <p className="text-gray-500 mt-1">You need admin privileges to view this page.</p>
+      </div>
+    );
+  }
+
+  const today = new Date().toISOString().split("T")[0];
+  const postsToday = allPosts.filter((p) => p.created_date?.startsWith(today)).length;
+
   return (
     <div className="max-w-5xl mx-auto space-y-7">
       <div className="flex items-center gap-3">
