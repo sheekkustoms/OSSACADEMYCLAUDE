@@ -42,29 +42,15 @@ export default function VideoPlayer({ url, lessonId, enrollmentRequired }) {
   }
 
   if (embed.type === "iframe") {
-    const isGDrive = embed.src.includes("drive.google.com");
-    const fileId = isGDrive ? embed.src.match(/\/d\/([a-zA-Z0-9_-]+)\//)?.[1] : null;
     return (
-      <div className="w-full h-full flex flex-col">
-        <iframe
-          key={lessonId}
-          className="w-full flex-1"
-          src={embed.src}
-          allow={embed.allowExtra || "fullscreen"}
-          allowFullScreen
-          referrerPolicy="no-referrer-when-downgrade"
-        />
-        {isGDrive && fileId && (
-          <a
-            href={`https://drive.google.com/file/d/${fileId}/view`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-center text-xs text-fuchsia-600 hover:underline py-1.5 bg-white border-t border-gray-100"
-          >
-            ▶ Having trouble? Open video in Google Drive
-          </a>
-        )}
-      </div>
+      <iframe
+        key={lessonId}
+        className="w-full h-full"
+        src={embed.src}
+        allow={embed.allowExtra || "fullscreen"}
+        allowFullScreen
+        referrerPolicy="no-referrer-when-downgrade"
+      />
     );
   }
 
