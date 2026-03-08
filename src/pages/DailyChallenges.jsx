@@ -57,7 +57,7 @@ function ResultScreen({ score, total, isPerfect, xpEarned, earnedBadge, onReset 
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="text-center space-y-6 py-4"
+      className="text-center space-y-5 py-4"
     >
       <div className={`w-24 h-24 rounded-full mx-auto flex items-center justify-center text-5xl ${
         isPerfect ? "bg-gradient-to-br from-fuchsia-500 to-violet-600 shadow-lg shadow-fuchsia-500/30" : "bg-gradient-to-br from-indigo-500 to-purple-600"
@@ -252,47 +252,47 @@ Return ONLY valid JSON, no extra text.`;
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+        <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
           <Brain className="w-6 h-6 text-fuchsia-400" /> Daily Challenges
         </h1>
-        <p className="text-sm text-slate-400 mt-1">5-question quizzes — score 5/5 to earn the Quiz Master badge & 250 XP</p>
+        <p className="text-sm text-gray-500 mt-1">5-question quizzes — score 5/5 to earn the Quiz Master badge & 250 XP</p>
       </div>
 
       {/* Stats row */}
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: "Challenges Done", value: totalDone, icon: Trophy, color: "text-amber-400" },
-          { label: "Perfect Scores", value: totalPerfect, icon: Star, color: "text-fuchsia-400" },
-          { label: "Avg Score", value: `${avgScore}/5`, icon: Flame, color: "text-orange-400" },
+          { label: "Challenges Done", value: totalDone, icon: Trophy, color: "text-amber-500" },
+          { label: "Perfect Scores", value: totalPerfect, icon: Star, color: "text-fuchsia-500" },
+          { label: "Avg Score", value: `${avgScore}/5`, icon: Flame, color: "text-orange-500" },
         ].map(({ label, value, icon: Icon, color }) => (
-          <div key={label} className="bg-slate-800/40 border border-slate-700/40 rounded-xl p-4 text-center">
+          <div key={label} className="bg-white border border-gray-100 rounded-2xl p-4 text-center shadow-sm">
             <Icon className={`w-5 h-5 mx-auto mb-1 ${color}`} />
-            <p className="text-xl font-bold text-white">{value}</p>
-            <p className="text-[11px] text-slate-500 mt-0.5">{label}</p>
+            <p className="text-xl font-bold text-gray-900">{value}</p>
+            <p className="text-[11px] text-gray-400 mt-0.5">{label}</p>
           </div>
         ))}
       </div>
 
       {/* Main card */}
-      <div className="bg-slate-800/40 border border-slate-700/40 rounded-2xl p-6 min-h-[300px]">
+      <div className="bg-white border border-gray-100 rounded-2xl p-6 min-h-[300px] shadow-sm">
         <AnimatePresence mode="wait">
 
           {/* Already done today */}
           {alreadyDoneToday && phase !== "result" && (
             <motion.div key="done" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-10 space-y-4">
-              <div className="w-16 h-16 rounded-full bg-emerald-500/15 flex items-center justify-center mx-auto">
-                <CheckCircle2 className="w-8 h-8 text-emerald-400" />
+              <div className="w-16 h-16 rounded-full bg-emerald-100 flex items-center justify-center mx-auto">
+                <CheckCircle2 className="w-8 h-8 text-emerald-500" />
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-white">Challenge Complete!</h2>
-                <p className="text-sm text-slate-400 mt-1">You scored <span className="text-white font-semibold">{todayChallenge[0].score}/5</span> today on <span className="text-indigo-300">{todayChallenge[0].course_title}</span></p>
+                <h2 className="text-xl font-semibold text-gray-900">Challenge Complete!</h2>
+                <p className="text-sm text-gray-500 mt-1">You scored <span className="text-gray-900 font-semibold">{todayChallenge[0].score}/5</span> today on <span className="text-violet-600">{todayChallenge[0].course_title}</span></p>
               </div>
               {todayChallenge[0].perfect_score && (
                 <div className="flex justify-center">
                   <BadgeIcon name="Quiz Master" size="lg" />
                 </div>
               )}
-              <p className="text-sm text-slate-500">Come back tomorrow for a new challenge 🌅</p>
+              <p className="text-sm text-gray-400">Come back tomorrow for a new challenge 🌅</p>
             </motion.div>
           )}
 
@@ -303,8 +303,8 @@ Return ONLY valid JSON, no extra text.`;
                 <div className="w-16 h-16 rounded-full bg-gradient-to-br from-fuchsia-500 to-violet-600 flex items-center justify-center mx-auto shadow-lg shadow-fuchsia-500/20">
                   <Brain className="w-8 h-8 text-white" />
                 </div>
-                <h2 className="text-xl font-semibold text-white">Ready for today's challenge?</h2>
-                <p className="text-sm text-slate-400 max-w-sm mx-auto">Pick a course and answer 5 AI-generated questions. Score perfectly to earn the <span className="text-fuchsia-300 font-medium">Quiz Master</span> badge + <span className="text-emerald-400 font-medium">250 XP</span>!</p>
+                <h2 className="text-xl font-semibold text-gray-900">Ready for today's challenge?</h2>
+                <p className="text-sm text-gray-500 max-w-sm mx-auto">Pick a course and answer 5 AI-generated questions. Score perfectly to earn the <span className="text-fuchsia-600 font-semibold">Quiz Master</span> badge + <span className="text-emerald-600 font-semibold">250 XP</span>!</p>
               </div>
 
               <div className="space-y-2">
@@ -315,12 +315,12 @@ Return ONLY valid JSON, no extra text.`;
                     onClick={() => setSelectedCourse(course)}
                     className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border text-sm text-left transition-all ${
                       selectedCourse?.id === course.id
-                        ? "bg-indigo-500/15 border-indigo-500/50 text-white"
-                        : "bg-slate-700/20 border-slate-700/40 text-slate-300 hover:border-indigo-500/30 hover:text-white"
+                        ? "bg-violet-50 border-violet-300 text-violet-800 font-semibold"
+                        : "bg-gray-50 border-gray-200 text-gray-700 hover:border-violet-300 hover:text-violet-700"
                     }`}
                   >
                     <span>{course.title}</span>
-                    <span className="text-[10px] text-slate-500 capitalize">{course.category?.replace(/_/g, " ")}</span>
+                    <span className="text-[10px] text-gray-400 capitalize">{course.category?.replace(/_/g, " ")}</span>
                   </button>
                 ))}
               </div>
@@ -355,11 +355,11 @@ Return ONLY valid JSON, no extra text.`;
             <motion.div key="quiz" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
               {/* Progress bar */}
               <div className="space-y-2">
-                <div className="flex justify-between text-xs text-slate-400">
+                <div className="flex justify-between text-xs text-gray-500">
                   <span>Question {currentQ + 1} of {questions.length}</span>
-                  <span className="text-indigo-400">{Object.keys(answers).length} answered</span>
+                  <span className="text-violet-600 font-medium">{Object.keys(answers).length} answered</span>
                 </div>
-                <div className="h-1.5 bg-slate-700/50 rounded-full">
+                <div className="h-1.5 bg-gray-100 rounded-full">
                   <div
                     className="h-full bg-gradient-to-r from-fuchsia-500 to-violet-500 rounded-full transition-all duration-300"
                     style={{ width: `${((currentQ) / questions.length) * 100}%` }}
@@ -381,9 +381,9 @@ Return ONLY valid JSON, no extra text.`;
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
-                    className="bg-slate-700/30 border border-slate-600/30 rounded-xl px-4 py-3 text-sm text-slate-300"
+                    className="bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 text-sm text-gray-700"
                   >
-                    <span className="text-indigo-400 font-medium">💡 Explanation: </span>
+                    <span className="text-blue-600 font-semibold">💡 Explanation: </span>
                     {questions[currentQ].explanation}
                   </motion.div>
                 )}
@@ -419,10 +419,10 @@ Return ONLY valid JSON, no extra text.`;
       {/* History */}
       {allChallenges.length > 0 && (
         <div>
-          <h3 className="text-sm font-semibold text-slate-400 mb-3 uppercase tracking-wider">Past Challenges</h3>
+          <h3 className="text-sm font-semibold text-gray-400 mb-3 uppercase tracking-wider">Past Challenges</h3>
           <div className="space-y-2">
             {[...allChallenges].sort((a, b) => new Date(b.challenge_date) - new Date(a.challenge_date)).slice(0, 7).map((c) => (
-              <div key={c.id} className="flex items-center justify-between bg-slate-800/30 border border-slate-700/30 rounded-xl px-4 py-3">
+              <div key={c.id} className="flex items-center justify-between bg-white border border-gray-100 rounded-2xl px-4 py-3 shadow-sm">
                 <div className="flex items-center gap-3">
                   {c.perfect_score
                     ? <Star className="w-4 h-4 text-fuchsia-400" />
@@ -431,12 +431,12 @@ Return ONLY valid JSON, no extra text.`;
                       : <XCircle className="w-4 h-4 text-red-400" />
                   }
                   <div>
-                    <p className="text-sm text-white">{c.course_title || "Challenge"}</p>
-                    <p className="text-xs text-slate-500">{c.challenge_date}</p>
+                    <p className="text-sm font-medium text-gray-800">{c.course_title || "Challenge"}</p>
+                    <p className="text-xs text-gray-400">{c.challenge_date}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-sm font-semibold text-white">{c.score}/{c.total_questions}</span>
+                  <span className="text-sm font-bold text-gray-800">{c.score}/{c.total_questions}</span>
                   <span className="text-xs text-emerald-400 font-medium">+{c.xp_earned} XP</span>
                 </div>
               </div>
