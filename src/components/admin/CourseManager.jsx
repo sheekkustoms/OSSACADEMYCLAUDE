@@ -143,6 +143,15 @@ function CourseEditor({ course, onClose }) {
     setUploadingThumb(false);
   };
 
+  const handlePdfUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingPdf(true);
+    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    setForm(f => ({ ...f, pdf_url: file_url }));
+    setUploadingPdf(false);
+  };
+
   const saveCourse = async () => {
     setSaving(true);
     await base44.entities.Course.update(course.id, form);
