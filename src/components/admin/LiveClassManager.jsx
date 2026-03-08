@@ -74,9 +74,16 @@ export default function LiveClassManager() {
             <Input placeholder="https://zoom.us/j/..." value={form.zoom_url} onChange={e => setForm({ ...form, zoom_url: e.target.value })} />
           </div>
         </div>
-        <Button onClick={handleSave} disabled={saving || !form.title || !form.scheduled_at} className="bg-gradient-to-r from-pink-500 to-violet-500 text-white gap-2">
-          <Plus className="w-4 h-4" /> {saving ? "Saving..." : "Add Class"}
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={handleSave} disabled={saving || !form.title || !form.scheduled_at} className="bg-gradient-to-r from-pink-500 to-violet-500 text-white gap-2 flex-1">
+            <Plus className="w-4 h-4" /> {saving ? "Saving..." : editingId ? "Update Class" : "Add Class"}
+          </Button>
+          {editingId && (
+            <Button onClick={handleCancel} variant="outline" className="gap-2">
+              <X className="w-4 h-4" /> Cancel
+            </Button>
+          )}
+        </div>
       </div>
 
       <div className="space-y-2">
