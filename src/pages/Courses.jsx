@@ -4,17 +4,17 @@ import { useQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Search, Filter, BookOpen } from "lucide-react";
+import { Search, BookOpen } from "lucide-react";
 import CourseCard from "../components/shared/CourseCard";
 
 const CATEGORIES = [
   { value: "all", label: "All" },
-  { value: "development", label: "Development" },
-  { value: "design", label: "Design" },
-  { value: "marketing", label: "Marketing" },
-  { value: "business", label: "Business" },
-  { value: "data_science", label: "Data Science" },
-  { value: "personal_development", label: "Personal Dev" },
+  { value: "development", label: "💻 Development" },
+  { value: "design", label: "🎨 Design" },
+  { value: "marketing", label: "📣 Marketing" },
+  { value: "business", label: "💼 Business" },
+  { value: "data_science", label: "📊 Data Science" },
+  { value: "personal_development", label: "🌱 Personal Dev" },
 ];
 
 const DIFFICULTIES = ["all", "beginner", "intermediate", "advanced"];
@@ -24,16 +24,11 @@ export default function Courses() {
   const [category, setCategory] = useState("all");
   const [difficulty, setDifficulty] = useState("all");
 
-  const { data: user } = useQuery({
-    queryKey: ["currentUser"],
-    queryFn: () => base44.auth.me(),
-  });
-
+  const { data: user } = useQuery({ queryKey: ["currentUser"], queryFn: () => base44.auth.me() });
   const { data: courses = [], isLoading } = useQuery({
     queryKey: ["allCourses"],
     queryFn: () => base44.entities.Course.filter({ is_published: true }),
   });
-
   const { data: enrollments = [] } = useQuery({
     queryKey: ["myEnrollments", user?.email],
     queryFn: () => base44.entities.Enrollment.filter({ user_email: user.email }),
@@ -50,22 +45,20 @@ export default function Courses() {
   return (
     <div className="max-w-6xl mx-auto space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Courses</h1>
-        <p className="text-sm text-slate-400 mt-1">Explore our library and earn XP as you learn</p>
+        <h1 className="text-2xl font-bold text-gray-900">Courses</h1>
+        <p className="text-sm text-gray-500 mt-0.5">Learn, grow, and earn XP along the way</p>
       </div>
 
-      {/* Search & filters */}
-      <div className="space-y-4">
-        <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 space-y-4">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <Input
             placeholder="Search courses..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-10 bg-slate-800/50 border-slate-700/50 text-white placeholder:text-slate-500"
+            className="pl-10 border-gray-200"
           />
         </div>
-
         <div className="flex flex-wrap gap-2">
           {CATEGORIES.map((cat) => (
             <Button
@@ -74,15 +67,14 @@ export default function Courses() {
               size="sm"
               onClick={() => setCategory(cat.value)}
               className={category === cat.value
-                ? "bg-indigo-500/20 text-indigo-300 border-indigo-500/30 hover:bg-indigo-500/30"
-                : "text-slate-400 border-slate-700/50 hover:text-white bg-transparent"
+                ? "bg-gradient-to-r from-pink-500 to-violet-500 text-white border-0 shadow-sm"
+                : "text-gray-500 border-gray-200 hover:text-gray-900 bg-white"
               }
             >
               {cat.label}
             </Button>
           ))}
         </div>
-
         <div className="flex gap-2">
           {DIFFICULTIES.map((d) => (
             <Badge
@@ -90,8 +82,8 @@ export default function Courses() {
               variant="outline"
               className={`cursor-pointer capitalize transition-colors ${
                 difficulty === d
-                  ? "bg-indigo-500/20 text-indigo-300 border-indigo-500/40"
-                  : "text-slate-500 border-slate-700/40 hover:text-slate-300"
+                  ? "bg-violet-100 text-violet-700 border-violet-300"
+                  : "text-gray-400 border-gray-200 hover:text-gray-700"
               }`}
               onClick={() => setDifficulty(d)}
             >
@@ -101,18 +93,15 @@ export default function Courses() {
         </div>
       </div>
 
-      {/* Course grid */}
       {isLoading ? (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {Array(6).fill(0).map((_, i) => (
-            <div key={i} className="bg-slate-800/40 rounded-2xl h-64 animate-pulse" />
-          ))}
+          {Array(6).fill(0).map((_, i) => <div key={i} className="bg-white rounded-2xl h-64 animate-pulse border border-gray-100" />)}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="text-center py-20">
-          <BookOpen className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-          <p className="text-slate-400">No courses found</p>
-          <p className="text-sm text-slate-500 mt-1">Try adjusting your filters</p>
+        <div className="text-center py-20 bg-white rounded-2xl border border-gray-100">
+          <BookOpen className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+          <p className="text-gray-500">No courses found</p>
+          <p className="text-sm text-gray-400 mt-1">Try adjusting your filters</p>
         </div>
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
