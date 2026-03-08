@@ -70,6 +70,11 @@ export default function AdminDashboard() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["adminUsers"] }),
   });
 
+  const toggleAdminMutation = useMutation({
+    mutationFn: ({ id, currentRole }) => base44.entities.User.update(id, { role: currentRole === "admin" ? "user" : "admin" }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["adminUsers"] }),
+  });
+
   const sendAnnouncementMutation = useMutation({
     mutationFn: async () => {
       await base44.entities.CommunityPost.create({
