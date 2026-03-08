@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Shield, Users, FileText, Pin, Trash2, CheckCircle, XCircle, Megaphone, BarChart2, Ban } from "lucide-react";
+import { Shield, Users, FileText, Pin, Trash2, CheckCircle, XCircle, Megaphone, BarChart2, Ban, Gamepad2 } from "lucide-react";
+import QuizBuilder from "../components/admin/QuizBuilder";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -129,11 +130,14 @@ export default function AdminDashboard() {
       </div>
 
       <Tabs defaultValue="posts">
-        <TabsList className="bg-gray-100 rounded-xl">
+        <TabsList className="bg-gray-100 rounded-xl flex-wrap h-auto gap-1">
           <TabsTrigger value="posts">Posts</TabsTrigger>
           <TabsTrigger value="users">Users</TabsTrigger>
           <TabsTrigger value="announce">Announce</TabsTrigger>
           <TabsTrigger value="leaderboard">Top Members</TabsTrigger>
+          <TabsTrigger value="quizzes" className="flex items-center gap-1">
+            <Gamepad2 className="w-3.5 h-3.5" /> Quizzes
+          </TabsTrigger>
         </TabsList>
 
         {/* Posts moderation */}
@@ -217,6 +221,11 @@ export default function AdminDashboard() {
               {sendAnnouncementMutation.isPending ? "Sending..." : "Send to All Members"}
             </Button>
           </div>
+        </TabsContent>
+
+        {/* Quiz Builder */}
+        <TabsContent value="quizzes" className="mt-4">
+          <QuizBuilder />
         </TabsContent>
 
         {/* Top members */}
