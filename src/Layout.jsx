@@ -24,6 +24,16 @@ const NAV_ITEMS = [
 export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showPWA, setShowPWA] = useState(() => !localStorage.getItem("pwa_dismissed"));
+  const [deferredInstallPrompt, setDeferredInstallPrompt] = useState(null);
+
+  useEffect(() => {
+    const handler = (e) => {
+      e.preventDefault();
+      setDeferredInstallPrompt(e);
+    };
+    window.addEventListener("beforeinstallprompt", handler);
+    return () => window.removeEventListener("beforeinstallprompt", handler);
+  }, []);
 
   const { data: user } = useQuery({
     queryKey: ["currentUser"],
