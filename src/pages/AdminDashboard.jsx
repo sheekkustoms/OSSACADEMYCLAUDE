@@ -230,7 +230,13 @@ export default function AdminDashboard() {
                   <p className="text-xs text-gray-400">{u.email} · {u.role}</p>
                   {userPointsMap[u.email] && (
                     <p className="text-[10px] text-gray-400 mt-0.5">
-                      Last active: {userPointsMap[u.email].last_activity_date ? (userPointsMap[u.email].last_activity_date.includes('T') ? moment.utc(userPointsMap[u.email].last_activity_date).local().format("MMM D, YYYY [at] h:mm A") : moment(userPointsMap[u.email].last_activity_date).format("MMM D, YYYY [at] h:mm A")) : "never"} · {userPointsMap[u.email].total_xp || 0} XP
+                      {(() => {
+                        const lastActive = userPointsMap[u.email].last_activity_date;
+                        if (!lastActive) return "Never active · " + (userPointsMap[u.email].total_xp || 0) + " XP";
+                        const mins = moment().diff(moment(lastActive), 'minutes');
+                        const status = mins <= 30 ? "Active within last 30 mins" : mins <= 60 ? "Active within last hour" : "Active " + moment(lastActive).fromNow();
+                        return status + " · " + (userPointsMap[u.email].total_xp || 0) + " XP";
+                      })()}
                     </p>
                   )}
                 </div>
