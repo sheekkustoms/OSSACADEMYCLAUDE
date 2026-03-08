@@ -52,8 +52,12 @@ export default function VideoPlayer({ url, lessonId, enrollmentRequired }) {
           allow="autoplay; fullscreen"
           allowFullScreen
         />
-        {/* Cover the Google Drive "open in new tab" icon top-right */}
-        <div className="absolute top-0 right-0 bg-gray-900" style={{ width: "60px", height: "60px", zIndex: 10, pointerEvents: "none" }} />
+        {/* Block the Google Drive "open in new tab" icon top-right — intercepts all clicks */}
+        <div
+          className="absolute top-0 right-0 bg-gray-900"
+          style={{ width: "60px", height: "60px", zIndex: 10, pointerEvents: "all", cursor: "default" }}
+          onClick={(e) => e.stopPropagation()}
+        />
       </div>
     );
   }
