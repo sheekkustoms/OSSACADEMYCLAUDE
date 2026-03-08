@@ -36,6 +36,7 @@ export default function AdminDashboard() {
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteSent, setInviteSent] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
+  const [adminMessagingEnabled, setAdminMessagingEnabled] = useState({});
 
   const { data: user } = useQuery({ queryKey: ["currentUser"], queryFn: () => base44.auth.me() });
 
@@ -88,6 +89,13 @@ export default function AdminDashboard() {
   const toggleAdminMutation = useMutation({
     mutationFn: ({ id, currentRole }) => base44.entities.User.update(id, { role: currentRole === "admin" ? "user" : "admin" }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["adminUsers"] }),
+  });
+
+  const toggleMessagingPermissionMutation = useMutation({
+    mutationFn: ({ id, enabled }) => base44.entities.User.update(id, { can_message: !enabled }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
+    },
   });
 
   const sendAnnouncementMutation = useMutation({
@@ -248,6 +256,9 @@ export default function AdminDashboard() {
                   <>
                     <Button size="sm" variant="outline" className={`h-8 text-xs gap-1 ${u.role === "admin" ? "text-violet-600 hover:bg-violet-50 border-violet-200" : "text-gray-500 hover:bg-gray-50"}`} onClick={() => toggleAdminMutation.mutate({ id: u.id, currentRole: u.role })}>
                       <Shield className="w-3 h-3" /> {u.role === "admin" ? "Remove Admin" : "Make Admin"}
+                    </Button>
+                    <Button size="sm" variant="outline" className={`h-8 text-xs gap-1 ${u.can_message ? "text-blue-600 hover:bg-blue-50 border-blue-200" : "text-gray-500 hover:bg-gray-50"}`} onClick={() => toggleMessagingPermissionMutation.mutate({ id: u.id, enabled: u.can_message })}>
+                      <Mail className="w-3 h-3" /> {u.can_message ? "Block Messages" : "Allow Messages"}
                     </Button>
                     <Button size="sm" variant="outline" className={`h-8 text-xs gap-1 ${u.is_banned ? "text-green-600 hover:bg-green-50" : "text-red-500 hover:bg-red-50"}`} onClick={() => banUserMutation.mutate({ id: u.id, banned: u.is_banned })}>
                       <Ban className="w-3 h-3" /> {u.is_banned ? "Unban" : "Ban"}
