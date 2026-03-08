@@ -16,14 +16,15 @@ export async function getOrCreateUserPoints(user) {
     comments_made: 0,
     badges: [],
     streak_days: 0,
-    last_activity_date: new Date().toISOString().split("T")[0],
+    last_activity_date: new Date().toISOString(),
   });
 }
 
 export async function awardXP(userPointsId, currentPoints, amount, extraUpdates = {}) {
   const newXP = (currentPoints.total_xp || 0) + amount;
   const newLevel = getLevelFromXP(newXP);
-  const today = new Date().toISOString().split("T")[0];
+  const now = new Date().toISOString();
+  const today = now.split("T")[0];
 
   const badges = [...(currentPoints.badges || [])];
 
@@ -42,8 +43,9 @@ export async function awardXP(userPointsId, currentPoints, amount, extraUpdates 
   if (newLevel >= 10 && !badges.includes("Legend")) badges.push("Legend");
 
   let streakDays = currentPoints.streak_days || 0;
-  if (currentPoints.last_activity_date !== today) {
-    const lastDate = new Date(currentPoints.last_activity_date);
+  const lastActivityDate = currentPoints.last_activity_date ? currentPoints.last_activity_date.split("T")[0] : null;
+  if (lastActivityDate !== today) {
+    const lastDate = new Date(lastActivityDate);
     const todayDate = new Date(today);
     const diffDays = Math.round((todayDate - lastDate) / (1000 * 60 * 60 * 24));
     streakDays = diffDays === 1 ? streakDays + 1 : 1;
@@ -59,7 +61,7 @@ export async function awardXP(userPointsId, currentPoints, amount, extraUpdates 
     level: newLevel,
     badges,
     streak_days: streakDays,
-    last_activity_date: today,
+    last_activity_date: now,
     ...extraUpdates,
   });
 
