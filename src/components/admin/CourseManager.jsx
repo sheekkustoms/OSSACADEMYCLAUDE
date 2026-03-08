@@ -216,6 +216,10 @@ function CourseEditor({ course, onClose }) {
               <label className="text-xs text-gray-500 mb-1 block">XP Reward</label>
               <Input type="number" value={form.xp_reward || 100} onChange={e => setForm({ ...form, xp_reward: +e.target.value })} className="border-gray-200 h-9" />
             </div>
+            <div>
+              <label className="text-xs text-gray-500 mb-1 block">Unlock at Level (0 = always open)</label>
+              <Input type="number" min={0} value={form.unlock_at_level || 0} onChange={e => setForm({ ...form, unlock_at_level: +e.target.value })} className="border-gray-200 h-9" />
+            </div>
           </div>
 
           {/* Thumbnail */}
