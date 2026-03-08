@@ -4,6 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Search, BookOpen, Scissors } from "lucide-react";
 import CourseCard from "../components/shared/CourseCard";
+import { getLevelFromXP } from "../components/shared/XPBar";
+import { getOrCreateUserPoints } from "../components/shared/useUserPoints";
 
 export default function Courses() {
   const [search, setSearch] = useState("");
