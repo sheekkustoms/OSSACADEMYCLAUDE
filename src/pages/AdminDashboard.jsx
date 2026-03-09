@@ -175,7 +175,7 @@ export default function AdminDashboard() {
         <StatCard icon={CheckCircle} label="Pending Approval" value={allPosts.filter(p => !p.is_approved).length} color="bg-amber-500" onClick={() => setActiveTab("posts")} />
       </div>
 
-      <Tabs defaultValue="posts">
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="bg-gray-100 rounded-xl flex-wrap h-auto gap-1">
           <TabsTrigger value="posts">Posts</TabsTrigger>
           <TabsTrigger value="users">Users</TabsTrigger>
