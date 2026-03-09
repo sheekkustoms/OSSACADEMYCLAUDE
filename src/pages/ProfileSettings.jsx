@@ -91,71 +91,72 @@ export default function ProfileSettings() {
        }
 
       // Step 2: Update UserPoints record
-      console.log("[ProfileSettings] Step 3: Updating UserPoints...");
-      const userPointsRecords = await base44.entities.UserPoints.filter({
-        user_email: user.email,
-      });
-      if (userPointsRecords?.length > 0) {
-        await base44.entities.UserPoints.update(userPointsRecords[0].id, {
-          user_name: trimmedName,
-        });
-        console.log("[ProfileSettings] UserPoints updated:", {
-          recordId: userPointsRecords[0].id,
-          newName: trimmedName,
-        });
-      }
+       console.log("[ProfileSettings] Step 2: Updating UserPoints...");
+       const userPointsRecords = await base44.entities.UserPoints.filter({
+         user_email: user.email,
+       });
+       if (userPointsRecords?.length > 0) {
+         await base44.entities.UserPoints.update(userPointsRecords[0].id, {
+           user_name: trimmedName,
+         });
+         console.log("[ProfileSettings] UserPoints updated:", {
+           recordId: userPointsRecords[0].id,
+           newName: trimmedName,
+         });
+       }
 
-      // Step 4: Update CommunityPost records
-      console.log("[ProfileSettings] Step 4: Updating CommunityPost records...");
-      const userPosts = await base44.entities.CommunityPost.filter({
-        author_email: user.email,
-      });
-      if (userPosts?.length > 0) {
-        await Promise.all(
-          userPosts.map((post) => {
-            console.log("[ProfileSettings] Updating post:", {
-              postId: post.id,
-              oldAuthorName: post.author_name,
-              newAuthorName: trimmedName,
-            });
-            return base44.entities.CommunityPost.update(post.id, {
-              author_name: trimmedName,
-            });
-          })
-        );
-        console.log("[ProfileSettings] All CommunityPost records updated");
-      }
+       // Step 3: Update CommunityPost records
+       console.log("[ProfileSettings] Step 3: Updating CommunityPost records...");
+       const userPosts = await base44.entities.CommunityPost.filter({
+         author_email: user.email,
+       });
+       if (userPosts?.length > 0) {
+         await Promise.all(
+           userPosts.map((post) => {
+             console.log("[ProfileSettings] Updating post:", {
+               postId: post.id,
+               oldAuthorName: post.author_name,
+               newAuthorName: trimmedName,
+             });
+             return base44.entities.CommunityPost.update(post.id, {
+               author_name: trimmedName,
+             });
+           })
+         );
+         console.log("[ProfileSettings] All CommunityPost records updated");
+       }
 
-      // Step 5: Update Comment records
-      console.log("[ProfileSettings] Step 5: Updating Comment records...");
-      const userComments = await base44.entities.Comment.filter({
-        author_email: user.email,
-      });
-      if (userComments?.length > 0) {
-        await Promise.all(
-          userComments.map((comment) => {
-            console.log("[ProfileSettings] Updating comment:", {
-              commentId: comment.id,
-              oldAuthorName: comment.author_name,
-              newAuthorName: trimmedName,
-            });
-            return base44.entities.Comment.update(comment.id, {
-              author_name: trimmedName,
-            });
-          })
-        );
-        console.log("[ProfileSettings] All Comment records updated");
-      }
+       // Step 4: Update Comment records
+       console.log("[ProfileSettings] Step 4: Updating Comment records...");
+       const userComments = await base44.entities.Comment.filter({
+         author_email: user.email,
+       });
+       if (userComments?.length > 0) {
+         await Promise.all(
+           userComments.map((comment) => {
+             console.log("[ProfileSettings] Updating comment:", {
+               commentId: comment.id,
+               oldAuthorName: comment.author_name,
+               newAuthorName: trimmedName,
+             });
+             return base44.entities.Comment.update(comment.id, {
+               author_name: trimmedName,
+             });
+           })
+         );
+         console.log("[ProfileSettings] All Comment records updated");
+       }
 
-      // Step 6: Invalidate all related queries to clear old cache
-      console.log("[ProfileSettings] Step 6: Invalidating all related queries...");
-      await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-      await queryClient.invalidateQueries({ queryKey: ["myPoints"] });
-      await queryClient.invalidateQueries({ queryKey: ["myPointsCommunity"] });
-      await queryClient.invalidateQueries({ queryKey: ["leaderboard"] });
-      await queryClient.invalidateQueries({ queryKey: ["communityPosts"] });
-      await queryClient.invalidateQueries({ queryKey: ["comments"] });
-      console.log("[ProfileSettings] All queries invalidated");
+       // Step 5: Invalidate all related queries to clear old cache
+       console.log("[ProfileSettings] Step 5: Invalidating all related queries...");
+       await queryClient.invalidateQueries({ queryKey: ["userRecord", user.email] });
+       await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+       await queryClient.invalidateQueries({ queryKey: ["myPoints"] });
+       await queryClient.invalidateQueries({ queryKey: ["myPointsCommunity"] });
+       await queryClient.invalidateQueries({ queryKey: ["leaderboard"] });
+       await queryClient.invalidateQueries({ queryKey: ["communityPosts"] });
+       await queryClient.invalidateQueries({ queryKey: ["comments"] });
+       console.log("[ProfileSettings] All queries invalidated");
 
       // Step 7: Update local state and show success
       setDisplayName(trimmedName);
