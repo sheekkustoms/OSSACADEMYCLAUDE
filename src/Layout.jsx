@@ -160,10 +160,10 @@ export default function Layout({ children, currentPageName }) {
 
       {/* Mobile top bar */}
       <div className={`md:hidden fixed left-0 right-0 z-50 bg-white border-b border-gray-200 px-4 h-14 flex items-center justify-between shadow-sm ${showPWA ? "top-10" : "top-0"}`}>
-        <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(true)} className="text-gray-500">
+        <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(true)} className="text-gray-600">
           <Menu className="w-5 h-5" />
         </Button>
-        <span className="text-lg font-bold bg-gradient-to-r from-pink-500 via-fuchsia-500 to-violet-500 bg-clip-text text-transparent">Sew Sheek Sewing</span>
+        <span className="text-lg font-bold text-gray-900">Oh Sew Sheek</span>
         <div className="flex items-center gap-2">
           <Link to={createPageUrl("Notifications")} className="relative">
             <Bell className="w-5 h-5 text-gray-500" />
@@ -171,7 +171,7 @@ export default function Layout({ children, currentPageName }) {
               <span className="absolute -top-1 -right-1 w-4 h-4 bg-pink-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">{unreadCount}</span>
             )}
           </Link>
-          <div className="flex items-center gap-1 text-fuchsia-600 text-sm font-bold">
+          <div className="flex items-center gap-1 text-gray-700 text-sm font-bold">
             <Zap className="w-4 h-4" /> {myPoints?.total_xp || 0}
           </div>
         </div>
