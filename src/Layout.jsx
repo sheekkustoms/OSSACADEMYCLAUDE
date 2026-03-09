@@ -243,10 +243,10 @@ export default function Layout({ children, currentPageName }) {
           </nav>
 
           {/* Logout */}
-          <div className="p-3 border-t border-gray-100">
+          <div className="p-3 border-t border-gray-200">
             <button
               onClick={() => base44.auth.logout()}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all w-full"
+              className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all w-full"
             >
               <LogOut className="w-4 h-4" />
               Sign out
