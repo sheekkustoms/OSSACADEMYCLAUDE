@@ -220,7 +220,7 @@ export default function Layout({ children, currentPageName }) {
           )}
 
           {/* Nav */}
-          <nav className="flex-1 px-3 mt-5 space-y-0.5">
+          <nav className="flex-1 px-3 mt-6 space-y-1">
             {navItems.map((item) => {
               const isActive = currentPageName === item.page;
               return (
@@ -228,25 +228,15 @@ export default function Layout({ children, currentPageName }) {
                   key={item.page}
                   to={createPageUrl(item.page)}
                   onClick={() => setSidebarOpen(false)}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
+                  className={`flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all ${
                     isActive
-                      ? "bg-gradient-to-r from-pink-500/10 to-violet-500/10 text-violet-700 border border-violet-200/50"
-                      : item.admin
-                        ? "text-red-500 hover:bg-red-50"
-                        : item.highlight
-                          ? "text-fuchsia-600 hover:bg-fuchsia-50"
-                          : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+                      ? "bg-yellow-50 text-gray-900 border border-yellow-200"
+                      : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                   }`}
                 >
-                  <item.icon className={`w-4 h-4 ${isActive ? "text-violet-600" : item.admin ? "text-red-500" : item.highlight ? "text-fuchsia-500" : "text-gray-400"}`} />
+                  <item.icon className={`w-4 h-4 ${isActive ? "text-yellow-600" : "text-gray-400"}`} />
                   <span>{item.name}</span>
-                  {item.highlight && !isActive && (
-                    <span className="ml-auto text-[9px] bg-fuchsia-100 text-fuchsia-600 border border-fuchsia-200 px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wide">Daily</span>
-                  )}
-                  {item.admin && !isActive && (
-                    <span className="ml-auto text-[9px] bg-red-100 text-red-500 border border-red-200 px-1.5 py-0.5 rounded-full font-bold uppercase">Admin</span>
-                  )}
-                  {isActive && <ChevronRight className="w-3.5 h-3.5 ml-auto text-violet-400" />}
+                  {isActive && <ChevronRight className="w-3.5 h-3.5 ml-auto text-yellow-600" />}
                 </Link>
               );
             })}
