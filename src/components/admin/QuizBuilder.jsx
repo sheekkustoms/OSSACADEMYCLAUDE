@@ -283,22 +283,24 @@ export default function QuizBuilder() {
             </div>
 
             {/* Question editor */}
-            <AnimatePresence>
-              {editingQuizId === quiz.id && (
-                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
-                  className="border-t border-gray-100 bg-gray-50/50 p-4 space-y-3"
-                >
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm font-semibold text-gray-700">Questions ({sortedQuestions.length})</p>
-                    <Button size="sm" onClick={() => addQuestion.mutate()} className="bg-violet-100 text-violet-700 hover:bg-violet-200 gap-1 h-8">
-                      <Plus className="w-3.5 h-3.5" /> Add Question
-                    </Button>
-                  </div>
-                  {sortedQuestions.length === 0 ? (
-                    <p className="text-center text-sm text-gray-400 py-6">No questions yet — add your first one!</p>
-                  ) : sortedQuestions.map((q, i) => (
-                    <QuestionEditor key={q.id} question={q} quizId={quiz.id} onDelete={(id) => deleteQuestion.mutate(id)} index={i} />
-                  ))}
+             <AnimatePresence>
+               {editingQuizId === quiz.id && (
+                 <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
+                   className="border-t border-gray-100 bg-gray-50/50 p-4 space-y-3"
+                 >
+                   <QuizContentParser quizId={quiz.id} onQuestionsGenerated={() => queryClient.invalidateQueries({ queryKey: ["adminQuizQuestions", quiz.id] })} />
+
+                   <div className="flex items-center justify-between">
+                     <p className="text-sm font-semibold text-gray-700">Questions ({sortedQuestions.length})</p>
+                     <Button size="sm" onClick={() => addQuestion.mutate()} className="bg-violet-100 text-violet-700 hover:bg-violet-200 gap-1 h-8">
+                       <Plus className="w-3.5 h-3.5" /> Add Question
+                     </Button>
+                   </div>
+                   {sortedQuestions.length === 0 ? (
+                     <p className="text-center text-sm text-gray-400 py-6">No questions yet — add your first one!</p>
+                   ) : sortedQuestions.map((q, i) => (
+                     <QuestionEditor key={q.id} question={q} quizId={quiz.id} onDelete={(id) => deleteQuestion.mutate(id)} index={i} />
+                   ))}
                 </motion.div>
               )}
             </AnimatePresence>
