@@ -144,7 +144,7 @@ export default function CommentSection({ postId, user, myPoints }) {
                <div className="flex items-center gap-2 mb-1">
                  <span className="font-bold text-gray-900 text-sm">{comment.author_name || comment.author_email}</span>
                  <span className="text-gray-500 text-xs">•</span>
-                 <span className="text-gray-500 text-xs">{moment(comment.created_date).fromNow()}</span>
+                 <RelativeTime date={comment.created_date} />
                </div>
                <p className="text-gray-800 text-sm leading-relaxed">
                  {comment.content.split(/(@[\w.+-]+@[\w-]+\.[\w.]+)/).map((part, idx) =>
