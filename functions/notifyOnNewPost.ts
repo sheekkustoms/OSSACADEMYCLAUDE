@@ -61,6 +61,8 @@ Deno.serve(async (req) => {
           const subscriptions = await base44.asServiceRole.entities.NotificationSubscription.filter({
             user_email: email,
           });
+          
+          console.log(`[notifyOnNewPost] Found ${subscriptions.length} subscriptions for ${email}`);
 
           for (const sub of subscriptions) {
             try {
@@ -81,6 +83,8 @@ Deno.serve(async (req) => {
               console.log(`[notifyOnNewPost] Push failed for ${email}:`, pushErr.message);
             }
           }
+        } else {
+          console.log(`[notifyOnNewPost] VAPID keys missing, skipping push for ${email}`);
         }
       } catch (err) {
         console.error(`[notifyOnNewPost] Failed to notify ${email}:`, err.message);
