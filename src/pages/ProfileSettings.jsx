@@ -71,26 +71,14 @@ export default function ProfileSettings() {
          newName: trimmedName,
        });
 
-       // Step 1: Get or create User entity record
-       console.log("[ProfileSettings] Step 1: Getting User entity record...");
-       let userRecordId = userRecord?.[0]?.id;
-       if (!userRecordId) {
-         // Create User entity record if it doesn't exist
-         const created = await base44.entities.User.create({
-           email: user.email,
-           display_name: trimmedName,
-         });
-         userRecordId = created.id;
-         console.log("[ProfileSettings] Created new User record:", { id: userRecordId });
-       } else {
-         // Update existing User record with new display_name
-         await base44.entities.User.update(userRecordId, {
-           display_name: trimmedName,
-         });
-         console.log("[ProfileSettings] Updated User record:", { id: userRecordId });
-       }
+       // Step 1: Update user profile via auth
+       console.log("[ProfileSettings] Step 1: Updating user profile...");
+       await base44.auth.updateMe({
+         display_name: trimmedName,
+       });
+       console.log("[ProfileSettings] User profile updated");
 
-      // Step 2: Update UserPoints record
+       // Step 2: Update UserPoints record
        console.log("[ProfileSettings] Step 2: Updating UserPoints...");
        const userPointsRecords = await base44.entities.UserPoints.filter({
          user_email: user.email,
