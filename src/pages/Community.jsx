@@ -123,15 +123,15 @@ export default function Community() {
     });
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
+    <div className="max-w-5xl mx-auto space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Community</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Connect, share, and grow together</p>
+          <h1 className="text-4xl font-bold text-gray-900">Community</h1>
+          <p className="text-lg text-gray-600 mt-2">Connect, share, and grow together</p>
         </div>
         <Button
           onClick={() => setShowCreateDialog(true)}
-          className="bg-gradient-to-r from-pink-500 to-violet-500 hover:from-pink-600 hover:to-violet-600 text-white shadow-md shadow-pink-200"
+          className="bg-gray-900 hover:bg-gray-800 text-white font-medium py-2.5 px-6 rounded-lg transition-colors"
         >
           <Plus className="w-4 h-4 mr-2" /> New Post
         </Button>
