@@ -7,6 +7,7 @@ import { Heart, Send, CornerDownRight, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
 import RelativeTime from "@/components/shared/RelativeTime";
 import { awardXP } from "../shared/useUserPoints";
+import { getDisplayName } from "../shared/useDisplayName";
 
 function useUserAvatars(emails) {
   return useQuery({
@@ -49,14 +50,8 @@ export default function CommentSection({ postId, user, myPoints }) {
     enabled: !!postId,
   });
 
-  // Fetch current user's display_name
-  const { data: userRecord } = useQuery({
-    queryKey: ["userRecord", user?.email],
-    queryFn: () => base44.entities.User.filter({ email: user.email }),
-    enabled: !!user?.email,
-  });
-
-  const userDisplayName = userRecord?.[0]?.display_name || user?.full_name || user?.email;
+  // Get current user's display_name with fallback chain
+   const userDisplayName = getDisplayName(user);
 
   const commenterEmails = [...new Set(comments.map(c => c.author_email).filter(Boolean))];
   const { data: avatarMap = {} } = useUserAvatars(commenterEmails);
