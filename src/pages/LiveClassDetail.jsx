@@ -50,6 +50,24 @@ export default function LiveClassDetail() {
 
   const isPast = new Date(cls.scheduled_at) < new Date();
 
+  const handleDownloadPDF = async () => {
+    try {
+      const response = await fetch(cls.pdf_url);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `class-materials-${cls.title?.replace(/\s+/g, "-")}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Error downloading PDF:", error);
+      alert("Failed to download. Please try again.");
+    }
+  };
+
   return (
     <div className="max-w-3xl mx-auto">
       <Button variant="ghost" onClick={() => navigate(createPageUrl("LiveClasses"))} className="mb-6 gap-2 -ml-2">
@@ -144,11 +162,9 @@ export default function LiveClassDetail() {
               <h2 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
                 <Download className="w-5 h-5 text-emerald-600" /> Class Materials
               </h2>
-              <a href={cls.pdf_url} download target="_blank" rel="noopener noreferrer">
-                <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white gap-2">
-                  <Download className="w-4 h-4" /> Download PDF Materials
-                </Button>
-              </a>
+              <Button onClick={handleDownloadPDF} className="w-full bg-emerald-600 hover:bg-emerald-700 text-white gap-2">
+                <Download className="w-4 h-4" /> Download PDF Materials
+              </Button>
             </div>
           )}
 

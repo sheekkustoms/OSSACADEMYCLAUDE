@@ -54,6 +54,7 @@ import Courses from './pages/Courses';
 import DailyChallenges from './pages/DailyChallenges';
 import Dashboard from './pages/Dashboard';
 import Leaderboard from './pages/Leaderboard';
+import LiveClassDetail from './pages/LiveClassDetail';
 import LiveClasses from './pages/LiveClasses';
 import Messages from './pages/Messages';
 import Notifications from './pages/Notifications';
@@ -61,7 +62,6 @@ import ProfileSettings from './pages/ProfileSettings';
 import QuizGame from './pages/QuizGame';
 import QuizHome from './pages/QuizHome';
 import UserProgress from './pages/UserProgress';
-import LiveClassDetail from './pages/LiveClassDetail';
 import __Layout from './Layout.jsx';
 
 
@@ -73,6 +73,7 @@ export const PAGES = {
     "DailyChallenges": DailyChallenges,
     "Dashboard": Dashboard,
     "Leaderboard": Leaderboard,
+    "LiveClassDetail": LiveClassDetail,
     "LiveClasses": LiveClasses,
     "Messages": Messages,
     "Notifications": Notifications,
@@ -80,7 +81,6 @@ export const PAGES = {
     "QuizGame": QuizGame,
     "QuizHome": QuizHome,
     "UserProgress": UserProgress,
-    "LiveClassDetail": LiveClassDetail,
 }
 
 export const pagesConfig = {
