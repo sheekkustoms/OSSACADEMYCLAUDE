@@ -41,6 +41,7 @@ export default function AdminDashboard() {
   const [inviteResults, setInviteResults] = useState(null);
   const [linkCopied, setLinkCopied] = useState(false);
   const [adminMessagingEnabled, setAdminMessagingEnabled] = useState({});
+  const [activeTab, setActiveTab] = useState("posts");
 
   const { data: user } = useQuery({ queryKey: ["currentUser"], queryFn: () => base44.auth.me() });
 
