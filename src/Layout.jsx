@@ -223,10 +223,10 @@ export default function Layout({ children, currentPageName }) {
       )}
 
       {/* Sidebar */}
-      <aside className={`fixed top-0 left-0 z-50 h-full w-64 bg-[#c9b6be] border-r border-pink-300 shadow-sm transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
+      <aside className={`fixed top-0 left-0 z-50 h-full w-64 bg-white border-r border-gray-200 shadow-sm transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="px-6 h-16 flex items-center justify-between border-b border-pink-300">
+          <div className="px-6 h-16 flex items-center justify-between border-b border-gray-200">
             <span className="text-xl font-bold text-gray-900">
               Oh Sew Sheek
             </span>
@@ -283,7 +283,7 @@ export default function Layout({ children, currentPageName }) {
           </nav>
 
           {/* Logout */}
-          <div className="p-3 border-t border-pink-300">
+          <div className="p-3 border-t border-gray-200">
             <button
               onClick={() => base44.auth.logout()}
               className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all w-full"
