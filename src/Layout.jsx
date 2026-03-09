@@ -200,7 +200,7 @@ export default function Layout({ children, currentPageName }) {
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-gray-800 truncate">{user.full_name || "Learner"}</p>
+                  <p className="text-sm font-semibold text-gray-800 truncate">{user.full_name && user.full_name !== user.email ? user.full_name : "Learner"}</p>
                   <div className="flex items-center gap-1.5 mt-0.5">
                     <span className="text-[10px] bg-violet-100 text-violet-600 px-1.5 py-0.5 rounded-full font-bold">LVL {level}</span>
                     <span className="text-fuchsia-600 text-[10px] font-bold flex items-center gap-0.5">
