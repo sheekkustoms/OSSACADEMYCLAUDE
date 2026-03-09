@@ -22,7 +22,7 @@ export default function ProfileSettings() {
       setFullName(user.full_name || "");
       setAvatarUrl(user.avatar_url || "");
     }
-  }, [user?.email]); // only re-seed if the logged-in user changes, not on every refetch
+  }, [user]);
 
   const handlePhotoUpload = async (e) => {
     const file = e.target.files?.[0];
@@ -43,7 +43,7 @@ export default function ProfileSettings() {
     if (pts[0]) {
       await base44.entities.UserPoints.update(pts[0].id, { user_name: trimmedName });
     }
-    // Update the cached user directly so the name doesn't reset on refetch
+    // Update the cached user directly so the name doesn't reset
     queryClient.setQueryData(["currentUser"], (old) => old ? { ...old, full_name: trimmedName, avatar_url: avatarUrl } : old);
     queryClient.invalidateQueries({ queryKey: ["myPoints"] });
     setSaving(false);
