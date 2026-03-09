@@ -416,50 +416,50 @@ export default function CourseManager() {
                 <Draggable key={course.id} draggableId={course.id} index={index}>
                   {(provided, snapshot) => (
                     <div
-                      ref={provided.innerRef}
-                      {...provided.draggableProps}
-                      className={`bg-white border rounded-2xl shadow-sm overflow-hidden transition-all ${editingId === course.id ? "border-violet-300" : "border-gray-100"} ${snapshot.isDragging ? "shadow-lg ring-2 ring-violet-300" : ""}`}
-                    >
-            <div className="flex items-center gap-3 px-4 py-3">
-                <div {...provided.dragHandleProps}>
-                  <GripVertical className="w-4 h-4 text-gray-300 shrink-0" />
-                </div>
-                {course.thumbnail_url ? (
-                <img src={course.thumbnail_url} className="w-12 h-12 rounded-xl object-cover border border-gray-100 shrink-0" />
-              ) : (
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-100 to-violet-100 flex items-center justify-center shrink-0">
-                  <BookOpen className="w-5 h-5 text-violet-400" />
-                </div>
-              )}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <p className="font-semibold text-gray-900 truncate">{course.title}</p>
-                  <Badge className={`text-[10px] ${course.is_published ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-500"}`}>
-                    {course.is_published ? "Published" : "Draft"}
-                  </Badge>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-gray-400 mt-0.5">
-                  <span className="capitalize">{course.category?.replace(/_/g, " ")}</span>
-                  <span>·</span>
-                  <span className="capitalize">{course.difficulty}</span>
-                  <span>·</span>
-                  <span>{course.lesson_count || 0} lessons</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-1 shrink-0">
-                <Button size="icon" variant="ghost" className="w-8 h-8 text-violet-500" title="Edit" onClick={() => setEditingId(editingId === course.id ? null : course.id)}>
-                  <Edit2 className="w-3.5 h-3.5" />
-                </Button>
-                <Button size="icon" variant="ghost" className={`w-8 h-8 ${course.is_published ? "text-amber-500" : "text-emerald-500"}`}
-                  title={course.is_published ? "Unpublish" : "Publish"} onClick={() => togglePublish.mutate({ id: course.id, published: course.is_published })}>
-                  <Eye className="w-3.5 h-3.5" />
-                </Button>
-                <Button size="icon" variant="ghost" className="w-8 h-8 text-red-400 hover:bg-red-50" onClick={() => deleteCourse.mutate(course.id)}>
-                  <Trash2 className="w-3.5 h-3.5" />
-                </Button>
-              </div>
-            </div>
-          </div>
+                       ref={provided.innerRef}
+                       {...provided.draggableProps}
+                       className={`bg-white border rounded-2xl shadow-sm overflow-hidden transition-all ${editingId === course.id ? "border-violet-300" : "border-gray-100"} ${snapshot.isDragging ? "shadow-lg ring-2 ring-violet-300" : ""}`}
+                     >
+                      <div className="flex items-center gap-3 px-4 py-3">
+                        <div {...provided.dragHandleProps}>
+                          <GripVertical className="w-4 h-4 text-gray-300 shrink-0" />
+                        </div>
+                        {course.thumbnail_url ? (
+                          <img src={course.thumbnail_url} className="w-12 h-12 rounded-xl object-cover border border-gray-100 shrink-0" />
+                        ) : (
+                          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-100 to-violet-100 flex items-center justify-center shrink-0">
+                            <BookOpen className="w-5 h-5 text-violet-400" />
+                          </div>
+                        )}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <p className="font-semibold text-gray-900 truncate">{course.title}</p>
+                            <Badge className={`text-[10px] ${course.is_published ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-500"}`}>
+                              {course.is_published ? "Published" : "Draft"}
+                            </Badge>
+                          </div>
+                          <div className="flex items-center gap-2 text-xs text-gray-400 mt-0.5">
+                            <span className="capitalize">{course.category?.replace(/_/g, " ")}</span>
+                            <span>·</span>
+                            <span className="capitalize">{course.difficulty}</span>
+                            <span>·</span>
+                            <span>{course.lesson_count || 0} lessons</span>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1 shrink-0">
+                          <Button size="icon" variant="ghost" className="w-8 h-8 text-violet-500" title="Edit" onClick={() => setEditingId(editingId === course.id ? null : course.id)}>
+                            <Edit2 className="w-3.5 h-3.5" />
+                          </Button>
+                          <Button size="icon" variant="ghost" className={`w-8 h-8 ${course.is_published ? "text-amber-500" : "text-emerald-500"}`}
+                            title={course.is_published ? "Unpublish" : "Publish"} onClick={() => togglePublish.mutate({ id: course.id, published: course.is_published })}>
+                            <Eye className="w-3.5 h-3.5" />
+                          </Button>
+                          <Button size="icon" variant="ghost" className="w-8 h-8 text-red-400 hover:bg-red-50" onClick={() => deleteCourse.mutate(course.id)}>
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
                   )}
                 </Draggable>
               ))}
