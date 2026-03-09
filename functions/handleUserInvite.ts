@@ -25,7 +25,7 @@ Deno.serve(async (req) => {
       sender_name: 'Coach Sheek',
       recipient_email: email,
       recipient_name: '',
-      content: `🎉 Welcome to the Oh Sew Sheek Academy! 🧵✨\n\nWe're so excited to have you here! This academy was created especially for beginners who want to learn sewing step by step in a supportive and fun community. Whether you're brand new or just building confidence, you're in the right place.\n\n📱 Check the app daily!\nParticipation is part of the experience. When you engage, comment, and participate in activities, you earn points.\n\n🏆 Leaderboards & Challenges\nEach week we'll have leaderboards and fun challenges so you can level up your skills and stay motivated. And yes… there will be prizes! 🎁\n\n🎥 Live Classes\nWe host live classes twice a month. You'll find them under the "Live Classes" tab inside the academy.\n\n📋 Supply Lists\nEach course will include a supply list so you know exactly what you need before getting started.\n\n🔓 Level Unlock System\nSome courses are level-locked, which means you'll unlock them as you earn points and progress through the academy. This helps you build your skills the right way without feeling overwhelmed.\n\n📧 Need Help?\nIf you ever have questions, please don't hesitate to reach out to our support team: inquiry@ohsewsheek.com\n\nWe're excited to see what you create.\nWelcome again — now let's get sewing! 🪡✨`,
+      content: `🎉 Welcome to Oh Sew Sheek Academy!\n\nWe're so excited to have you here. This academy was made for beginners who want to learn sewing step by step in a fun and supportive space. 🧵✨`,
       is_read: false,
     });
 
