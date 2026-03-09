@@ -147,14 +147,15 @@ export default function CommentSection({ postId, user, myPoints }) {
                    <span className="text-gray-500 text-xs">•</span>
                    <RelativeTime date={comment.created_date} />
                  </div>
+                 {comment.content.match(/@[\w.+-]+@[\w-]+\.[\w.]+/) && (
+                   <div className="mb-2">
+                     <span className="text-xs text-blue-600 font-medium">
+                       @{comment.content.match(/@([\w.+-]+)@/)?.[1] || comment.content.match(/@[\w.+-]+@[\w-]+\.[\w.]+/)?.[0]}
+                     </span>
+                   </div>
+                 )}
                  <p className="text-gray-800 text-sm leading-relaxed">
-                   {comment.content.split(/(@[\w.+-]+@[\w-]+\.[\w.]+)/).map((part, idx) =>
-                     part.match(/@[\w.+-]+@[\w-]+\.[\w.]+/) ? (
-                       <span key={idx} className="text-blue-600 font-medium">{part}</span>
-                     ) : (
-                       <span key={idx}>{part}</span>
-                     )
-                   )}
+                   {comment.content.replace(/@[\w.+-]+@[\w-]+\.[\w.]+\s?/g, "")}
                  </p>
                </div>
                <div className="flex items-center gap-4 mt-2 ml-0 text-xs text-gray-600">
