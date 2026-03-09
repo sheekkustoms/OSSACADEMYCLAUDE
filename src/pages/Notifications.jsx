@@ -6,6 +6,7 @@ import { Bell, Heart, MessageCircle, Star, Megaphone, CheckCheck } from "lucide-
 import { Button } from "@/components/ui/button";
 import moment from "moment";
 import { createPageUrl } from "@/utils";
+import RelativeTime from "@/components/shared/RelativeTime";
 
 const typeConfig = {
   like: { icon: Heart, color: "bg-pink-100 text-pink-500", label: "liked your post" },
@@ -102,9 +103,9 @@ export default function Notifications() {
                   <Icon className="w-4 h-4" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-gray-800 font-medium">{n.message}</p>
-                  <p className="text-xs text-gray-400 mt-0.5">{moment(n.created_date).fromNow()}</p>
-                </div>
+                   <p className="text-sm text-gray-800 font-medium">{n.message}</p>
+                   <RelativeTime date={n.created_date} className="text-xs text-gray-400 mt-0.5" />
+                 </div>
                 {!n.is_read && <div className="w-2 h-2 rounded-full bg-pink-500 mt-1.5 shrink-0" />}
               </motion.div>
             );
