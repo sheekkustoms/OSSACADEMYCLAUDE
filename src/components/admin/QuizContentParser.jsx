@@ -184,7 +184,6 @@ IMPORTANT: Return ONLY valid JSON, no markdown formatting, no code blocks.`,
         </TabsList>
 
         <TabsContent value="ai" className="space-y-4 mt-4">
-
           <Textarea
             placeholder="Paste your course material, article, or notes here..."
             value={content}
