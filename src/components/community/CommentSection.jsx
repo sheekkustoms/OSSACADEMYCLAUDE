@@ -124,9 +124,7 @@ export default function CommentSection({ postId, user, myPoints }) {
           >
             <div className="flex items-center justify-between mb-1">
               <div className="flex items-center gap-2">
-                <div className="w-5 h-5 rounded-full bg-gradient-to-br from-pink-400 to-violet-400 flex items-center justify-center text-white text-[9px] font-bold">
-                  {(comment.author_name || comment.author_email || "?")[0].toUpperCase()}
-                </div>
+                <CommentAvatar email={comment.author_email} name={comment.author_name} avatarMap={avatarMap} />
                 <span className="text-xs font-semibold text-gray-700">{comment.author_name || comment.author_email}</span>
               </div>
               <span className="text-[10px] text-gray-400">{moment(comment.created_date).fromNow()}</span>
