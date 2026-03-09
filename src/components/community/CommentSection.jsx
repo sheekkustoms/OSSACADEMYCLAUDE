@@ -15,7 +15,9 @@ function useUserAvatars(emails) {
       if (!emails.length) return {};
       const users = await base44.entities.User.list();
       const map = {};
-      users.forEach(u => { map[u.email] = u.avatar_url || null; });
+      users.forEach(u => { 
+        map[u.email] = { avatar_url: u.avatar_url || null, display_name: u.display_name || null };
+      });
       return map;
     },
     enabled: emails.length > 0,
