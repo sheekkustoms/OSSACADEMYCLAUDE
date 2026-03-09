@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import RelativeTime from "@/components/shared/RelativeTime";
 import { awardXP } from "../shared/useUserPoints";
 import { getDisplayName } from "../shared/useDisplayName";
+import AvatarWithFallback from "../shared/AvatarWithFallback";
 
 function useUserAvatars(emails) {
   return useQuery({
@@ -27,16 +28,17 @@ function useUserAvatars(emails) {
 }
 
 function CommentAvatar({ email, name, avatarMap }) {
-  const userInfo = avatarMap?.[email];
-  const avatar = userInfo?.avatar_url;
-  return avatar ? (
-    <img src={avatar} className="w-7 h-7 rounded-full object-cover border border-pink-100 shrink-0" />
-  ) : (
-    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-pink-400 to-violet-400 flex items-center justify-center text-white text-[10px] font-bold shrink-0">
-      {(name || email || "?")[0].toUpperCase()}
-    </div>
-  );
-}
+   const userInfo = avatarMap?.[email];
+   const avatar = userInfo?.avatar_url;
+   return (
+     <AvatarWithFallback
+       imageUrl={avatar}
+       name={name}
+       email={email}
+       size="sm"
+     />
+   );
+ }
 
 export default function CommentSection({ postId, user, myPoints }) {
   const [newComment, setNewComment] = useState("");
