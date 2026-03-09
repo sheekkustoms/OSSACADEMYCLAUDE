@@ -12,7 +12,7 @@ import CourseCard from "../components/shared/CourseCard";
 import { getOrCreateUserPoints } from "../components/shared/useUserPoints";
 import ProfileSetupModal from "../components/shared/ProfileSetupModal";
 
-function StatCard({ icon: Icon, label, value, gradient, delay }) {
+function StatCard({ icon: Icon, label, value, gradient, delay = 0 }) {
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay }}
       className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5"
