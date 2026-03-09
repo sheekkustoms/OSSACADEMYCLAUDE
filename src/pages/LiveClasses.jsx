@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Calendar, Clock, Video, Copy, Check, Bell, BellOff, ChevronLeft, ChevronRight, Gamepad2, Zap } from "lucide-react";
+import { Calendar, Clock, Video, Copy, Check, Bell, BellOff, ChevronLeft, ChevronRight, Gamepad2, Zap, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import moment from "moment";
@@ -258,6 +258,13 @@ export default function LiveClasses() {
             </div>
             <div className="flex flex-col items-end gap-2 shrink-0">
               <RemindMeButton cls={cls} />
+              {cls.pdf_url && (
+                <a href={cls.pdf_url} download target="_blank" rel="noopener noreferrer">
+                  <Button className="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 gap-2">
+                    <Download className="w-4 h-4" /> Class Materials
+                  </Button>
+                </a>
+              )}
               {cls.zoom_url && <ZoomLinkSection zoom_url={cls.zoom_url} />}
             </div>
           </div>
