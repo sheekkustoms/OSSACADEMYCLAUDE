@@ -45,6 +45,7 @@ export default function ProfileSettings() {
     }
     // Update the cached user directly so the name doesn't reset
     queryClient.setQueryData(["currentUser"], (old) => old ? { ...old, full_name: trimmedName, avatar_url: avatarUrl } : old);
+    await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
     queryClient.invalidateQueries({ queryKey: ["myPoints"] });
     setSaving(false);
     setSaved(true);
