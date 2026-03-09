@@ -142,7 +142,14 @@ export default function CommentSection({ postId, user, myPoints }) {
           </motion.div>
         ))}
       </div>
-      <div className="flex gap-2">
+      <div className="flex gap-2 items-start">
+        {user?.avatar_url ? (
+          <img src={user.avatar_url} className="w-8 h-8 rounded-full object-cover border border-pink-100 shrink-0 mt-1" />
+        ) : (
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-400 to-violet-400 flex items-center justify-center text-white text-xs font-bold shrink-0 mt-1">
+            {(user?.full_name || user?.email || "?")[0].toUpperCase()}
+          </div>
+        )}
         <Textarea
           placeholder="Write a comment... (+5 XP)"
           value={newComment}
