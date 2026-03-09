@@ -174,8 +174,16 @@ IMPORTANT: Return ONLY valid JSON, no markdown formatting, no code blocks.`,
     <div className="space-y-4 border border-amber-200 bg-amber-50 rounded-lg p-4">
       <h3 className="font-semibold text-gray-900 flex items-center gap-2">
         <Wand2 className="w-4 h-4 text-amber-600" />
-        Auto-Generate Questions from Content
+        Add Questions
       </h3>
+
+      <Tabs defaultValue="ai" className="w-full">
+        <TabsList className="grid w-full grid-cols-2 bg-amber-100">
+          <TabsTrigger value="ai">AI Generate</TabsTrigger>
+          <TabsTrigger value="bulk">Paste Questions</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="ai" className="space-y-4 mt-4">
 
       <Textarea
         placeholder="Paste your course material, article, or notes here..."
