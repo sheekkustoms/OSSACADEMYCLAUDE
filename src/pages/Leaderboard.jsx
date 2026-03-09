@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
-import { Trophy, Zap, Award, Target } from "lucide-react";
+import { Trophy, Zap, Award, Target, Flame, Calendar } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
+import { Button } from "@/components/ui/button";
 
 const RankBadge = ({ rank }) => {
   if (rank === 1) return <div className="w-8 h-8 rounded-lg bg-yellow-100 flex items-center justify-center text-lg">🥇</div>;
@@ -23,6 +26,27 @@ export default function Leaderboard() {
     queryKey: ["currentUser"],
     queryFn: () => base44.auth.me(),
   });
+
+  const { data: weeklyChallengeSettings = [] } = useQuery({
+    queryKey: ["weeklyChallengeSettings"],
+    queryFn: () => base44.entities.WeeklyChallengeSettings.list(),
+  });
+
+  const { data: weeklyChallengeQuestions = [] } = useQuery({
+    queryKey: ["weeklyChallengeQuestions"],
+    queryFn: () => base44.entities.WeeklyChallengeQuestion.list(),
+  });
+
+  const { data: dailyChallenges = [] } = useQuery({
+    queryKey: ["myChallenges", user?.email],
+    queryFn: () => user?.email ? base44.entities.DailyChallenge.filter({ user_email: user.email }, "-challenge_date", 10) : Promise.resolve([]),
+    enabled: !!user?.email,
+  });
+
+  const weeklyChallengeSettings_item = weeklyChallengeSettings?.[0];
+  const todayDate = new Date().toISOString().split('T')[0];
+  const todayChallenge = dailyChallenges?.find(c => c.challenge_date === todayDate);
+  const questionCount = weeklyChallengeQuestions?.length || 0;
 
   // Calculate rankings
   const rankings = allPoints.map((p, idx) => ({
