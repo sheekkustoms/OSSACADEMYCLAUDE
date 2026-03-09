@@ -61,6 +61,11 @@ export default function AdminDashboard() {
     queryFn: () => base44.entities.UserPoints.list("-last_activity_date", 200),
   });
 
+  const { data: invitedEmails = [] } = useQuery({
+    queryKey: ["invitedEmails"],
+    queryFn: () => base44.entities.InvitedEmail.list("-created_date", 200),
+  });
+
   const userPointsMap = useMemo(() => {
     const map = {};
     allUserPoints.forEach(p => { map[p.user_email] = p; });
