@@ -71,37 +71,12 @@ export default function ProfileSettings() {
          newName: trimmedName,
        });
 
-       // Step 1: Get existing User entity or create new one
-       console.log("[ProfileSettings] Step 1: Ensuring User entity exists...");
-       let userRecordId = userRecord?.[0]?.id;
-       if (!userRecordId) {
-         // Check if User record exists by querying directly
-         const existingRecords = await base44.entities.User.filter({ email: user.email });
-         if (existingRecords?.length > 0) {
-           userRecordId = existingRecords[0].id;
-         }
-       }
-       
-       if (userRecordId) {
-         // Update existing User entity
-         await base44.entities.User.update(userRecordId, {
-           display_name: trimmedName,
-         });
-         console.log("[ProfileSettings] User entity updated:", { id: userRecordId });
-       } else {
-         // Create new User entity with display_name
-         try {
-           const created = await base44.entities.User.create({
-             email: user.email,
-             display_name: trimmedName,
-           });
-           userRecordId = created.id;
-           console.log("[ProfileSettings] New User entity created:", { id: userRecordId });
-         } catch (createErr) {
-           console.warn("[ProfileSettings] Cannot create User entity, it may be system-managed");
-           // User entity is system-managed, just continue with other updates
-         }
-       }
+       // Step 1: Update user's display_name via auth
+       console.log("[ProfileSettings] Step 1: Updating display_name...");
+       await base44.auth.updateMe({
+         display_name: trimmedName,
+       });
+       console.log("[ProfileSettings] Display name updated successfully");
 
        // Step 2: Update UserPoints record
        console.log("[ProfileSettings] Step 2: Updating UserPoints...");
