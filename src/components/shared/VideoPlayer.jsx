@@ -12,17 +12,13 @@ function getVideoEmbed(url) {
   const vimeoMatch = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
   if (vimeoMatch) return { type: "iframe", src: `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1`, allowExtra: "autoplay; fullscreen; picture-in-picture" };
 
-  // Google Drive — handle all share/view/open/uc formats
-  // Use /preview with resourcekey for private files and cookies allowed
-  const gdriveMatch = url.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=view&)?id=)([a-zA-Z0-9_-]+)(?:[^a-zA-Z0-9_-]|$)/);
+  // Google Drive — handle all share/open/uc formats with public viewing
+  // Use /preview endpoint with proper params to prevent access prompts
+  const gdriveMatch = url.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=view&)?id=)([a-zA-Z0-9_-]+)/);
   if (gdriveMatch) {
     const fileId = gdriveMatch[1];
-    // Extract resourcekey if present in URL
-    const resourcekeyMatch = url.match(/resourcekey=([a-zA-Z0-9_-]+)/);
-    const resourcekey = resourcekeyMatch ? resourcekeyMatch[1] : '';
-    let previewUrl = `https://drive.google.com/file/d/${fileId}/preview`;
-    if (resourcekey) previewUrl += `?resourcekey=${resourcekey}`;
-    return { type: "gdrive", src: previewUrl, fileId };
+    // Use embedded preview with usp=sharing to bypass access request
+    return { type: "gdrive", src: `https://drive.google.com/file/d/${fileId}/preview?usp=sharing`, fileId };
   }
 
   // Direct video file
