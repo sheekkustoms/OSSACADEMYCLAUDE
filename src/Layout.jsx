@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getLevelFromXP } from "./components/shared/XPBar";
+import { getDisplayName } from "@/components/shared/useDisplayName";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { playNotificationSound, requestNotificationPermission, sendBrowserNotification } from "@/components/shared/notificationSound";
@@ -50,22 +51,12 @@ export default function Layout({ children, currentPageName }) {
   }, []);
 
   const { data: user } = useQuery({
-    queryKey: ["currentUser"],
-    queryFn: () => base44.auth.me(),
-    staleTime: 0,
-    gcTime: 0,
-  });
+     queryKey: ["currentUser"],
+     queryFn: () => base44.auth.me(),
+     refetchInterval: 5000, // Refetch auth to catch display_name updates
+   });
 
-  // Fetch user's display_name from User entity
-  const { data: userRecords } = useQuery({
-    queryKey: ["userDisplayName", user?.email],
-    queryFn: () => base44.entities.User.filter({ email: user.email }),
-    enabled: !!user?.email,
-    refetchInterval: 3000, // Refetch every 3 seconds to catch display name updates
-  });
-
-  const userRecord = userRecords?.[0];
-  const displayName = userRecord?.display_name || user?.full_name || "Member";
+   const displayName = getDisplayName(user);
 
   const { data: userPoints } = useQuery({
     queryKey: ["myPoints", user?.email],
