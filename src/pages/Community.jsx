@@ -198,14 +198,14 @@ export default function Community() {
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
         <DialogContent className="bg-white border-gray-200 text-gray-900 max-w-lg">
           <DialogHeader>
-            <DialogTitle className="text-gray-900">Create a Post</DialogTitle>
+            <DialogTitle className="text-lg font-semibold text-gray-900">Create a Post</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <Input
-              placeholder="Title"
+              placeholder="Post title"
               value={newPost.title}
               onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
-              className="border-gray-200"
+              className="border-gray-200 h-10"
             />
             <Textarea
               placeholder="What's on your mind?"
@@ -214,7 +214,7 @@ export default function Community() {
               className="border-gray-200 min-h-[120px]"
             />
             <Select value={newPost.category} onValueChange={(v) => setNewPost({ ...newPost, category: v })}>
-              <SelectTrigger className="border-gray-200">
+              <SelectTrigger className="border-gray-200 h-10">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -227,26 +227,26 @@ export default function Community() {
             {/* Image upload */}
             {imagePreview ? (
               <div className="relative">
-                <img src={imagePreview} className="w-full rounded-xl object-cover max-h-40" />
+                <img src={imagePreview} className="w-full rounded-lg object-cover max-h-40" />
                 <button onClick={() => { setImageFile(null); setImagePreview(null); }} className="absolute top-2 right-2 w-6 h-6 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-black/70">
                   <X className="w-3 h-3" />
                 </button>
               </div>
             ) : (
-              <label className="flex items-center gap-2 text-sm text-gray-500 cursor-pointer border border-dashed border-gray-200 rounded-xl px-4 py-3 hover:border-violet-300 hover:text-violet-500 transition-colors">
+              <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer border border-dashed border-gray-300 rounded-lg px-4 py-3 hover:border-yellow-400 hover:text-gray-900 transition-colors">
                 <ImagePlus className="w-4 h-4" /> Add an image (optional)
                 <input type="file" accept="image/*" className="hidden" onChange={handleImageSelect} />
               </label>
             )}
 
-            <div className="flex justify-end gap-3">
-              <Button variant="outline" onClick={() => setShowCreateDialog(false)}>Cancel</Button>
+            <div className="flex justify-end gap-3 pt-2">
+              <Button variant="outline" onClick={() => setShowCreateDialog(false)} className="border-gray-200">Cancel</Button>
               <Button
                 onClick={() => createPostMutation.mutate()}
                 disabled={!newPost.title || !newPost.content || createPostMutation.isPending || uploading}
-                className="bg-gradient-to-r from-pink-500 to-violet-500 text-white"
+                className="bg-gray-900 hover:bg-gray-800 text-white font-medium"
               >
-                {uploading || createPostMutation.isPending ? "Posting..." : "Post (+15 XP)"}
+                {uploading || createPostMutation.isPending ? "Posting..." : "Post"}
               </Button>
             </div>
           </div>
