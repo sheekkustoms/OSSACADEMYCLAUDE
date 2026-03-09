@@ -8,6 +8,32 @@ import { motion } from "framer-motion";
 import moment from "moment";
 import { awardXP } from "../shared/useUserPoints";
 
+function useUserAvatars(emails) {
+  return useQuery({
+    queryKey: ["userAvatars", emails.sort().join(",")],
+    queryFn: async () => {
+      if (!emails.length) return {};
+      const users = await base44.entities.User.list();
+      const map = {};
+      users.forEach(u => { map[u.email] = u.avatar_url || null; });
+      return map;
+    },
+    enabled: emails.length > 0,
+    staleTime: 60000,
+  });
+}
+
+function CommentAvatar({ email, name, avatarMap }) {
+  const avatar = avatarMap?.[email];
+  return avatar ? (
+    <img src={avatar} className="w-7 h-7 rounded-full object-cover border border-pink-100 shrink-0" />
+  ) : (
+    <div className="w-7 h-7 rounded-full bg-gradient-to-br from-pink-400 to-violet-400 flex items-center justify-center text-white text-[10px] font-bold shrink-0">
+      {(name || email || "?")[0].toUpperCase()}
+    </div>
+  );
+}
+
 export default function CommentSection({ postId, user, myPoints }) {
   const [newComment, setNewComment] = useState("");
   const queryClient = useQueryClient();
