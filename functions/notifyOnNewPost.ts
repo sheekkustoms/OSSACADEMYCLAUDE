@@ -70,8 +70,8 @@ Deno.serve(async (req) => {
                   keys: { auth: sub.auth, p256dh: sub.p256dh },
                 },
                 JSON.stringify({
-                  title: '📢 New Announcement',
-                  body: `${payload.authorName}: ${payload.postTitle}`,
+                  title: 'New message from OSS ACADEMY',
+                  body: payload.postTitle,
                   icon: '/logo.png',
                   tag: `post-${payload.postId}`,
                 })
