@@ -13,15 +13,12 @@ import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 
 const NAV_ITEMS = [
-  { name: "Dashboard", icon: LayoutDashboard, page: "Dashboard" },
+  { name: "Home", icon: LayoutDashboard, page: "Dashboard" },
   { name: "Courses", icon: BookOpen, page: "Courses" },
   { name: "Community", icon: Users, page: "Community" },
-  { name: "Messages", icon: Mail, page: "Messages" },
   { name: "Leaderboard", icon: Trophy, page: "Leaderboard" },
-  { name: "Weekly Challenge", icon: Brain, page: "DailyChallenges", highlight: true },
-  { name: "Quiz Games", icon: Gamepad2, page: "QuizHome", highlight: true },
-  { name: "Live Classes", icon: Video, page: "LiveClasses" },
-  { name: "Profile Settings", icon: User, page: "ProfileSettings" },
+  { name: "Live Room", icon: Video, page: "LiveClasses" },
+  { name: "Profile", icon: User, page: "ProfileSettings" },
 ];
 
 export default function Layout({ children, currentPageName }) {
