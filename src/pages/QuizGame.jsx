@@ -36,8 +36,13 @@ export default function QuizGame() {
   const { data: user } = useQuery({ queryKey: ["currentUser"], queryFn: () => base44.auth.me() });
   const { data: quiz } = useQuery({
     queryKey: ["quiz", quizId],
-    queryFn: async () => base44.entities.Quiz.filter({ quiz_id: quizId }).then(r => r[0] || r.find(q => q.id === quizId)),
+    queryFn: async () => {
+      const r = await base44.entities.Quiz.filter({ id: quizId });
+      return r[0];
+    },
     enabled: !!quizId,
+    staleTime: 0,
+    gcTime: 0,
   });
   const { data: questions = [] } = useQuery({
     queryKey: ["quizQuestions", quizId],
