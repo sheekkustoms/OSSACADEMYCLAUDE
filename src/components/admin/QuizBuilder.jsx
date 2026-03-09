@@ -127,6 +127,7 @@ export default function QuizBuilder() {
   const [showNewQuiz, setShowNewQuiz] = useState(false);
   const [editingQuizId, setEditingQuizId] = useState(null);
   const [hostingQuizId, setHostingQuizId] = useState(null);
+  const [editingQuizSettingsId, setEditingQuizSettingsId] = useState(null);
   const [newQuizForm, setNewQuizForm] = useState({ title: "", description: "", category: "beginner_sewing", quiz_type: "practice", time_per_question: 20 });
 
   const { data: user } = useQuery({ queryKey: ["currentUser"], queryFn: () => base44.auth.me() });
