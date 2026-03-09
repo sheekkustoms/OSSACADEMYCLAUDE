@@ -38,19 +38,25 @@ export default function ProfileSettings() {
   const handleSave = async () => {
     if (!fullName.trim()) return;
     setSaving(true);
-    const trimmedName = fullName.trim();
-    await base44.auth.updateMe({ full_name: trimmedName, avatar_url: avatarUrl });
-    // Also update UserPoints display name
-    const pts = await base44.entities.UserPoints.filter({ user_email: user.email });
-    if (pts[0]) {
-      await base44.entities.UserPoints.update(pts[0].id, { user_name: trimmedName });
+    setError("");
+    try {
+      const trimmedName = fullName.trim();
+      await base44.auth.updateMe({ full_name: trimmedName, avatar_url: avatarUrl });
+      // Also update UserPoints display name
+      const pts = await base44.entities.UserPoints.filter({ user_email: user.email });
+      if (pts[0]) {
+        await base44.entities.UserPoints.update(pts[0].id, { user_name: trimmedName });
+      }
+      // Refetch user to ensure all tabs see the latest data
+      await queryClient.refetchQueries({ queryKey: ["currentUser"] });
+      queryClient.invalidateQueries({ queryKey: ["myPoints"] });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err) {
+      setError(err.message || "Failed to save changes. Please try again.");
+    } finally {
+      setSaving(false);
     }
-    // Update the cached user directly so the name doesn't reset
-    queryClient.setQueryData(["currentUser"], (old) => old ? { ...old, full_name: trimmedName, avatar_url: avatarUrl } : old);
-    queryClient.invalidateQueries({ queryKey: ["myPoints"] });
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
   };
 
   return (
