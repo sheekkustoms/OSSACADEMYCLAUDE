@@ -25,6 +25,16 @@ export default function Community() {
 
   const { data: user } = useQuery({ queryKey: ["currentUser"], queryFn: () => base44.auth.me() });
 
+  // Fetch user's display_name from User entity
+  const { data: userRecords } = useQuery({
+    queryKey: ["userDisplayName", user?.email],
+    queryFn: () => base44.entities.User.filter({ email: user.email }),
+    enabled: !!user?.email,
+  });
+
+  const userRecord = userRecords?.[0];
+  const displayName = userRecord?.display_name || user?.full_name || "Member";
+
   const { data: categorySettings = [] } = useQuery({
     queryKey: ["categorySettings"],
     queryFn: () => base44.entities.CategorySettings.list(),
@@ -64,7 +74,7 @@ export default function Community() {
         ...newPost,
         image_url,
         author_email: user.email,
-        author_name: user.full_name || user.email,
+        author_name: displayName,
         author_avatar: user.avatar_url || "",
         likes: [],
         comment_count: 0,
@@ -92,7 +102,7 @@ export default function Community() {
             postId: createdPost.id,
             postTitle: newPost.title,
             authorEmail: user.email,
-            authorName: user.full_name || user.email,
+            authorName: displayName,
             isAnnouncement: true,
           });
           console.log("[Community] Notification result:", notifyResult.data);
@@ -126,8 +136,8 @@ export default function Community() {
         await base44.entities.Notification.create({
           recipient_email: post.author_email,
           type: "like",
-          message: `${user.full_name || user.email} liked your post "${post.title}"`,
-          from_name: user.full_name || user.email,
+          message: `${displayName} liked your post "${post.title}"`,
+          from_name: displayName,
           post_id: post.id,
           is_read: false,
         });
