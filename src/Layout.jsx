@@ -16,6 +16,7 @@ import { playNotificationSound, requestNotificationPermission, sendBrowserNotifi
 const NAV_ITEMS = [
   { name: "Home", icon: LayoutDashboard, page: "Dashboard" },
   { name: "Courses", icon: BookOpen, page: "Courses" },
+  { name: "Quiz Games", icon: Gamepad2, page: "QuizHome" },
   { name: "Community", icon: Users, page: "Community" },
   { name: "Leaderboard", icon: Trophy, page: "Leaderboard" },
   { name: "Live Room", icon: Video, page: "LiveClasses" },
