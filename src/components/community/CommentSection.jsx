@@ -49,6 +49,24 @@ export default function CommentSection({ postId, user, myPoints }) {
   const commenterEmails = [...new Set(comments.map(c => c.author_email).filter(Boolean))];
   const { data: avatarMap = {} } = useUserAvatars(commenterEmails);
 
+  // Group comments: separate top-level from replies
+  const topLevelComments = comments.filter(c => !c.content.match(/@[\w.+-]+@[\w-]+\.[\w.]+/));
+  const replies = comments.filter(c => c.content.match(/@[\w.+-]+@[\w-]+\.[\w.]+/));
+  
+  // Create a map of which comment each reply is responding to
+  const replyMap = {};
+  replies.forEach(reply => {
+    const mentionMatch = reply.content.match(/@([\w.+-]+@[\w-]+\.[\w.]+)/);
+    if (mentionMatch) {
+      const mentionedEmail = mentionMatch[1];
+      const parentComment = comments.find(c => c.author_email === mentionedEmail && !c.content.match(/@[\w.+-]+@[\w-]+\.[\w.]+/));
+      if (parentComment) {
+        if (!replyMap[parentComment.id]) replyMap[parentComment.id] = [];
+        replyMap[parentComment.id].push(reply);
+      }
+    }
+  });
+
   const addCommentMutation = useMutation({
     mutationFn: async () => {
       await base44.entities.Comment.create({
