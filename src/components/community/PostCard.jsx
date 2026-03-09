@@ -7,6 +7,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import moment from "moment";
 import RelativeTime from "@/components/shared/RelativeTime";
+import AvatarWithFallback from "@/components/shared/AvatarWithFallback";
 
 const categoryStyles = {
   discussion: "bg-blue-100 text-blue-600 border-blue-200",
@@ -38,6 +39,19 @@ export default function PostCard({ post, currentUserEmail, onLike, onClick, inde
      staleTime: 0,
    });
 
+   // Fetch all user profiles to get avatar URLs
+   const { data: allUsers = [] } = useQuery({
+     queryKey: ["allUserProfiles"],
+     queryFn: () => base44.entities.User.list(),
+     staleTime: 60000, // Cache for 1 minute
+   });
+
+   // Create email->user map for quick avatar lookup
+   const userMap = {};
+   allUsers.forEach(user => {
+     userMap[user.email] = user;
+   });
+
    // Sort comments by created_date descending to get the actual last comment
    const sortedComments = [...comments].sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
 
@@ -45,7 +59,12 @@ export default function PostCard({ post, currentUserEmail, onLike, onClick, inde
    const commentersMap = new Map();
    comments.forEach(c => {
      if (!commentersMap.has(c.author_email)) {
-       commentersMap.set(c.author_email, { email: c.author_email, name: c.author_name });
+       const userProfile = userMap[c.author_email];
+       commentersMap.set(c.author_email, {
+         email: c.author_email,
+         name: c.author_name,
+         avatarUrl: userProfile?.avatar_url || null,
+       });
      }
    });
    const commenters = Array.from(commentersMap.values()).slice(0, 5);
@@ -79,13 +98,12 @@ export default function PostCard({ post, currentUserEmail, onLike, onClick, inde
          {/* Header with author and pinned badge */}
          <div className="flex items-start justify-between">
            <div className="flex items-start gap-3">
-             {post.author_avatar ? (
-               <img src={post.author_avatar} className="w-10 h-10 rounded-full object-cover border border-gray-200" />
-             ) : (
-               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-pink-400 flex items-center justify-center text-white text-sm font-bold">
-                 {(post.author_name || post.author_email || "?")[0].toUpperCase()}
-               </div>
-             )}
+             <AvatarWithFallback
+               imageUrl={post.author_avatar}
+               name={post.author_name}
+               email={post.author_email}
+               size="md"
+             />
              <div>
                <h3 className="font-bold text-gray-900 text-base">{post.author_name || post.author_email}</h3>
                <div className="flex items-center gap-1.5 text-xs text-gray-500">
@@ -149,12 +167,14 @@ export default function PostCard({ post, currentUserEmail, onLike, onClick, inde
                <>
                  <div className="flex -space-x-2">
                    {commenters.map((c, i) => (
-                     <div 
-                       key={`c-${i}`} 
-                       title={c.name || c.email}
-                       className="w-6 h-6 rounded-full bg-gradient-to-br from-yellow-400 to-pink-400 flex items-center justify-center text-white text-[9px] font-bold border-2 border-white"
-                     >
-                       {(c.name || c.email)[0].toUpperCase()}
+                     <div key={`c-${i}`} className="border-2 border-white rounded-full">
+                       <AvatarWithFallback
+                         imageUrl={c.avatarUrl}
+                         name={c.name}
+                         email={c.email}
+                         size="xs"
+                         className="border-0"
+                       />
                      </div>
                    ))}
                  </div>
