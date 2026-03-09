@@ -16,13 +16,13 @@ export default function ProfileSettings() {
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState("");
 
-  const initialized = useRef(false);
+  // Always sync to latest user data from database
   useEffect(() => {
-    if (user && !initialized.current) {
+    if (user) {
       setFullName(user.full_name || "");
       setAvatarUrl(user.avatar_url || "");
-      initialized.current = true;
     }
   }, [user]);
 
