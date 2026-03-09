@@ -261,6 +261,9 @@ export default function QuizBuilder() {
                 </div>
               </div>
               <div className="flex items-center gap-1.5 shrink-0">
+                <Button size="icon" variant="ghost" className="w-8 h-8 text-blue-500" title="Edit settings" onClick={() => setEditingQuizSettingsId(editingQuizSettingsId === quiz.id ? null : quiz.id)}>
+                  <Edit2 className="w-3.5 h-3.5" />
+                </Button>
                 <Button size="icon" variant="ghost" className="w-8 h-8 text-violet-500" title="Edit questions" onClick={() => setEditingQuizId(editingQuizId === quiz.id ? null : quiz.id)}>
                   <Edit2 className="w-3.5 h-3.5" />
                 </Button>
