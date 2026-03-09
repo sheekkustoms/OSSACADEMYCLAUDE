@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Calendar, Clock, Video, Copy, Check, Bell, BellOff, ChevronLeft, ChevronRight } from "lucide-react";
+import { Calendar, Clock, Video, Copy, Check, Bell, BellOff, ChevronLeft, ChevronRight, Gamepad2, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import moment from "moment";
+import { Link } from "react-router-dom";
+import { createPageUrl } from "@/utils";
 
 function ZoomLinkSection({ zoom_url }) {
   const [copied, setCopied] = useState(false);
@@ -205,9 +207,15 @@ export default function LiveClasses() {
     queryFn: () => base44.entities.LiveClass.filter({ is_active: true }),
   });
 
+  const { data: quizzes = [] } = useQuery({
+    queryKey: ["quizzes"],
+    queryFn: () => base44.entities.Quiz.filter({ is_published: true }),
+  });
+
   const sorted = [...classes].sort((a, b) => new Date(a.scheduled_at) - new Date(b.scheduled_at));
   const upcoming = sorted.filter(c => new Date(c.scheduled_at) > new Date());
   const past = sorted.filter(c => new Date(c.scheduled_at) <= new Date());
+  const publishedQuizzes = quizzes.filter(q => q.is_published);
 
   return (
     <div className="max-w-3xl mx-auto space-y-8">
@@ -273,6 +281,52 @@ export default function LiveClasses() {
           </div>
         </div>
       )}
+
+      {/* Quiz Games Section */}
+      <div className="mt-12 pt-8 border-t border-gray-200">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center shadow">
+            <Gamepad2 className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900">Quiz Games</h2>
+            <p className="text-sm text-gray-500">Test your knowledge with interactive quizzes</p>
+          </div>
+        </div>
+
+        {publishedQuizzes.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {publishedQuizzes.map((quiz, idx) => (
+              <motion.div key={quiz.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.1 }}
+                className="bg-white border border-yellow-100 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow"
+              >
+                {quiz.cover_image_url && (
+                  <img src={quiz.cover_image_url} alt={quiz.title} className="w-full h-32 object-cover rounded-lg mb-3" />
+                )}
+                <h3 className="font-semibold text-gray-900 mb-2">{quiz.title}</h3>
+                {quiz.description && (
+                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">{quiz.description}</p>
+                )}
+                <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
+                  <span className="bg-yellow-50 text-yellow-700 px-2 py-1 rounded">{quiz.quiz_type === "live" ? "🔴 Live" : "Practice"}</span>
+                  <span>{quiz.total_plays || 0} plays</span>
+                </div>
+                <Link to={createPageUrl("QuizGame")} state={{ quizId: quiz.id }}>
+                  <Button size="sm" className="w-full bg-yellow-500 hover:bg-yellow-600 text-white gap-2">
+                    <Gamepad2 className="w-3.5 h-3.5" /> Play Quiz
+                  </Button>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        ) : (
+          <div className="bg-white border border-gray-100 rounded-xl p-8 text-center">
+            <Gamepad2 className="w-10 h-10 text-gray-300 mx-auto mb-3" />
+            <p className="text-gray-500 font-medium">No quizzes available yet</p>
+            <p className="text-sm text-gray-400 mt-1">Check back soon!</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
