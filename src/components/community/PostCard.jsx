@@ -35,6 +35,7 @@ export default function PostCard({ post, currentUserEmail, onLike, onClick, inde
    const { data: comments = [] } = useQuery({
      queryKey: ["postComments", post.id],
      queryFn: () => base44.entities.Comment.filter({ post_id: post.id }),
+     staleTime: 0,
    });
 
    // Get unique commenters (by email) - limit to 5
