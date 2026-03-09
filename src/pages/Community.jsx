@@ -184,7 +184,7 @@ export default function Community() {
       <div className="flex flex-col lg:flex-row gap-4">
         {/* Sections sidebar */}
         <div className="lg:w-52 shrink-0">
-            <div className="bg-amber-50 rounded-lg border border-amber-100 shadow-sm p-3 space-y-1 sticky top-20">
+            <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-3 space-y-1 sticky top-20">
               {SECTIONS.map((s) => (
                 <button
                   key={s.value}
@@ -209,7 +209,7 @@ export default function Community() {
               placeholder="Search posts..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 h-11 bg-amber-50 border-amber-200 text-gray-800 placeholder:text-gray-500 rounded-lg"
+              className="pl-10 h-11 bg-white border-gray-200 text-gray-800 placeholder:text-gray-500 rounded-lg"
             />
           </div>
 
@@ -218,10 +218,10 @@ export default function Community() {
               {Array(4).fill(0).map((_, i) => <div key={i} className="bg-white rounded-lg h-32 animate-pulse border border-gray-200" />)}
             </div>
           ) : filteredAndSorted.length === 0 ? (
-            <div className="text-center py-20 bg-amber-50 rounded-lg border border-amber-200">
+            <div className="text-center py-20 bg-white rounded-lg border border-gray-200">
               <Users className="w-12 h-12 text-amber-300 mx-auto mb-3" />
-              <p className="text-gray-700 font-medium">No posts here yet</p>
-              <p className="text-sm text-gray-600 mt-1">Be the first to share!</p>
+              <p className="text-gray-500 font-medium">No posts here yet</p>
+              <p className="text-sm text-gray-400 mt-1">Be the first to share!</p>
             </div>
           ) : (
             filteredAndSorted.map((post, i) => (
@@ -240,7 +240,7 @@ export default function Community() {
 
       {/* Create post dialog */}
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
-        <DialogContent className="bg-amber-50 border-amber-200 text-gray-900 max-w-lg">
+        <DialogContent className="bg-white border-gray-200 text-gray-900 max-w-lg">
           <DialogHeader>
             <DialogTitle className="text-lg font-semibold text-gray-900">Create a Post</DialogTitle>
           </DialogHeader>
@@ -249,16 +249,16 @@ export default function Community() {
               placeholder="Post title"
               value={newPost.title}
               onChange={(e) => setNewPost({ ...newPost, title: e.target.value })}
-              className="border-amber-200 h-10 bg-white"
+              className="border-gray-200 h-10"
             />
             <Textarea
               placeholder="What's on your mind?"
               value={newPost.content}
               onChange={(e) => setNewPost({ ...newPost, content: e.target.value })}
-              className="border-amber-200 min-h-[120px] bg-white"
+              className="border-gray-200 min-h-[120px]"
             />
             <Select value={newPost.category} onValueChange={(v) => setNewPost({ ...newPost, category: v })}>
-              <SelectTrigger className="border-amber-200 h-10 bg-white">
+              <SelectTrigger className="border-gray-200 h-10">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -277,14 +277,14 @@ export default function Community() {
                 </button>
               </div>
             ) : (
-              <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer border border-dashed border-amber-300 rounded-lg px-4 py-3 hover:border-green-600 hover:text-gray-900 transition-colors bg-white">
+              <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer border border-dashed border-gray-300 rounded-lg px-4 py-3 hover:border-green-600 hover:text-gray-900 transition-colors">
                 <ImagePlus className="w-4 h-4" /> Add an image (optional)
                 <input type="file" accept="image/*" className="hidden" onChange={handleImageSelect} />
               </label>
             )}
 
             <div className="flex justify-end gap-3 pt-2">
-              <Button variant="outline" onClick={() => setShowCreateDialog(false)} className="border-amber-200">Cancel</Button>
+              <Button variant="outline" onClick={() => setShowCreateDialog(false)} className="border-gray-200">Cancel</Button>
               <Button
                 onClick={() => createPostMutation.mutate()}
                 disabled={!newPost.title || !newPost.content || createPostMutation.isPending || uploading}
@@ -299,7 +299,7 @@ export default function Community() {
 
       {/* Post detail */}
       <Dialog open={!!selectedPost} onOpenChange={() => setSelectedPost(null)}>
-        <DialogContent className="bg-amber-50 border-amber-200 text-gray-900 max-w-2xl max-h-[85vh] overflow-y-auto">
+        <DialogContent className="bg-white border-gray-200 text-gray-900 max-w-2xl max-h-[85vh] overflow-y-auto">
           {selectedPost && (
             <>
               <DialogHeader>

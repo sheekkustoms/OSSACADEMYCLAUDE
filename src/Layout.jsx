@@ -128,7 +128,7 @@ export default function Layout({ children, currentPageName }) {
           video, iframe, .no-print { display: none !important; }
         }
         * { box-sizing: border-box; }
-        body { background-color: #F5F3F0; }
+        body { background-color: #FFFEF8; }
         button:hover { background-color: rgba(139, 115, 85, 0.1); }
         .btn-primary { background-color: #6B7A5C !important; }
         .btn-primary:hover { background-color: #556347 !important; }
@@ -139,8 +139,8 @@ export default function Layout({ children, currentPageName }) {
           --pink-dark: #D4A8C8;
           --black: #1A1A1A;
           --white: #FFFFFF;
-          --gray-light: #F5F3F0;
-          --gray-border: #E8E0D8;
+          --gray-light: #FFFEF8;
+          --gray-border: #F0EDE8;
           --text-primary: #1A1A1A;
           --text-secondary: #7A6F68;
           --background: 0 0% 100%;
@@ -199,7 +199,7 @@ export default function Layout({ children, currentPageName }) {
       )}
 
       {/* Mobile top bar */}
-      <div className={`md:hidden fixed left-0 right-0 z-50 bg-amber-50 border-b border-amber-200 px-4 h-14 flex items-center justify-between shadow-sm ${showPWA ? "top-10" : "top-0"}`}>
+      <div className={`md:hidden fixed left-0 right-0 z-50 bg-white border-b border-gray-200 px-4 h-14 flex items-center justify-between shadow-sm ${showPWA ? "top-10" : "top-0"}`}>
         <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(true)} className="text-gray-600">
           <Menu className="w-5 h-5" />
         </Button>
@@ -223,10 +223,10 @@ export default function Layout({ children, currentPageName }) {
       )}
 
       {/* Sidebar */}
-      <aside className={`fixed top-0 left-0 z-50 h-full w-64 bg-amber-50 border-r border-amber-200 shadow-sm transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
+      <aside className={`fixed top-0 left-0 z-50 h-full w-64 bg-white border-r border-gray-200 shadow-sm transform transition-transform duration-300 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}>
         <div className="flex flex-col h-full">
           {/* Logo */}
-          <div className="px-6 h-16 flex items-center justify-between border-b border-amber-200">
+          <div className="px-6 h-16 flex items-center justify-between border-b border-gray-200">
             <span className="text-xl font-bold text-gray-900">
               Oh Sew Sheek
             </span>
@@ -237,10 +237,10 @@ export default function Layout({ children, currentPageName }) {
 
           {/* User card */}
           {user && (
-            <div className="mx-4 mt-5 p-4 rounded-xl bg-amber-100 border border-amber-300">
+            <div className="mx-4 mt-5 p-4 rounded-xl bg-pink-50 border border-pink-200">
               <div className="flex items-center gap-3">
                 {user.avatar_url ? (
-                  <img src={user.avatar_url} className="w-10 h-10 rounded-full object-cover border border-amber-300" />
+                  <img src={user.avatar_url} className="w-10 h-10 rounded-full object-cover border border-pink-200" />
                 ) : (
                   <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green-700 to-pink-400 flex items-center justify-center text-white font-bold text-sm">
                     {(user.full_name || user.email)?.[0]?.toUpperCase()}
@@ -283,7 +283,7 @@ export default function Layout({ children, currentPageName }) {
           </nav>
 
           {/* Logout */}
-          <div className="p-3 border-t border-amber-200">
+          <div className="p-3 border-t border-gray-200">
             <button
               onClick={() => base44.auth.logout()}
               className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all w-full"
@@ -296,11 +296,11 @@ export default function Layout({ children, currentPageName }) {
       </aside>
 
       {/* Main content */}
-      <main className={`md:ml-64 min-h-screen bg-amber-50 ${showPWA ? "pt-24 md:pt-10" : "pt-14 md:pt-0"}`}>
+      <main className={`md:ml-64 min-h-screen bg-white ${showPWA ? "pt-24 md:pt-10" : "pt-14 md:pt-0"}`}>
         {/* Desktop notification bell */}
         <div className="hidden md:block fixed top-6 right-6 z-40">
           <Link to={createPageUrl("Notifications")} className="relative inline-block">
-            <div className="p-2 rounded-lg bg-amber-50 border border-amber-200 hover:bg-amber-100 transition-colors">
+            <div className="p-2 rounded-lg bg-white border border-gray-200 hover:bg-gray-50 transition-colors">
               <Bell className="w-5 h-5 text-gray-600" />
               {unreadCount > 0 && (
                 <span className="absolute -top-1 -right-1 w-5 h-5 bg-pink-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">{unreadCount}</span>
