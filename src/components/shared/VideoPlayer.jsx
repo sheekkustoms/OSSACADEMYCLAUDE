@@ -55,10 +55,9 @@ export default function VideoPlayer({ url, lessonId, enrollmentRequired }) {
           src={embed.src}
           allow="autoplay; fullscreen"
           allowFullScreen
-          referrerPolicy="no-referrer"
-          sandbox="allow-scripts allow-same-origin"
+          sandbox="allow-scripts allow-same-origin allow-forms"
         />
-        {/* Block the Google Drive "open in new tab" icon — show logo instead */}
+        {/* Block the Google Drive "open in new tab" icon */}
         <div
           className="absolute top-0 right-0 flex items-center justify-center bg-gray-900"
           style={{ width: "60px", height: "60px", zIndex: 10, pointerEvents: "all", cursor: "default" }}
