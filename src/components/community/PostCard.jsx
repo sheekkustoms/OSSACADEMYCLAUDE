@@ -99,8 +99,8 @@ export default function PostCard({ post, currentUserEmail, onLike, onClick, inde
        animate={{ opacity: 1, y: 0 }}
        transition={{ delay: index * 0.04 }}
        onClick={onClick}
-       className={`group bg-white border-2 rounded-2xl overflow-hidden hover:shadow-md transition-all cursor-pointer ${
-         post.is_pinned ? "border-yellow-400 bg-yellow-50" : "border-yellow-300"
+       className={`group bg-amber-50 border-2 rounded-2xl overflow-hidden hover:shadow-md transition-all cursor-pointer ${
+         post.is_pinned ? "border-green-600 bg-green-50" : "border-pink-200"
        }`}
      >
        {post.image_url && (
@@ -152,7 +152,7 @@ export default function PostCard({ post, currentUserEmail, onLike, onClick, inde
          </div>
 
          {/* Bottom engagement section */}
-         <div className="flex items-center gap-3 pt-3 border-t border-yellow-200">
+         <div className="flex items-center gap-3 pt-3 border-t border-pink-200">
            <Button
              variant="ghost"
              size="sm"
