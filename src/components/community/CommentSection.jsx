@@ -165,9 +165,9 @@ export default function CommentSection({ postId, user, myPoints }) {
                    <RelativeTime date={comment.created_date} />
                  </div>
                  {comment.content.match(/@[\w.+-]+@[\w-]+\.[\w.]+/) && (
-                   <div className="mb-2">
-                     <span className="text-xs text-blue-600 font-medium">
-                       @{comment.content.match(/@([\w.+-]+)@/)?.[1] || comment.content.match(/@[\w.+-]+@[\w-]+\.[\w.]+/)?.[0]}
+                   <div className="mb-3 inline-block">
+                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold">
+                       ↳ Replying to @{comment.content.match(/@([\w.+-]+)@/)?.[1] || comment.content.match(/@[\w.+-]+@[\w-]+\.[\w.]+/)?.[0]}
                      </span>
                    </div>
                  )}
