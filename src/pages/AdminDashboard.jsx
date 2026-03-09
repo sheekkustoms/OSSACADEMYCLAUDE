@@ -169,10 +169,10 @@ export default function AdminDashboard() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StatCard icon={Users} label="Total Members" value={allUsers.length} color="bg-blue-500" />
-        <StatCard icon={FileText} label="Total Posts" value={allPosts.length} color="bg-violet-500" />
-        <StatCard icon={BarChart2} label="Posts Today" value={postsToday} color="bg-pink-500" />
-        <StatCard icon={CheckCircle} label="Pending Approval" value={allPosts.filter(p => !p.is_approved).length} color="bg-amber-500" />
+        <StatCard icon={Users} label="Total Members" value={allUsers.length} color="bg-blue-500" onClick={() => setActiveTab("users")} />
+        <StatCard icon={FileText} label="Total Posts" value={allPosts.length} color="bg-violet-500" onClick={() => setActiveTab("posts")} />
+        <StatCard icon={BarChart2} label="Posts Today" value={postsToday} color="bg-pink-500" onClick={() => setActiveTab("posts")} />
+        <StatCard icon={CheckCircle} label="Pending Approval" value={allPosts.filter(p => !p.is_approved).length} color="bg-amber-500" onClick={() => setActiveTab("posts")} />
       </div>
 
       <Tabs defaultValue="posts">
