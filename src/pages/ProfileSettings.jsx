@@ -14,17 +14,24 @@ export default function ProfileSettings() {
   const [error, setError] = useState("");
 
   // Fetch current user
-  const { data: user, isLoading: userLoading } = useQuery({
+  const { data: user, isLoading: userLoading, refetch: refetchUser } = useQuery({
     queryKey: ["currentUser"],
-    queryFn: () => base44.auth.me(),
+    queryFn: async () => {
+      const u = await base44.auth.me();
+      console.log("[ProfileSettings] User fetched:", {
+        userId: u.id,
+        email: u.email,
+        fullName: u.full_name,
+      });
+      return u;
+    },
   });
 
   // Initialize form with fresh user data whenever user changes
   useEffect(() => {
     if (user) {
-      console.log("[ProfileSettings] User loaded", {
+      console.log("[ProfileSettings] Initializing form with user data:", {
         userId: user.id,
-        email: user.email,
         fullName: user.full_name,
       });
       setDisplayName(user.full_name || "");
@@ -49,17 +56,27 @@ export default function ProfileSettings() {
     setSuccess(false);
 
     try {
-      console.log("[ProfileSettings] Saving display name", {
+      console.log("[ProfileSettings] Starting save:", {
         userId: user.id,
+        email: user.email,
         oldName: originalName,
         newName: trimmedName,
       });
 
-      // Update the user profile
+      // Step 1: Update auth profile
+      console.log("[ProfileSettings] Step 1: Updating auth profile...");
       await base44.auth.updateMe({ full_name: trimmedName });
-      console.log("[ProfileSettings] Auth update completed");
+      console.log("[ProfileSettings] Auth profile updated successfully");
 
-      // Update UserPoints if exists
+      // Step 2: Force refetch the current user from auth immediately
+      console.log("[ProfileSettings] Step 2: Refetching auth user...");
+      const refetchResult = await refetchUser();
+      console.log("[ProfileSettings] Auth user refetched:", {
+        newName: refetchResult.data?.full_name,
+      });
+
+      // Step 3: Update UserPoints record
+      console.log("[ProfileSettings] Step 3: Updating UserPoints...");
       const userPointsRecords = await base44.entities.UserPoints.filter({
         user_email: user.email,
       });
@@ -67,70 +84,76 @@ export default function ProfileSettings() {
         await base44.entities.UserPoints.update(userPointsRecords[0].id, {
           user_name: trimmedName,
         });
-        console.log("[ProfileSettings] UserPoints updated");
+        console.log("[ProfileSettings] UserPoints updated:", {
+          recordId: userPointsRecords[0].id,
+          newName: trimmedName,
+        });
       }
 
-      // Update all community posts by this user
+      // Step 4: Update CommunityPost records
+      console.log("[ProfileSettings] Step 4: Updating CommunityPost records...");
       const userPosts = await base44.entities.CommunityPost.filter({
         author_email: user.email,
       });
       if (userPosts?.length > 0) {
         await Promise.all(
-          userPosts.map((post) =>
-            base44.entities.CommunityPost.update(post.id, {
+          userPosts.map((post) => {
+            console.log("[ProfileSettings] Updating post:", {
+              postId: post.id,
+              oldAuthorName: post.author_name,
+              newAuthorName: trimmedName,
+            });
+            return base44.entities.CommunityPost.update(post.id, {
               author_name: trimmedName,
-            })
-          )
+            });
+          })
         );
-        console.log("[ProfileSettings] CommunityPost records updated");
+        console.log("[ProfileSettings] All CommunityPost records updated");
       }
 
-      // Update all comments by this user
+      // Step 5: Update Comment records
+      console.log("[ProfileSettings] Step 5: Updating Comment records...");
       const userComments = await base44.entities.Comment.filter({
         author_email: user.email,
       });
       if (userComments?.length > 0) {
         await Promise.all(
-          userComments.map((comment) =>
-            base44.entities.Comment.update(comment.id, {
+          userComments.map((comment) => {
+            console.log("[ProfileSettings] Updating comment:", {
+              commentId: comment.id,
+              oldAuthorName: comment.author_name,
+              newAuthorName: trimmedName,
+            });
+            return base44.entities.Comment.update(comment.id, {
               author_name: trimmedName,
-            })
-          )
+            });
+          })
         );
-        console.log("[ProfileSettings] Comment records updated");
+        console.log("[ProfileSettings] All Comment records updated");
       }
 
-      // Refetch current user to confirm save
-      await queryClient.refetchQueries({
-        queryKey: ["currentUser"],
-        type: "active",
-      });
-      
-      // Invalidate all related queries
-      await queryClient.invalidateQueries({
-        queryKey: ["myPoints"],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ["leaderboard"],
-      });
-      await queryClient.invalidateQueries({
-        queryKey: ["communityPosts"],
-      });
-      
-      console.log("[ProfileSettings] Save completed successfully", {
-        userId: user.id,
-        newName: trimmedName,
-      });
+      // Step 6: Invalidate all related queries to clear old cache
+      console.log("[ProfileSettings] Step 6: Invalidating all related queries...");
+      await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+      await queryClient.invalidateQueries({ queryKey: ["myPoints"] });
+      await queryClient.invalidateQueries({ queryKey: ["myPointsCommunity"] });
+      await queryClient.invalidateQueries({ queryKey: ["leaderboard"] });
+      await queryClient.invalidateQueries({ queryKey: ["communityPosts"] });
+      await queryClient.invalidateQueries({ queryKey: ["comments"] });
+      console.log("[ProfileSettings] All queries invalidated");
 
+      // Step 7: Show success
       setOriginalName(trimmedName);
       setSuccess(true);
+      console.log("[ProfileSettings] Save completed successfully");
       setTimeout(() => setSuccess(false), 3000);
+
     } catch (err) {
-      const errorMsg =
-        err.message || "Failed to save display name. Please try again.";
-      console.error("[ProfileSettings] Save failed", {
+      const errorMsg = err.message || "Failed to save display name. Please try again.";
+      console.error("[ProfileSettings] Save failed:", {
         error: errorMsg,
         userId: user.id,
+        stack: err.stack,
       });
       setError(errorMsg);
     } finally {
@@ -141,7 +164,7 @@ export default function ProfileSettings() {
   if (userLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="w-6 h-6 animate-spin text-charcoal" />
+        <Loader2 className="w-6 h-6 animate-spin text-gray-700" />
       </div>
     );
   }
@@ -159,11 +182,11 @@ export default function ProfileSettings() {
       </div>
 
       {/* Main Settings Card */}
-      <div className="bg-white border border-ivory-300 rounded-2xl shadow-sm p-8 space-y-8">
+      <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-8 space-y-8">
         {/* Display Name Section */}
         <div className="space-y-3">
           <div>
-            <label className="text-sm font-semibold text-charcoal">
+            <label className="text-sm font-semibold text-gray-900">
               Display Name
             </label>
             <p className="text-xs text-pink-500 mt-0.5">
@@ -176,12 +199,12 @@ export default function ProfileSettings() {
             onChange={(e) => setDisplayName(e.target.value)}
             placeholder="Enter your display name..."
             disabled={saving}
-            className="h-11 text-base border-ivory-300 focus:border-dusty-rose focus:ring-dusty-rose/20"
+            className="h-11 text-base border-gray-200 focus:border-pink-500 focus:ring-pink-500/20"
           />
         </div>
 
         {/* Divider */}
-        <div className="h-px bg-ivory-200" />
+        <div className="h-px bg-gray-200" />
 
         {/* Read-Only Information */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -190,8 +213,8 @@ export default function ProfileSettings() {
             <label className="text-xs font-semibold text-pink-500 uppercase tracking-wide">
               Email Address
             </label>
-            <div className="h-11 bg-ivory-100 border border-ivory-200 rounded-lg px-4 flex items-center">
-              <span className="text-base text-charcoal">{user?.email}</span>
+            <div className="h-11 bg-gray-100 border border-gray-200 rounded-lg px-4 flex items-center">
+              <span className="text-base text-gray-900">{user?.email}</span>
             </div>
             <p className="text-xs text-pink-500">Cannot be changed</p>
           </div>
@@ -201,8 +224,8 @@ export default function ProfileSettings() {
             <label className="text-xs font-semibold text-pink-500 uppercase tracking-wide">
               User ID
             </label>
-            <div className="h-11 bg-ivory-100 border border-ivory-200 rounded-lg px-4 flex items-center">
-              <span className="text-xs text-charcoal font-mono">
+            <div className="h-11 bg-gray-100 border border-gray-200 rounded-lg px-4 flex items-center">
+              <span className="text-xs text-gray-900 font-mono">
                 {user?.id}
               </span>
             </div>
@@ -214,8 +237,8 @@ export default function ProfileSettings() {
             <label className="text-xs font-semibold text-pink-500 uppercase tracking-wide">
               Account Type
             </label>
-            <div className="h-11 bg-ivory-100 border border-ivory-200 rounded-lg px-4 flex items-center">
-              <span className="text-base text-charcoal capitalize">
+            <div className="h-11 bg-gray-100 border border-gray-200 rounded-lg px-4 flex items-center">
+              <span className="text-base text-gray-900 capitalize">
                 {user?.role || "User"}
               </span>
             </div>
@@ -227,8 +250,8 @@ export default function ProfileSettings() {
             <label className="text-xs font-semibold text-pink-500 uppercase tracking-wide">
               Member Since
             </label>
-            <div className="h-11 bg-ivory-100 border border-ivory-200 rounded-lg px-4 flex items-center">
-              <span className="text-base text-charcoal">
+            <div className="h-11 bg-gray-100 border border-gray-200 rounded-lg px-4 flex items-center">
+              <span className="text-base text-gray-900">
                 {user?.created_date
                   ? new Date(user.created_date).toLocaleDateString("en-US", {
                       year: "numeric",
@@ -244,7 +267,7 @@ export default function ProfileSettings() {
 
         {/* Status Messages */}
         {error && (
-          <div className="flex gap-3 p-4 bg-red-50 border border-red-200 rounded-xl">
+          <div className="flex gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
             <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
             <div>
               <p className="text-sm font-medium text-red-900">{error}</p>
@@ -253,7 +276,7 @@ export default function ProfileSettings() {
         )}
 
         {success && (
-          <div className="flex gap-3 p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
+          <div className="flex gap-3 p-4 bg-emerald-50 border border-emerald-200 rounded-lg">
             <Check className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
             <p className="text-sm font-medium text-emerald-900">
               Display name updated successfully.
@@ -266,7 +289,7 @@ export default function ProfileSettings() {
           <Button
             onClick={handleSave}
             disabled={isDisabled}
-            className="flex-1 h-11 bg-dusty-rose text-white font-semibold rounded-lg hover:bg-dusty-rose/90 disabled:bg-ivory-300 disabled:text-muted transition-colors"
+            className="flex-1 h-11 bg-gray-900 text-white font-semibold rounded-lg hover:bg-gray-800 disabled:bg-gray-300 disabled:text-gray-600 transition-colors"
           >
             {saving ? (
               <Loader2 className="w-4 h-4 animate-spin" />
