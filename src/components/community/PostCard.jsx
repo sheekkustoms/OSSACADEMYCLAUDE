@@ -74,9 +74,13 @@ export default function PostCard({ post, currentUserEmail, onLike, onClick, inde
         <p className="text-sm text-gray-500 mt-1 line-clamp-2">{post.content}</p>
 
         <div className="flex items-center gap-1 mt-3">
-          <div className="w-6 h-6 rounded-full bg-gradient-to-br from-pink-400 to-violet-400 flex items-center justify-center text-white text-[10px] font-bold">
-            {(post.author_name || post.author_email || "?")[0].toUpperCase()}
-          </div>
+          {post.author_avatar ? (
+            <img src={post.author_avatar} className="w-6 h-6 rounded-full object-cover border border-pink-100" />
+          ) : (
+            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-pink-400 to-violet-400 flex items-center justify-center text-white text-[10px] font-bold">
+              {(post.author_name || post.author_email || "?")[0].toUpperCase()}
+            </div>
+          )}
           <span className="text-xs text-gray-500">{post.author_name || post.author_email}</span>
         </div>
 
