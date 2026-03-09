@@ -98,6 +98,8 @@ export default function QuizGame() {
   };
 
   const startGame = async () => {
+    if (!quizId || !user) return;
+    
     // Create or find session
     const existing = await base44.entities.QuizSession.filter({ quiz_id: quizId, player_email: user.email });
     let sid;
