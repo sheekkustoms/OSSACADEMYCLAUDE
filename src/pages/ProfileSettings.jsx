@@ -1,158 +1,278 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Camera, Loader2, Check, User } from "lucide-react";
+import { Loader2, Check, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 export default function ProfileSettings() {
   const queryClient = useQueryClient();
-  const fileInputRef = useRef(null);
-
-  const { data: user } = useQuery({ queryKey: ["currentUser"], queryFn: () => base44.auth.me() });
-
-  const [fullName, setFullName] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState("");
-  const [uploading, setUploading] = useState(false);
+  const [displayName, setDisplayName] = useState("");
+  const [originalName, setOriginalName] = useState("");
   const [saving, setSaving] = useState(false);
-  const [saved, setSaved] = useState(false);
+  const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
 
-  // Always sync to latest user data from database
+  // Fetch current user
+  const { data: user, isLoading: userLoading } = useQuery({
+    queryKey: ["currentUser"],
+    queryFn: () => base44.auth.me(),
+  });
+
+  // Initialize form with fresh user data whenever user changes
   useEffect(() => {
     if (user) {
-      setFullName(user.full_name || "");
-      setAvatarUrl(user.avatar_url || "");
+      console.log("[ProfileSettings] User loaded", {
+        userId: user.id,
+        email: user.email,
+        fullName: user.full_name,
+      });
+      setDisplayName(user.full_name || "");
+      setOriginalName(user.full_name || "");
+      setError("");
+      setSuccess(false);
     }
   }, [user]);
 
-  const handlePhotoUpload = async (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    setUploading(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
-    setAvatarUrl(file_url);
-    setUploading(false);
-  };
+  const hasChanges = displayName.trim() !== originalName.trim();
+  const isDisabled = saving || !hasChanges || !displayName.trim();
 
   const handleSave = async () => {
-    if (!fullName.trim()) return;
+    if (!displayName.trim()) {
+      setError("Display name cannot be empty");
+      return;
+    }
+
+    const trimmedName = displayName.trim();
     setSaving(true);
     setError("");
+    setSuccess(false);
+
     try {
-      const trimmedName = fullName.trim();
-      await base44.auth.updateMe({ full_name: trimmedName, avatar_url: avatarUrl });
-      
-      // Update UserPoints display name
-      const pts = await base44.entities.UserPoints.filter({ user_email: user.email });
-      if (pts[0]) {
-        await base44.entities.UserPoints.update(pts[0].id, { user_name: trimmedName });
+      console.log("[ProfileSettings] Saving display name", {
+        userId: user.id,
+        oldName: originalName,
+        newName: trimmedName,
+      });
+
+      // Update the user profile
+      await base44.auth.updateMe({ full_name: trimmedName });
+      console.log("[ProfileSettings] Auth update completed");
+
+      // Update UserPoints if exists
+      const userPointsRecords = await base44.entities.UserPoints.filter({
+        user_email: user.email,
+      });
+      if (userPointsRecords?.length > 0) {
+        await base44.entities.UserPoints.update(userPointsRecords[0].id, {
+          user_name: trimmedName,
+        });
+        console.log("[ProfileSettings] UserPoints updated");
       }
 
       // Update all community posts by this user
-      const myPosts = await base44.entities.CommunityPost.filter({ author_email: user.email });
-      await Promise.all(myPosts.map(post => 
-        base44.entities.CommunityPost.update(post.id, { author_name: trimmedName, author_avatar: avatarUrl })
-      ));
+      const userPosts = await base44.entities.CommunityPost.filter({
+        author_email: user.email,
+      });
+      if (userPosts?.length > 0) {
+        await Promise.all(
+          userPosts.map((post) =>
+            base44.entities.CommunityPost.update(post.id, {
+              author_name: trimmedName,
+            })
+          )
+        );
+        console.log("[ProfileSettings] CommunityPost records updated");
+      }
 
       // Update all comments by this user
-      const myComments = await base44.entities.Comment.filter({ author_email: user.email });
-      await Promise.all(myComments.map(comment => 
-        base44.entities.Comment.update(comment.id, { author_name: trimmedName })
-      ));
+      const userComments = await base44.entities.Comment.filter({
+        author_email: user.email,
+      });
+      if (userComments?.length > 0) {
+        await Promise.all(
+          userComments.map((comment) =>
+            base44.entities.Comment.update(comment.id, {
+              author_name: trimmedName,
+            })
+          )
+        );
+        console.log("[ProfileSettings] Comment records updated");
+      }
 
-      // Invalidate all queries to force refetch
+      // Invalidate all queries to force fresh fetch
       queryClient.invalidateQueries();
-      // Wait a moment then reload page to ensure fresh data
-      await new Promise(resolve => setTimeout(resolve, 500));
-      window.location.reload();
       
-      setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
+      // Refetch current user to confirm save
+      const refreshedUser = await queryClient.refetchQueries({
+        queryKey: ["currentUser"],
+      });
+      
+      console.log("[ProfileSettings] Save completed successfully", {
+        userId: user.id,
+        confirmedName: refreshedUser.data?.[0]?.full_name || trimmedName,
+      });
+
+      setOriginalName(trimmedName);
+      setSuccess(true);
+      setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
-      setError(err.message || "Failed to save changes. Please try again.");
+      const errorMsg =
+        err.message || "Failed to save display name. Please try again.";
+      console.error("[ProfileSettings] Save failed", {
+        error: errorMsg,
+        userId: user.id,
+      });
+      setError(errorMsg);
     } finally {
       setSaving(false);
     }
   };
 
+  if (userLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <Loader2 className="w-6 h-6 animate-spin text-charcoal" />
+      </div>
+    );
+  }
+
   return (
-    <div className="max-w-lg mx-auto space-y-6">
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-pink-500 to-violet-500 flex items-center justify-center">
-          <User className="w-5 h-5 text-white" />
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Profile Settings</h1>
-          <p className="text-sm text-gray-500">Update your name and profile photo</p>
-        </div>
+    <div className="max-w-2xl mx-auto">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-light text-charcoal mb-2">
+          Account Settings
+        </h1>
+        <p className="text-sm text-muted">
+          Manage your profile information
+        </p>
       </div>
 
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 space-y-6">
-        {/* Avatar */}
-        <div className="flex flex-col items-center gap-3">
-          <div
-            className="relative w-28 h-28 rounded-2xl cursor-pointer group"
-            onClick={() => fileInputRef.current?.click()}
-          >
-            {avatarUrl ? (
-              <img src={avatarUrl} className="w-28 h-28 rounded-2xl object-cover border-2 border-pink-200" />
-            ) : (
-              <div className="w-28 h-28 rounded-2xl bg-gradient-to-br from-pink-100 to-violet-100 border-2 border-dashed border-pink-300 flex flex-col items-center justify-center">
-                <Camera className="w-8 h-8 text-pink-400" />
-                <span className="text-[10px] text-pink-400 mt-1 font-medium">Upload Photo</span>
-              </div>
-            )}
-            <div className="absolute inset-0 bg-black/30 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-              {uploading ? (
-                <Loader2 className="w-6 h-6 text-white animate-spin" />
-              ) : (
-                <Camera className="w-6 h-6 text-white" />
-              )}
+      {/* Main Settings Card */}
+      <div className="bg-white border border-ivory-300 rounded-2xl shadow-sm p-8 space-y-8">
+        {/* Display Name Section */}
+        <div className="space-y-3">
+          <div>
+            <label className="text-sm font-semibold text-charcoal">
+              Display Name
+            </label>
+            <p className="text-xs text-muted mt-0.5">
+              This name appears across the community, leaderboard, and all your
+              activity
+            </p>
+          </div>
+          <Input
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+            placeholder="Enter your display name..."
+            disabled={saving}
+            className="h-11 text-base border-ivory-300 focus:border-dusty-rose focus:ring-dusty-rose/20"
+          />
+        </div>
+
+        {/* Divider */}
+        <div className="h-px bg-ivory-200" />
+
+        {/* Read-Only Information */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Email */}
+          <div className="space-y-2">
+            <label className="text-xs font-semibold text-muted uppercase tracking-wide">
+              Email Address
+            </label>
+            <div className="h-11 bg-ivory-100 border border-ivory-200 rounded-lg px-4 flex items-center">
+              <span className="text-base text-charcoal">{user?.email}</span>
+            </div>
+            <p className="text-xs text-muted">Cannot be changed</p>
+          </div>
+
+          {/* User ID */}
+          <div className="space-y-2">
+            <label className="text-xs font-semibold text-muted uppercase tracking-wide">
+              User ID
+            </label>
+            <div className="h-11 bg-ivory-100 border border-ivory-200 rounded-lg px-4 flex items-center">
+              <span className="text-xs text-charcoal font-mono">
+                {user?.id}
+              </span>
+            </div>
+            <p className="text-xs text-muted">System generated</p>
+          </div>
+
+          {/* Role */}
+          <div className="space-y-2">
+            <label className="text-xs font-semibold text-muted uppercase tracking-wide">
+              Account Type
+            </label>
+            <div className="h-11 bg-ivory-100 border border-ivory-200 rounded-lg px-4 flex items-center">
+              <span className="text-base text-charcoal capitalize">
+                {user?.role || "User"}
+              </span>
+            </div>
+            <p className="text-xs text-muted">Account role</p>
+          </div>
+
+          {/* Member Since */}
+          <div className="space-y-2">
+            <label className="text-xs font-semibold text-muted uppercase tracking-wide">
+              Member Since
+            </label>
+            <div className="h-11 bg-ivory-100 border border-ivory-200 rounded-lg px-4 flex items-center">
+              <span className="text-base text-charcoal">
+                {user?.created_date
+                  ? new Date(user.created_date).toLocaleDateString("en-US", {
+                      year: "numeric",
+                      month: "short",
+                      day: "numeric",
+                    })
+                  : "—"}
+              </span>
+            </div>
+            <p className="text-xs text-muted">Account creation date</p>
+          </div>
+        </div>
+
+        {/* Status Messages */}
+        {error && (
+          <div className="flex gap-3 p-4 bg-red-50 border border-red-200 rounded-xl">
+            <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-medium text-red-900">{error}</p>
             </div>
           </div>
-          <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} />
-          <p className="text-xs text-gray-400">Tap photo to change</p>
+        )}
+
+        {success && (
+          <div className="flex gap-3 p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
+            <Check className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+            <p className="text-sm font-medium text-emerald-900">
+              Display name updated successfully.
+            </p>
+          </div>
+        )}
+
+        {/* Save Button */}
+        <div className="flex gap-3 pt-4">
+          <Button
+            onClick={handleSave}
+            disabled={isDisabled}
+            className="flex-1 h-11 bg-dusty-rose text-white font-semibold rounded-lg hover:bg-dusty-rose/90 disabled:bg-ivory-300 disabled:text-muted transition-colors"
+          >
+            {saving ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              "Save Changes"
+            )}
+          </Button>
         </div>
-
-        {/* Name */}
-         <div className="space-y-1.5">
-           <label className="text-sm font-semibold text-gray-700">Display Name</label>
-           <Input
-             value={fullName}
-             onChange={(e) => setFullName(e.target.value)}
-             placeholder="Enter your name..."
-             className="border-gray-200 h-11 text-base"
-           />
-           <p className="text-xs text-gray-400">This is the name shown in the community, leaderboard, and messages.</p>
-           {error && <p className="text-xs text-red-500 font-medium">{error}</p>}
-         </div>
-
-        {/* Email (read-only) */}
-        <div className="space-y-1.5">
-          <label className="text-sm font-semibold text-gray-700">Email</label>
-          <Input
-            value={user?.email || ""}
-            disabled
-            className="border-gray-200 h-11 bg-gray-50 text-gray-400"
-          />
-          <p className="text-xs text-gray-400">Email cannot be changed.</p>
-        </div>
-
-        <Button
-          onClick={handleSave}
-          disabled={saving || uploading || !fullName.trim()}
-          className="w-full h-11 bg-gradient-to-r from-pink-500 to-violet-500 text-white font-bold rounded-xl shadow-md"
-        >
-          {saving ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
-          ) : saved ? (
-            <span className="flex items-center gap-2"><Check className="w-4 h-4" /> Saved!</span>
-          ) : (
-            "Save Changes"
-          )}
-        </Button>
       </div>
+
+      {/* Info Footer */}
+      <p className="text-xs text-muted mt-6 text-center">
+        Your display name is used throughout the app. Changes are saved
+        immediately.
+      </p>
     </div>
   );
 }
