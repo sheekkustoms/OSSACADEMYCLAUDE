@@ -303,13 +303,12 @@ export default function CommentSection({ postId, user, myPoints }) {
          ))}
        </div>
       <div className="flex gap-3 items-end mt-4 pt-4 border-t border-gray-200">
-        {user?.avatar_url ? (
-          <img src={user.avatar_url} className="w-8 h-8 rounded-full object-cover border border-gray-200 shrink-0" />
-        ) : (
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-400 to-violet-400 flex items-center justify-center text-white text-xs font-bold shrink-0">
-            {(user?.full_name || user?.email || "?")[0].toUpperCase()}
-          </div>
-        )}
+        <AvatarWithFallback
+          imageUrl={user?.avatar_url}
+          name={user?.full_name}
+          email={user?.email}
+          size="sm"
+        />
         <div className="flex-1 space-y-1">
           {replyingTo && (
             <div className="flex items-center gap-1 text-xs text-blue-600 font-medium mb-1">
