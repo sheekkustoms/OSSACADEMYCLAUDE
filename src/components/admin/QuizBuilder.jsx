@@ -287,6 +287,17 @@ export default function QuizBuilder() {
               </div>
             </div>
 
+            {/* Quiz settings editor */}
+            <AnimatePresence>
+              {editingQuizSettingsId === quiz.id && (
+                <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}
+                  className="border-t border-gray-100 bg-blue-50/50 p-4"
+                >
+                  <QuizEditor quiz={quiz} onClose={() => setEditingQuizSettingsId(null)} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             {/* Question editor */}
              <AnimatePresence>
                {editingQuizId === quiz.id && (
