@@ -99,16 +99,17 @@ export default function ProfileSettings() {
         </div>
 
         {/* Name */}
-        <div className="space-y-1.5">
-          <label className="text-sm font-semibold text-gray-700">Display Name</label>
-          <Input
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            placeholder="Enter your name..."
-            className="border-gray-200 h-11 text-base"
-          />
-          <p className="text-xs text-gray-400">This is the name shown in the community, leaderboard, and messages.</p>
-        </div>
+         <div className="space-y-1.5">
+           <label className="text-sm font-semibold text-gray-700">Display Name</label>
+           <Input
+             value={fullName}
+             onChange={(e) => setFullName(e.target.value)}
+             placeholder="Enter your name..."
+             className="border-gray-200 h-11 text-base"
+           />
+           <p className="text-xs text-gray-400">This is the name shown in the community, leaderboard, and messages.</p>
+           {error && <p className="text-xs text-red-500 font-medium">{error}</p>}
+         </div>
 
         {/* Email (read-only) */}
         <div className="space-y-1.5">
