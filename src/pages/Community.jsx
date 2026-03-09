@@ -160,12 +160,12 @@ export default function Community() {
         {/* Posts feed */}
         <div className="flex-1 space-y-4">
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <Search className="absolute left-4 top-3 w-4 h-4 text-gray-400" />
             <Input
               placeholder="Search posts..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 bg-white border-gray-200 text-gray-800 placeholder:text-gray-400 rounded-xl"
+              className="pl-10 h-11 bg-white border-gray-200 text-gray-800 placeholder:text-gray-400 rounded-lg"
             />
           </div>
 
