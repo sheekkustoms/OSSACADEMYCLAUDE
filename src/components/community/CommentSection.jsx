@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Heart, Send, CornerDownRight } from "lucide-react";
+import { Heart, Send, CornerDownRight, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
 import RelativeTime from "@/components/shared/RelativeTime";
 import { awardXP } from "../shared/useUserPoints";
@@ -130,6 +130,20 @@ export default function CommentSection({ postId, user, myPoints }) {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["comments", postId] }),
   });
 
+  const deleteCommentMutation = useMutation({
+    mutationFn: async (comment) => {
+      await base44.entities.Comment.delete(comment.id);
+      const posts = await base44.entities.CommunityPost.filter({ id: postId });
+      if (posts[0]) {
+        await base44.entities.CommunityPost.update(postId, { comment_count: Math.max((posts[0].comment_count || 1) - 1, 0) });
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["comments", postId] });
+      queryClient.invalidateQueries({ queryKey: ["communityPosts"] });
+    },
+  });
+
   return (
      <div className="space-y-4">
        <h4 className="text-sm font-semibold text-gray-700">Comments ({comments.length})</h4>
@@ -182,6 +196,17 @@ export default function CommentSection({ postId, user, myPoints }) {
                  >
                    Reply
                  </button>
+                 {comment.author_email === user?.email && (
+                   <button
+                     onClick={() => {
+                       if (window.confirm("Delete this comment?")) deleteCommentMutation.mutate(comment);
+                     }}
+                     disabled={deleteCommentMutation.isPending}
+                     className="text-gray-400 hover:text-red-600 transition-colors font-medium ml-auto"
+                   >
+                     <Trash2 className="w-3.5 h-3.5" />
+                   </button>
+                 )}
                </div>
              </div>
            </motion.div>
