@@ -62,6 +62,7 @@ export default function Community() {
        image_url,
        author_email: user.email,
        author_name: user.full_name || user.email,
+       author_avatar: user.avatar_url || "",
        likes: [],
        comment_count: 0,
        is_approved: user.role === "admin" ? true : false,
