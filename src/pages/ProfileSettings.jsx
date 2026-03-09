@@ -62,9 +62,9 @@ export default function ProfileSettings() {
       ));
 
       // Refetch and invalidate all related queries
-      queryClient.clear(); // Clear entire cache
-      await queryClient.refetchQueries({ queryKey: ["currentUser"] });
-      queryClient.invalidateQueries({ queryKey: ["myPoints"] });
+      queryClient.removeQueries({ queryKey: ["currentUser"] });
+      queryClient.removeQueries({ queryKey: ["myPoints"] });
+      const result = await queryClient.refetchQueries({ queryKey: ["currentUser"] });
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       queryClient.invalidateQueries({ queryKey: ["comments"] });
       
