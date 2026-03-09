@@ -259,15 +259,15 @@ export default function Community() {
           {selectedPost && (
             <>
               <DialogHeader>
-                <DialogTitle className="text-gray-900">{selectedPost.title}</DialogTitle>
+                <DialogTitle className="text-lg font-semibold text-gray-900">{selectedPost.title}</DialogTitle>
               </DialogHeader>
               {selectedPost.image_url && (
-                <img src={selectedPost.image_url} className="w-full rounded-xl object-cover max-h-60 mb-2" />
+                <img src={selectedPost.image_url} className="w-full rounded-lg object-cover max-h-60 mb-4" />
               )}
-              <p className="text-sm text-gray-600 mb-2">{selectedPost.content}</p>
-              <p className="text-xs text-gray-400 mb-4">
+              <p className="text-base text-gray-700 mb-4">{selectedPost.content}</p>
+              <p className="text-xs text-gray-500 mb-6 pb-4 border-b border-gray-100">
                 by {selectedPost.author_name || selectedPost.author_email} · {new Date(selectedPost.created_date).toLocaleDateString()}
-                {selectedPost.is_pinned && <span className="ml-2 text-amber-500">📌 Pinned</span>}
+                {selectedPost.is_pinned && <span className="ml-2 text-yellow-600">📌 Pinned</span>}
               </p>
               <CommentSection postId={selectedPost.id} user={user} myPoints={myPoints} />
             </>
