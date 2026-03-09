@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { motion } from "framer-motion";
-import { BookOpen, Trophy, Flame, Target, ArrowRight, Zap, Star, Brain, Camera } from "lucide-react";
+import { BookOpen, Trophy, Flame, Target, ArrowRight, Zap, Star, Brain, Camera, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import XPBar, { getLevelFromXP } from "../components/shared/XPBar";
 import BadgeIcon from "../components/shared/BadgeIcon";
