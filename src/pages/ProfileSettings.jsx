@@ -100,17 +100,26 @@ export default function ProfileSettings() {
         console.log("[ProfileSettings] Comment records updated");
       }
 
-      // Invalidate all queries to force fresh fetch
-      queryClient.invalidateQueries();
-      
       // Refetch current user to confirm save
-      const refreshedUser = await queryClient.refetchQueries({
+      await queryClient.refetchQueries({
         queryKey: ["currentUser"],
+        type: "active",
+      });
+      
+      // Invalidate all related queries
+      await queryClient.invalidateQueries({
+        queryKey: ["myPoints"],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["leaderboard"],
+      });
+      await queryClient.invalidateQueries({
+        queryKey: ["communityPosts"],
       });
       
       console.log("[ProfileSettings] Save completed successfully", {
         userId: user.id,
-        confirmedName: refreshedUser.data?.[0]?.full_name || trimmedName,
+        newName: trimmedName,
       });
 
       setOriginalName(trimmedName);
