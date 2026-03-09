@@ -4,6 +4,8 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader2, Check, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { getDisplayName, updateUserDisplayName } from "@/components/shared/useDisplayName";
+import { toast } from "sonner";
 
 export default function ProfileSettings() {
   const queryClient = useQueryClient();
@@ -14,40 +16,34 @@ export default function ProfileSettings() {
   const [error, setError] = useState("");
 
   // Fetch current user
-  const { data: user, isLoading: userLoading, refetch: refetchUser } = useQuery({
-    queryKey: ["currentUser"],
-    queryFn: async () => {
-      const u = await base44.auth.me();
-      console.log("[ProfileSettings] User fetched:", {
-        userId: u.id,
-        email: u.email,
-        fullName: u.full_name,
-      });
-      return u;
-    },
-  });
+   const { data: user, isLoading: userLoading } = useQuery({
+     queryKey: ["currentUser"],
+     queryFn: async () => {
+       const u = await base44.auth.me();
+       console.log("[ProfileSettings] User fetched:", {
+         userId: u.id,
+         email: u.email,
+         displayName: u.display_name,
+         fullName: u.full_name,
+       });
+       return u;
+     },
+   });
 
-  // Fetch user's display_name from User entity
-  const { data: userRecord } = useQuery({
-    queryKey: ["userRecord", user?.email],
-    queryFn: () => base44.entities.User.filter({ email: user.email }),
-    enabled: !!user?.email,
-  });
-
-  // Initialize form with fresh user data whenever user changes
-  useEffect(() => {
-    if (user) {
-      const displayNameValue = userRecord?.[0]?.display_name || user.full_name || "";
-      console.log("[ProfileSettings] Initializing form with user data:", {
-        userId: user.id,
-        displayName: displayNameValue,
-      });
-      setDisplayName(displayNameValue);
-      setOriginalName(displayNameValue);
-      setError("");
-      setSuccess(false);
-    }
-  }, [user, userRecord]);
+   // Initialize form with fresh user data whenever user changes
+   useEffect(() => {
+     if (user) {
+       const displayNameValue = getDisplayName(user);
+       console.log("[ProfileSettings] Initializing form:", {
+         userId: user.id,
+         displayName: displayNameValue,
+       });
+       setDisplayName(displayNameValue);
+       setOriginalName(displayNameValue);
+       setError("");
+       setSuccess(false);
+     }
+   }, [user]);
 
   const hasChanges = displayName.trim() !== originalName.trim();
   const isDisabled = saving || !hasChanges || !displayName.trim();
@@ -71,14 +67,10 @@ export default function ProfileSettings() {
          newName: trimmedName,
        });
 
-       // Step 1: Update user's display_name via auth
-       console.log("[ProfileSettings] Step 1: Updating display_name...");
-       await base44.auth.updateMe({
-         display_name: trimmedName,
-       });
-       console.log("[ProfileSettings] Display name updated successfully");
+       // Step 1: Update user's display_name via auth (writes to auth system)
+       await updateUserDisplayName(trimmedName);
 
-       // Step 2: Update UserPoints record
+       // Step 2: Update UserPoints record (for leaderboard/community display)
        console.log("[ProfileSettings] Step 2: Updating UserPoints...");
        const userPointsRecords = await base44.entities.UserPoints.filter({
          user_email: user.email,
@@ -87,10 +79,7 @@ export default function ProfileSettings() {
          await base44.entities.UserPoints.update(userPointsRecords[0].id, {
            user_name: trimmedName,
          });
-         console.log("[ProfileSettings] UserPoints updated:", {
-           recordId: userPointsRecords[0].id,
-           newName: trimmedName,
-         });
+         console.log("[ProfileSettings] UserPoints updated");
        }
 
        // Step 3: Update CommunityPost records
@@ -100,16 +89,11 @@ export default function ProfileSettings() {
        });
        if (userPosts?.length > 0) {
          await Promise.all(
-           userPosts.map((post) => {
-             console.log("[ProfileSettings] Updating post:", {
-               postId: post.id,
-               oldAuthorName: post.author_name,
-               newAuthorName: trimmedName,
-             });
-             return base44.entities.CommunityPost.update(post.id, {
+           userPosts.map((post) =>
+             base44.entities.CommunityPost.update(post.id, {
                author_name: trimmedName,
-             });
-           })
+             })
+           )
          );
          console.log("[ProfileSettings] All CommunityPost records updated");
        }
@@ -121,45 +105,36 @@ export default function ProfileSettings() {
        });
        if (userComments?.length > 0) {
          await Promise.all(
-           userComments.map((comment) => {
-             console.log("[ProfileSettings] Updating comment:", {
-               commentId: comment.id,
-               oldAuthorName: comment.author_name,
-               newAuthorName: trimmedName,
-             });
-             return base44.entities.Comment.update(comment.id, {
+           userComments.map((comment) =>
+             base44.entities.Comment.update(comment.id, {
                author_name: trimmedName,
-             });
-           })
+             })
+           )
          );
          console.log("[ProfileSettings] All Comment records updated");
        }
 
-       // Step 5: Invalidate all related queries to clear old cache
+       // Step 5: Invalidate all related queries to force fresh data
        console.log("[ProfileSettings] Step 5: Invalidating all related queries...");
-       await queryClient.invalidateQueries({ queryKey: ["userRecord", user.email] });
-       await queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-       await queryClient.invalidateQueries({ queryKey: ["myPoints"] });
-       await queryClient.invalidateQueries({ queryKey: ["myPointsCommunity"] });
-       await queryClient.invalidateQueries({ queryKey: ["leaderboard"] });
-       await queryClient.invalidateQueries({ queryKey: ["communityPosts"] });
-       await queryClient.invalidateQueries({ queryKey: ["comments"] });
-       console.log("[ProfileSettings] All queries invalidated");
+       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+       queryClient.invalidateQueries({ queryKey: ["myPoints"] });
+       queryClient.invalidateQueries({ queryKey: ["leaderboard"] });
+       queryClient.invalidateQueries({ queryKey: ["communityPosts"] });
+       queryClient.invalidateQueries({ queryKey: ["comments"] });
+       queryClient.invalidateQueries({ queryKey: ["userDisplayName"] });
 
       // Step 6: Update local state and show success
       setDisplayName(trimmedName);
       setOriginalName(trimmedName);
       setSuccess(true);
+      toast.success("Display name updated successfully!");
       console.log("[ProfileSettings] Save completed successfully");
       setTimeout(() => setSuccess(false), 3000);
 
     } catch (err) {
       const errorMsg = err.message || "Failed to save display name. Please try again.";
-      console.error("[ProfileSettings] Save failed:", {
-        error: errorMsg,
-        userId: user.id,
-        stack: err.stack,
-      });
+      console.error("[ProfileSettings] Save failed:", errorMsg);
+      toast.error(errorMsg);
       setError(errorMsg);
     } finally {
       setSaving(false);
