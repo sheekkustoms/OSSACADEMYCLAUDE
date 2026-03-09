@@ -248,9 +248,10 @@ export default function LiveClasses() {
                 {moment(cls.scheduled_at).local().format("dddd, MMMM D [at] h:mm A z")}
               </div>
             </div>
-            {cls.zoom_url && (
-              <ZoomLinkSection zoom_url={cls.zoom_url} />
-            )}
+            <div className="flex flex-col items-end gap-2 shrink-0">
+              <RemindMeButton cls={cls} />
+              {cls.zoom_url && <ZoomLinkSection zoom_url={cls.zoom_url} />}
+            </div>
           </div>
           <div>
             <p className="text-xs text-gray-400 mb-2 uppercase tracking-wide font-semibold">Starts in</p>
