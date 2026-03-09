@@ -246,7 +246,7 @@ export default function LiveClasses() {
 
       {upcoming.map((cls, i) => (
         <motion.div key={cls.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}
-          onClick={() => navigate(createPageUrl("LiveClassDetail") + `/${cls.id}`)}
+          onClick={() => navigate(createPageUrl("LiveClassDetail"), { state: { classId: cls.id } })}
           className="bg-white border border-pink-100 rounded-2xl p-6 shadow-sm space-y-4 cursor-pointer hover:shadow-lg hover:border-pink-300 transition-all"
         >
           <div className="flex items-start justify-between gap-3 flex-wrap">

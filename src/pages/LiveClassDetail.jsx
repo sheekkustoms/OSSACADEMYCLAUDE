@@ -1,21 +1,23 @@
 import React, { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Video, Clock, Download, ChevronLeft, CheckCircle2, Zap, MapPin } from "lucide-react";
+import { Video, Clock, Download, ChevronLeft, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import moment from "moment";
 import { createPageUrl } from "@/utils";
 
 export default function LiveClassDetail() {
-  const { classId } = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
   const [copied, setCopied] = useState(false);
+  const classId = location.state?.classId;
 
   const { data: cls, isLoading } = useQuery({
     queryKey: ["liveClassDetail", classId],
     queryFn: () => base44.entities.LiveClass.list().then(classes => classes.find(c => c.id === classId)),
+    enabled: !!classId,
   });
 
   if (isLoading) {
