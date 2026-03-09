@@ -13,9 +13,17 @@ function getVideoEmbed(url) {
   if (vimeoMatch) return { type: "iframe", src: `https://player.vimeo.com/video/${vimeoMatch[1]}?autoplay=1`, allowExtra: "autoplay; fullscreen; picture-in-picture" };
 
   // Google Drive — handle all share/view/open/uc formats
-  // Use /preview with no UI controls to prevent download/save options
-  const gdriveMatch = url.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=view&)?id=)([a-zA-Z0-9_-]+)/);
-  if (gdriveMatch) return { type: "gdrive", src: `https://drive.google.com/file/d/${gdriveMatch[1]}/preview`, fileId: gdriveMatch[1] };
+  // Use /preview with resourcekey for private files and cookies allowed
+  const gdriveMatch = url.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?(?:export=view&)?id=)([a-zA-Z0-9_-]+)(?:[^a-zA-Z0-9_-]|$)/);
+  if (gdriveMatch) {
+    const fileId = gdriveMatch[1];
+    // Extract resourcekey if present in URL
+    const resourcekeyMatch = url.match(/resourcekey=([a-zA-Z0-9_-]+)/);
+    const resourcekey = resourcekeyMatch ? resourcekeyMatch[1] : '';
+    let previewUrl = `https://drive.google.com/file/d/${fileId}/preview`;
+    if (resourcekey) previewUrl += `?resourcekey=${resourcekey}`;
+    return { type: "gdrive", src: previewUrl, fileId };
+  }
 
   // Direct video file
   return { type: "video", src: url };
