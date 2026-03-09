@@ -408,9 +408,18 @@ export default function CourseManager() {
       </AnimatePresence>
 
       {/* Course list */}
-      <div className="space-y-2">
-        {courses.map(course => (
-          <div key={course.id} className={`bg-white border rounded-2xl shadow-sm overflow-hidden ${editingId === course.id ? "border-violet-300" : "border-gray-100"}`}>
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <Droppable droppableId="courses">
+          {(provided, snapshot) => (
+            <div ref={provided.innerRef} {...provided.droppableProps} className={`space-y-2 ${snapshot.isDraggingOver ? "bg-violet-50/50 p-2 rounded-xl" : ""}`}>
+              {sortedCourses.map((course, index) => (
+                <Draggable key={course.id} draggableId={course.id} index={index}>
+                  {(provided, snapshot) => (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      className={`bg-white border rounded-2xl shadow-sm overflow-hidden transition-all ${editingId === course.id ? "border-violet-300" : "border-gray-100"} ${snapshot.isDragging ? "shadow-lg ring-2 ring-violet-300" : ""}`}
+                    >
             <div className="flex items-center gap-3 px-4 py-3">
               {course.thumbnail_url ? (
                 <img src={course.thumbnail_url} className="w-12 h-12 rounded-xl object-cover border border-gray-100 shrink-0" />
