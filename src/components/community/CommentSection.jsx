@@ -36,7 +36,9 @@ function CommentAvatar({ email, name, avatarMap }) {
 
 export default function CommentSection({ postId, user, myPoints }) {
   const [newComment, setNewComment] = useState("");
+  const [replyingTo, setReplyingTo] = useState(null);
   const queryClient = useQueryClient();
+  const textareaRef = React.useRef(null);
 
   const { data: comments = [] } = useQuery({
     queryKey: ["comments", postId],
