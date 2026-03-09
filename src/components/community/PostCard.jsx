@@ -2,8 +2,8 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Heart, MessageCircle, Clock, Pin } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { Heart, MessageCircle, Clock, Pin, Trash2 } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import moment from "moment";
 import RelativeTime from "@/components/shared/RelativeTime";
@@ -29,6 +29,7 @@ const categoryEmoji = {
 export default function PostCard({ post, currentUserEmail, onLike, onClick, index = 0 }) {
    const isLiked = post.likes?.includes(currentUserEmail);
    const likeCount = post.likes?.length || 0;
+   const queryClient = useQueryClient();
 
    // Fetch comments to get commenters
    const { data: comments = [] } = useQuery({
@@ -44,6 +45,18 @@ export default function PostCard({ post, currentUserEmail, onLike, onClick, inde
      }
    });
    const commenters = Array.from(commentersMap.values()).slice(0, 5);
+
+   const deletePostMutation = useMutation({
+     mutationFn: async () => {
+       await base44.entities.CommunityPost.delete(post.id);
+       await base44.entities.Comment.filter({ post_id: post.id }).then(comments => 
+         Promise.all(comments.map(c => base44.entities.Comment.delete(c.id)))
+       );
+     },
+     onSuccess: () => {
+       queryClient.invalidateQueries({ queryKey: ["communityPosts"] });
+     },
+   });
 
    return (
      <motion.div
@@ -78,11 +91,24 @@ export default function PostCard({ post, currentUserEmail, onLike, onClick, inde
                </div>
              </div>
            </div>
-           {post.is_pinned && (
-             <div className="flex items-center gap-1 text-gray-700 font-semibold text-sm">
-               <Pin className="w-4 h-4" /> Pinned
-             </div>
-           )}
+           <div className="flex items-center gap-2">
+             {post.is_pinned && (
+               <div className="flex items-center gap-1 text-gray-700 font-semibold text-sm">
+                 <Pin className="w-4 h-4" /> Pinned
+               </div>
+             )}
+             {post.author_email === currentUserEmail && (
+               <Button
+                 variant="ghost"
+                 size="sm"
+                 className="h-7 px-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded text-xs"
+                 onClick={(e) => { e.stopPropagation(); if (window.confirm("Delete this post?")) deletePostMutation.mutate(); }}
+                 disabled={deletePostMutation.isPending}
+               >
+                 <Trash2 className="w-3.5 h-3.5" />
+               </Button>
+             )}
+           </div>
          </div>
 
          {/* Title and content */}
