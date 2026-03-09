@@ -82,7 +82,7 @@ export default function Layout({ children, currentPageName }) {
     : NAV_ITEMS;
 
   return (
-    <div className="min-h-screen bg-rose-50/30 text-gray-900">
+    <div className="min-h-screen bg-white text-gray-900">
       <Toaster position="top-right" richColors />
       <style>{`
         video, iframe {
@@ -93,28 +93,38 @@ export default function Layout({ children, currentPageName }) {
           video, iframe, .no-print { display: none !important; }
         }
         :root {
-          --background: 0 0% 98.5%;
-          --foreground: 0 0% 15%;
+          --gold: #D4A574;
+          --gold-dark: #B8915E;
+          --pink: #E8B4C8;
+          --pink-dark: #D691B3;
+          --black: #1A1A1A;
+          --white: #FFFFFF;
+          --gray-light: #F8F7F5;
+          --gray-border: #E8DED4;
+          --text-primary: #1A1A1A;
+          --text-secondary: #6E625B;
+          --background: 0 0% 100%;
+          --foreground: 0 0% 10%;
           --card: 0 0% 100%;
-          --card-foreground: 0 0% 15%;
+          --card-foreground: 0 0% 10%;
           --popover: 0 0% 100%;
-          --popover-foreground: 0 0% 15%;
-          --primary: 0 0% 15%;
+          --popover-foreground: 0 0% 10%;
+          --primary: 0 0% 10%;
           --primary-foreground: 0 0% 100%;
-          --secondary: 0 0% 96%;
-          --secondary-foreground: 0 0% 15%;
-          --muted: 0 0% 96%;
-          --muted-foreground: 0 0% 48%;
-          --accent: 0 0% 96%;
-          --accent-foreground: 0 0% 15%;
+          --secondary: 0 0% 97%;
+          --secondary-foreground: 0 0% 10%;
+          --muted: 0 0% 94%;
+          --muted-foreground: 0 0% 45%;
+          --accent: 0 0% 97%;
+          --accent-foreground: 0 0% 10%;
           --destructive: 0 84% 60%;
           --destructive-foreground: 0 0% 100%;
-          --border: 0 0% 92%;
-          --input: 0 0% 92%;
-          --ring: 0 0% 15%;
+          --border: 0 0% 90%;
+          --input: 0 0% 97%;
+          --ring: 0 0% 10%;
           --radius: 0.75rem;
         }
-        body { background-color: #faf9f7; }
+        body { background-color: #FFFFFF; }
         * { box-sizing: border-box; }
       `}</style>
 
