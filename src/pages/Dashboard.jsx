@@ -117,6 +117,8 @@ export default function Dashboard() {
 
   const recentActivity = posts?.slice(0, 3) || [];
   const topMembers = leaderboard?.slice(0, 3) || [];
+  const liveQuizzes = publishedQuizzes.filter(q => q.quiz_type === "live" && (q.status === "waiting" || q.status === "active")).slice(0, 2);
+  const practiceQuizzes = publishedQuizzes.filter(q => q.quiz_type === "practice").slice(0, 2);
 
   if (!user) {
     return (
