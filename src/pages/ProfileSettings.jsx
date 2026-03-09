@@ -56,17 +56,18 @@ export default function ProfileSettings() {
     setSuccess(false);
 
     try {
-      console.log("[ProfileSettings] Starting save:", {
-        userId: user.id,
-        email: user.email,
-        oldName: originalName,
-        newName: trimmedName,
-      });
+       console.log("[ProfileSettings] Starting save:", {
+         userId: user.id,
+         email: user.email,
+         oldName: originalName,
+         newName: trimmedName,
+       });
 
-      // Step 1: Update auth profile
-      console.log("[ProfileSettings] Step 1: Updating auth profile...");
-      await base44.auth.updateMe({ full_name: trimmedName });
-      console.log("[ProfileSettings] Auth profile updated successfully");
+       // Step 1: Update auth profile
+       console.log("[ProfileSettings] Step 1: Updating auth profile...");
+       const updateResult = await base44.auth.updateMe({ full_name: trimmedName });
+       console.log("[ProfileSettings] Auth profile update result:", updateResult);
+       console.log("[ProfileSettings] Auth profile updated successfully");
 
       // Step 2: Force refetch the current user from auth immediately
       console.log("[ProfileSettings] Step 2: Refetching auth user...");
