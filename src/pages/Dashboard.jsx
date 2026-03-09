@@ -67,6 +67,11 @@ export default function Dashboard() {
     queryFn: () => base44.entities.UserPoints.list("-total_xp", 5),
   });
 
+  const { data: members = [] } = useQuery({
+    queryKey: ["allMembers"],
+    queryFn: () => base44.entities.User.list("-created_date", 30),
+  });
+
   const enrolledCourseIds = enrollments.map((e) => e.course_id);
   const inProgressCourses = courses.filter((c) => enrolledCourseIds.includes(c.id));
   const recommendedCourses = courses.filter((c) => !enrolledCourseIds.includes(c.id)).slice(0, 4);
