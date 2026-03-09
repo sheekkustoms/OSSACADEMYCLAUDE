@@ -30,8 +30,8 @@ const subscribeUserToPush = async (registration) => {
     const subscription = await registration.pushManager.getSubscription();
     
     if (!subscription) {
-      // Create new subscription - note: VAPID public key needed
-      const vapidPublicKey = 'YOUR_VAPID_PUBLIC_KEY'; // Set this from env
+      // Create new subscription with VAPID public key
+      const vapidPublicKey = 'BNcVUDCo2fK64P314Zff0htg5Vl0TjfGRPypJYRHewQoutxW7knavF2YYcPEuiTWr6xHx0Ji9b-Wn6ILsbdUf10';
       console.log('[Layout] Creating push subscription...');
       
       const newSubscription = await registration.pushManager.subscribe({
