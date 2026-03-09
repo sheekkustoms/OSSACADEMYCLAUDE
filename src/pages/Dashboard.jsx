@@ -91,6 +91,11 @@ export default function Dashboard() {
     enabled: !!user?.email,
   });
 
+  const { data: publishedQuizzes = [] } = useQuery({
+    queryKey: ["publishedQuizzes"],
+    queryFn: () => base44.entities.Quiz.filter({ is_published: true }),
+  });
+
   const queryClient = useQueryClient();
 
   const markAllRead = useMutation({
