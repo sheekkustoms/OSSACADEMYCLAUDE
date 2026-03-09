@@ -67,11 +67,20 @@ export default function CourseCard({ course, enrollment, index = 0, userLevel = 
             {enrollment && (
               <div className="space-y-1.5">
                 <div className="flex justify-between text-xs">
-                  <span className="text-gray-400">Progress</span>
-                  <span className="text-violet-600 font-semibold">{progress}%</span>
+                  <span className="text-gray-400">
+                    {totalLessons > 0 ? `${completedCount} / ${totalLessons} lessons` : "Progress"}
+                  </span>
+                  <span className={`font-bold ${progress === 100 ? "text-emerald-500" : "text-violet-600"}`}>
+                    {progress === 100 ? "✓ Complete" : `${progress}%`}
+                  </span>
                 </div>
-                <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-pink-500 to-violet-500 rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
+                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <motion.div
+                    className={`h-full rounded-full ${progress === 100 ? "bg-gradient-to-r from-emerald-400 to-green-500" : "bg-gradient-to-r from-pink-500 to-violet-500"}`}
+                    initial={{ width: 0 }}
+                    animate={{ width: `${progress}%` }}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
+                  />
                 </div>
               </div>
             )}
