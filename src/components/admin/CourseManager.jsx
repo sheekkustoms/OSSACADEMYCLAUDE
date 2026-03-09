@@ -378,10 +378,16 @@ export default function CourseManager() {
             <p className="font-bold text-violet-700">Create New Course</p>
             <Input placeholder="Course title..." value={newForm.title} onChange={e => setNewForm({ ...newForm, title: e.target.value })} className="bg-white border-gray-200" />
             <Textarea placeholder="Description..." value={newForm.description} onChange={e => setNewForm({ ...newForm, description: e.target.value })} className="bg-white border-gray-200 min-h-[70px]" />
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-3 gap-3">
               <Select value={newForm.category} onValueChange={v => setNewForm({ ...newForm, category: v })}>
                 <SelectTrigger className="bg-white border-gray-200"><SelectValue /></SelectTrigger>
                 <SelectContent>{CATEGORIES.map(c => <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>)}</SelectContent>
+              </Select>
+              <Select value={String(newForm.level)} onValueChange={v => setNewForm({ ...newForm, level: +v })}>
+                <SelectTrigger className="bg-white border-gray-200"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {[1, 2, 3, 4].map(l => <SelectItem key={l} value={String(l)}>Level {l}</SelectItem>)}
+                </SelectContent>
               </Select>
               <Select value={newForm.difficulty} onValueChange={v => setNewForm({ ...newForm, difficulty: v })}>
                 <SelectTrigger className="bg-white border-gray-200"><SelectValue /></SelectTrigger>
