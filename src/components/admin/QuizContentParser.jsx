@@ -129,24 +129,40 @@ IMPORTANT: Return ONLY valid JSON, no markdown formatting, no code blocks.`,
 
     try {
       setError("");
-      // Parse format: Q: Question text\nA: Answer1\nA: Answer2\nCorrect: Answer1\n\nQ: Next question...
-      const blocks = bulkInput.split(/\n\n+/);
       const parsed = [];
+      
+      // Split by "Question X" or "Bonus Question"
+      const questionBlocks = bulkInput.split(/(?=Question\s+\d+|Bonus\s+Question)/i).filter(b => b.trim());
 
-      blocks.forEach(block => {
-        const lines = block.split('\n').map(l => l.trim()).filter(l => l);
+      questionBlocks.forEach(block => {
+        const lines = block.split('\n').map(l => l.trim()).filter(l => l && !l.match(/^Question\s+\d+$/i) && !l.match(/^Bonus\s+Question$/i));
         if (lines.length < 2) return;
 
-        const questionLine = lines.find(l => l.match(/^(Q:|Question:)/i));
-        const answerLines = lines.filter(l => l.match(/^(A:|Answer:)/i));
-        const correctLine = lines.find(l => l.match(/^(Correct|Right Answer):/i));
+        // Find question text (first non-empty line)
+        const questionText = lines[0];
+        
+        // Find all answer lines (start with A), B), C), D), etc.)
+        const answerLines = lines.filter(l => l.match(/^[A-D]\)\s+/));
+        
+        // Find correct answer line
+        const correctLine = lines.find(l => l.match(/^Correct\s+(Answer)?:/i));
 
-        if (!questionLine || answerLines.length < 2) return;
+        if (!questionText || answerLines.length < 2) return;
 
-        const questionText = questionLine.replace(/^(Q:|Question:)\s*/i, '').trim();
-        const options = answerLines.map(a => a.replace(/^(A:|Answer:)\s*/i, '').trim());
-        const correctAnswer = correctLine ? correctLine.replace(/^(Correct|Right Answer):\s*/i, '').trim() : options[0];
-        const correctIdx = options.findIndex(o => o.toLowerCase() === correctAnswer.toLowerCase());
+        const options = answerLines.map(a => a.replace(/^[A-D]\)\s+/, '').trim());
+        let correctIdx = 0;
+
+        if (correctLine) {
+          const correctText = correctLine.replace(/^Correct\s+(Answer)?:\s*/i, '').trim();
+          // Check if it's a letter (A, B, C, D)
+          const letterMatch = correctText.match(/^[A-D]$/i);
+          if (letterMatch) {
+            correctIdx = letterMatch[0].toUpperCase().charCodeAt(0) - 65;
+          } else {
+            // Match by answer text
+            correctIdx = options.findIndex(o => o.toLowerCase() === correctText.toLowerCase());
+          }
+        }
 
         if (questionText && options.length >= 2 && correctIdx >= 0) {
           parsed.push({
@@ -159,7 +175,7 @@ IMPORTANT: Return ONLY valid JSON, no markdown formatting, no code blocks.`,
       });
 
       if (parsed.length === 0) {
-        setError("Could not parse any valid questions. Use format:\nQ: Question?\nA: Option 1\nA: Option 2\nCorrect: Option 1");
+        setError("Could not parse any valid questions. Check format.");
         return;
       }
 
