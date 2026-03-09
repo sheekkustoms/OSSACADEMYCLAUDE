@@ -163,6 +163,47 @@ export default function Leaderboard() {
         </TabsContent>
       </Tabs>
 
+      {/* Weekly Challenge Section */}
+      <div className="bg-gradient-to-br from-violet-50 to-pink-50 border border-violet-200 rounded-xl p-8">
+        <div className="flex items-start justify-between mb-6">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <Flame className="w-5 h-5 text-orange-500" />
+              <h2 className="text-2xl font-bold text-gray-900">Weekly Challenge</h2>
+            </div>
+            <p className="text-sm text-gray-600">{weeklyChallengeSettings_item?.week_label || "Answer daily sewing questions"}</p>
+          </div>
+          <Link to={createPageUrl("DailyChallenges")}>
+            <Button className="bg-violet-600 hover:bg-violet-700 text-white gap-2">
+              <Calendar className="w-4 h-4" /> Take Challenge
+            </Button>
+          </Link>
+        </div>
+
+        {todayChallenge ? (
+          <div className="bg-white rounded-lg p-4 border border-violet-100">
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-sm font-semibold text-gray-900">{todayChallenge.score}/{todayChallenge.total_questions} Correct</p>
+              {todayChallenge.perfect_score && <span className="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full font-semibold">Perfect Score! 🎉</span>}
+            </div>
+            <div className="w-full bg-gray-200 rounded-full h-2">
+              <div className="bg-gradient-to-r from-violet-500 to-pink-500 h-2 rounded-full" style={{ width: `${(todayChallenge.score / todayChallenge.total_questions) * 100}%` }} />
+            </div>
+            <p className="text-xs text-gray-500 mt-2">+{todayChallenge.xp_earned} XP earned today</p>
+          </div>
+        ) : (
+          <div className="bg-white rounded-lg p-4 border border-violet-100 text-center">
+            <p className="text-sm text-gray-600 mb-3">You haven't taken today's challenge yet!</p>
+            <p className="text-xs text-gray-500 mb-3">{questionCount} questions available</p>
+            <Link to={createPageUrl("DailyChallenges")}>
+              <Button size="sm" className="bg-violet-600 hover:bg-violet-700 text-white">
+                Start Challenge
+              </Button>
+            </Link>
+          </div>
+        )}
+      </div>
+
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white border border-gray-200 rounded-xl p-6">
