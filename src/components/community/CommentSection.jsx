@@ -167,68 +167,120 @@ export default function CommentSection({ postId, user, myPoints }) {
      <div className="space-y-4">
        <h4 className="text-sm font-semibold text-gray-700">Comments ({comments.length})</h4>
        <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2">
-         {comments.map((comment, i) => (
-           <motion.div
-             key={comment.id}
-             initial={{ opacity: 0, y: 5 }}
-             animate={{ opacity: 1, y: 0 }}
-             transition={{ delay: i * 0.03 }}
-             className="flex gap-3"
-           >
-             <CommentAvatar email={comment.author_email} name={comment.author_name} avatarMap={avatarMap} />
-             <div className="flex-1">
-               <div className="bg-gray-100 rounded-2xl p-4">
-                 <div className="flex items-center gap-2 mb-1">
-                   <span className="font-bold text-gray-900 text-sm">{comment.author_name || comment.author_email}</span>
-                   <span className="text-gray-500 text-xs">•</span>
-                   <RelativeTime date={comment.created_date} />
-                 </div>
-                 {comment.content.match(/@[\w.+-]+@[\w-]+\.[\w.]+/) && (
-                   <div className="mb-3 inline-block">
-                     <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-semibold">
-                       ↳ Replying to @{comment.content.match(/@([\w.+-]+)@/)?.[1] || comment.content.match(/@[\w.+-]+@[\w-]+\.[\w.]+/)?.[0]}
-                     </span>
+         {topLevelComments.map((comment, i) => (
+           <div key={comment.id}>
+             <motion.div
+               initial={{ opacity: 0, y: 5 }}
+               animate={{ opacity: 1, y: 0 }}
+               transition={{ delay: i * 0.03 }}
+               className="flex gap-3"
+             >
+               <CommentAvatar email={comment.author_email} name={comment.author_name} avatarMap={avatarMap} />
+               <div className="flex-1">
+                 <div className="bg-gray-100 rounded-2xl p-4">
+                   <div className="flex items-center gap-2 mb-1">
+                     <span className="font-bold text-gray-900 text-sm">{comment.author_name || comment.author_email}</span>
+                     <span className="text-gray-500 text-xs">•</span>
+                     <RelativeTime date={comment.created_date} />
                    </div>
-                 )}
-                 <p className="text-gray-800 text-sm leading-relaxed">
-                   {comment.content.replace(/@[\w.+-]+@[\w-]+\.[\w.]+\s?/g, "")}
-                 </p>
-               </div>
-               <div className="flex items-center gap-4 mt-2 ml-0 text-xs text-gray-600">
-                 <button
-                   onClick={() => likeCommentMutation.mutate(comment)}
-                   className={`flex items-center gap-1 transition-colors ${
-                     comment.likes?.includes(user?.email) ? "text-pink-500" : "text-gray-400 hover:text-pink-500"
-                   }`}
-                 >
-                   <Heart className={`w-3.5 h-3.5 ${comment.likes?.includes(user?.email) ? "fill-current" : ""}`} />
-                   {comment.likes?.length || 0}
-                 </button>
-                 <button
-                   onClick={() => {
-                     const name = comment.author_name || comment.author_email;
-                     setReplyingTo(name);
-                     setNewComment(`@${name} `);
-                     setTimeout(() => textareaRef.current?.focus(), 50);
-                   }}
-                   className="text-gray-400 hover:text-gray-600 transition-colors font-medium"
-                 >
-                   Reply
-                 </button>
-                 {comment.author_email === user?.email && (
+                   <p className="text-gray-800 text-sm leading-relaxed">
+                     {comment.content}
+                   </p>
+                 </div>
+                 <div className="flex items-center gap-4 mt-2 ml-0 text-xs text-gray-600">
+                   <button
+                     onClick={() => likeCommentMutation.mutate(comment)}
+                     className={`flex items-center gap-1 transition-colors ${
+                       comment.likes?.includes(user?.email) ? "text-pink-500" : "text-gray-400 hover:text-pink-500"
+                     }`}
+                   >
+                     <Heart className={`w-3.5 h-3.5 ${comment.likes?.includes(user?.email) ? "fill-current" : ""}`} />
+                     {comment.likes?.length || 0}
+                   </button>
                    <button
                      onClick={() => {
-                       if (window.confirm("Delete this comment?")) deleteCommentMutation.mutate(comment);
+                       const name = comment.author_name || comment.author_email;
+                       setReplyingTo(name);
+                       setNewComment(`@${name} `);
+                       setTimeout(() => textareaRef.current?.focus(), 50);
                      }}
-                     disabled={deleteCommentMutation.isPending}
-                     className="text-gray-400 hover:text-red-600 transition-colors font-medium ml-auto"
+                     className="text-gray-400 hover:text-gray-600 transition-colors font-medium"
                    >
-                     <Trash2 className="w-3.5 h-3.5" />
+                     Reply
                    </button>
-                 )}
+                   {comment.author_email === user?.email && (
+                     <button
+                       onClick={() => {
+                         if (window.confirm("Delete this comment?")) deleteCommentMutation.mutate(comment);
+                       }}
+                       disabled={deleteCommentMutation.isPending}
+                       className="text-gray-400 hover:text-red-600 transition-colors font-medium ml-auto"
+                     >
+                       <Trash2 className="w-3.5 h-3.5" />
+                     </button>
+                   )}
+                 </div>
                </div>
-             </div>
-           </motion.div>
+             </motion.div>
+
+             {/* Replies to this comment */}
+             {replyMap[comment.id] && (
+               <div className="ml-10 space-y-2 mt-2">
+                 {replyMap[comment.id].map((reply, j) => {
+                   const mentionMatch = reply.content.match(/@([\w.+-]+@[\w-]+\.[\w.]+)/);
+                   const mentionedName = mentionMatch ? mentionMatch[1].split('@')[0] : '';
+                   const replyContent = reply.content.replace(/@[\w.+-]+@[\w-]+\.[\w.]+\s?/g, "");
+
+                   return (
+                     <motion.div
+                       key={reply.id}
+                       initial={{ opacity: 0, x: -10 }}
+                       animate={{ opacity: 1, x: 0 }}
+                       transition={{ delay: i * 0.03 + j * 0.02 }}
+                       className="flex gap-3"
+                     >
+                       <CommentAvatar email={reply.author_email} name={reply.author_name} avatarMap={avatarMap} />
+                       <div className="flex-1">
+                         <div className="bg-blue-50 rounded-2xl p-4 border border-blue-100">
+                           <div className="flex items-center gap-2 mb-2">
+                             <span className="font-bold text-gray-900 text-sm">{reply.author_name || reply.author_email}</span>
+                             <span className="text-gray-500 text-xs">•</span>
+                             <RelativeTime date={reply.created_date} />
+                           </div>
+                           <div className="mb-2">
+                             <span className="text-blue-600 font-semibold">@{mentionedName}</span>
+                             <span className="text-gray-800"> {replyContent}</span>
+                           </div>
+                         </div>
+                         <div className="flex items-center gap-4 mt-2 ml-0 text-xs text-gray-600">
+                           <button
+                             onClick={() => likeCommentMutation.mutate(reply)}
+                             className={`flex items-center gap-1 transition-colors ${
+                               reply.likes?.includes(user?.email) ? "text-pink-500" : "text-gray-400 hover:text-pink-500"
+                             }`}
+                           >
+                             <Heart className={`w-3.5 h-3.5 ${reply.likes?.includes(user?.email) ? "fill-current" : ""}`} />
+                             {reply.likes?.length || 0}
+                           </button>
+                           {reply.author_email === user?.email && (
+                             <button
+                               onClick={() => {
+                                 if (window.confirm("Delete this comment?")) deleteCommentMutation.mutate(reply);
+                               }}
+                               disabled={deleteCommentMutation.isPending}
+                               className="text-gray-400 hover:text-red-600 transition-colors font-medium ml-auto"
+                             >
+                               <Trash2 className="w-3.5 h-3.5" />
+                             </button>
+                           )}
+                         </div>
+                       </div>
+                     </motion.div>
+                   );
+                 })}
+               </div>
+             )}
+           </div>
          ))}
        </div>
       <div className="flex gap-3 items-end mt-4 pt-4 border-t border-gray-200">
