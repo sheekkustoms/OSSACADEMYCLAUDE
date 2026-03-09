@@ -65,9 +65,9 @@ export default function PostCard({ post, currentUserEmail, onLike, onClick, inde
           <Pin className="w-4 h-4" /> Pinned
         </div>
       )}
-      <div className="p-5">
-        <div className="flex items-center gap-2 mb-2.5">
-          <Badge className={`${categoryStyles[post.category] || "bg-gray-100 text-gray-600"} border text-[10px] uppercase tracking-wider`}>
+      <div className="p-6">
+        <div className="flex items-center gap-2 mb-3">
+          <Badge className={`${categoryStyles[post.category] || "bg-gray-100 text-gray-600"} border text-[10px] uppercase tracking-wider font-semibold`}>
             {categoryEmoji[post.category]} {post.category?.replace(/_/g, " ")}
           </Badge>
           <span className="text-xs text-gray-400 flex items-center gap-1">
@@ -75,25 +75,25 @@ export default function PostCard({ post, currentUserEmail, onLike, onClick, inde
           </span>
         </div>
 
-        <h3 className="font-bold text-gray-900 group-hover:text-violet-600 transition-colors">{post.title}</h3>
-        <p className="text-sm text-gray-500 mt-1 line-clamp-2">{post.content}</p>
+        <h3 className="font-semibold text-gray-900 text-lg group-hover:text-gray-700 transition-colors">{post.title}</h3>
+        <p className="text-sm text-gray-600 mt-2 line-clamp-2">{post.content}</p>
 
-        <div className="flex items-center gap-1 mt-3">
+        <div className="flex items-center gap-2 mt-4">
           {post.author_avatar ? (
-            <img src={post.author_avatar} className="w-6 h-6 rounded-full object-cover border border-pink-100" />
+            <img src={post.author_avatar} className="w-6 h-6 rounded-full object-cover border border-gray-200" />
           ) : (
-            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-pink-400 to-violet-400 flex items-center justify-center text-white text-[10px] font-bold">
+            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-yellow-400 to-pink-400 flex items-center justify-center text-white text-[10px] font-bold">
               {(post.author_name || post.author_email || "?")[0].toUpperCase()}
             </div>
           )}
-          <span className="text-xs text-gray-500">{post.author_name || post.author_email}</span>
+          <span className="text-xs text-gray-600 font-medium">{post.author_name || post.author_email}</span>
         </div>
 
-        <div className="flex items-center gap-3 mt-3 pt-3 border-t border-gray-50">
+        <div className="flex items-center gap-3 mt-4 pt-4 border-t border-gray-100">
           <Button
             variant="ghost"
             size="sm"
-            className={`h-8 px-2 gap-1.5 text-xs rounded-xl ${isLiked ? "text-pink-500 bg-pink-50 hover:bg-pink-100" : "text-gray-400 hover:text-pink-500 hover:bg-pink-50"}`}
+            className={`h-8 px-2.5 gap-1.5 text-xs rounded-lg font-medium ${isLiked ? "text-pink-600 bg-pink-50 hover:bg-pink-100" : "text-gray-500 hover:text-pink-600 hover:bg-pink-50"}`}
             onClick={(e) => { e.stopPropagation(); onLike(post); }}
           >
             <Heart className={`w-3.5 h-3.5 ${isLiked ? "fill-current" : ""}`} />
@@ -104,13 +104,13 @@ export default function PostCard({ post, currentUserEmail, onLike, onClick, inde
              {commenters.length > 0 && (
                <div className="flex -space-x-1.5">
                  {commenters.map((c, i) => (
-                   <div key={`c-${i}`} title={c.name} className="w-5 h-5 rounded-full bg-gradient-to-br from-pink-400 to-violet-400 flex items-center justify-center text-white text-[9px] font-bold border border-white">
+                   <div key={`c-${i}`} title={c.name} className="w-5 h-5 rounded-full bg-gradient-to-br from-yellow-400 to-pink-400 flex items-center justify-center text-white text-[9px] font-bold border border-white">
                      {(c.name || c.email)[0].toUpperCase()}
                    </div>
                  ))}
                </div>
              )}
-             <div className="flex items-center gap-1.5 text-xs text-gray-400">
+             <div className="flex items-center gap-1.5 text-xs text-gray-500 font-medium">
                <MessageCircle className="w-3.5 h-3.5" />
                {post.comment_count || 0}
              </div>
