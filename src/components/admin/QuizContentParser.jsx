@@ -80,8 +80,8 @@ IMPORTANT: Return ONLY valid JSON, no markdown formatting, no code blocks.`,
     }
   };
 
-  const handleSaveQuestions = async () => {
-    if (!quizId || generatedQuestions.length === 0) return;
+  const handleSaveQuestions = async (questionsToSave) => {
+    if (!quizId || questionsToSave.length === 0) return;
 
     try {
       setIsLoading(true);
@@ -92,7 +92,7 @@ IMPORTANT: Return ONLY valid JSON, no markdown formatting, no code blocks.`,
 
       // Create all questions
       await Promise.all(
-        generatedQuestions.map((q, idx) =>
+        questionsToSave.map((q, idx) =>
           base44.entities.QuizQuestion.create({
             quiz_id: quizId,
             question_text: q.question_text,
@@ -108,6 +108,8 @@ IMPORTANT: Return ONLY valid JSON, no markdown formatting, no code blocks.`,
       setSuccess("Questions saved to quiz!");
       setContent("");
       setGeneratedQuestions([]);
+      setBulkInput("");
+      setBulkQuestions([]);
       
       if (onQuestionsGenerated) {
         onQuestionsGenerated();
@@ -116,6 +118,55 @@ IMPORTANT: Return ONLY valid JSON, no markdown formatting, no code blocks.`,
       setError(`Error saving questions: ${err.message}`);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const parseBulkQuestions = () => {
+    if (!bulkInput.trim()) {
+      setError("Please paste questions and answers");
+      return;
+    }
+
+    try {
+      setError("");
+      // Parse format: Q: Question text\nA: Answer1\nA: Answer2\nCorrect: Answer1\n\nQ: Next question...
+      const blocks = bulkInput.split(/\n\n+/);
+      const parsed = [];
+
+      blocks.forEach(block => {
+        const lines = block.split('\n').map(l => l.trim()).filter(l => l);
+        if (lines.length < 2) return;
+
+        const questionLine = lines.find(l => l.match(/^(Q:|Question:)/i));
+        const answerLines = lines.filter(l => l.match(/^(A:|Answer:)/i));
+        const correctLine = lines.find(l => l.match(/^(Correct|Right Answer):/i));
+
+        if (!questionLine || answerLines.length < 2) return;
+
+        const questionText = questionLine.replace(/^(Q:|Question:)\s*/i, '').trim();
+        const options = answerLines.map(a => a.replace(/^(A:|Answer:)\s*/i, '').trim());
+        const correctAnswer = correctLine ? correctLine.replace(/^(Correct|Right Answer):\s*/i, '').trim() : options[0];
+        const correctIdx = options.findIndex(o => o.toLowerCase() === correctAnswer.toLowerCase());
+
+        if (questionText && options.length >= 2 && correctIdx >= 0) {
+          parsed.push({
+            question_text: questionText,
+            options,
+            correct_answer_index: correctIdx,
+            points: 100
+          });
+        }
+      });
+
+      if (parsed.length === 0) {
+        setError("Could not parse any valid questions. Use format:\nQ: Question?\nA: Option 1\nA: Option 2\nCorrect: Option 1");
+        return;
+      }
+
+      setBulkQuestions(parsed);
+      setSuccess(`Parsed ${parsed.length} questions!`);
+    } catch (err) {
+      setError(`Error parsing: ${err.message}`);
     }
   };
 
