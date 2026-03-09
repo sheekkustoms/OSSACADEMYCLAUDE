@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { getLevelFromXP } from "./components/shared/XPBar";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
+import { playNotificationSound, requestNotificationPermission, sendBrowserNotification } from "@/components/shared/notificationSound";
 
 const NAV_ITEMS = [
   { name: "Home", icon: LayoutDashboard, page: "Dashboard" },
@@ -24,8 +25,17 @@ const NAV_ITEMS = [
 export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showPWA, setShowPWA] = useState(false);
+  
+  // Request notification permission on mount
   useEffect(() => {
     if (!localStorage.getItem("pwa_dismissed")) setShowPWA(true);
+    
+    // Request browser notification permission
+    if (!localStorage.getItem("notif_permission_asked")) {
+      requestNotificationPermission().then(() => {
+        localStorage.setItem("notif_permission_asked", "1");
+      });
+    }
   }, []);
   const [deferredInstallPrompt, setDeferredInstallPrompt] = useState(null);
 
@@ -62,13 +72,33 @@ export default function Layout({ children, currentPageName }) {
   useEffect(() => {
     if (!notifications.length) return;
     const newOnes = notifications.filter(n => !prevNotifIds.current.has(n.id));
+    
     newOnes.forEach(n => {
+      // Play notification sound
+      playNotificationSound();
+      
+      // Show in-app toast
       toast(n.message, {
         description: n.from_name ? `From: ${n.from_name}` : undefined,
         icon: n.type === "announcement" ? "📢" : n.type === "like" ? "❤️" : n.type === "comment" ? "💬" : n.type === "badge" ? "🏅" : "🔔",
         duration: 5000,
       });
+      
+      // Send browser notification if permitted
+      if (n.type === "announcement") {
+        sendBrowserNotification(n.message, {
+          tag: n.id,
+          requireInteraction: false,
+        });
+      }
+      
+      console.log("[Layout] New notification received and alerted:", {
+        notificationId: n.id,
+        type: n.type,
+        message: n.message,
+      });
     });
+    
     notifications.forEach(n => prevNotifIds.current.add(n.id));
   }, [notifications]);
 
