@@ -39,19 +39,6 @@ export default function PostCard({ post, currentUserEmail, onLike, onClick, inde
      staleTime: 0,
    });
 
-   // Fetch all user profiles to get avatar URLs
-   const { data: allUsers = [] } = useQuery({
-     queryKey: ["allUserProfiles"],
-     queryFn: () => base44.entities.User.list(),
-     staleTime: 60000, // Cache for 1 minute
-   });
-
-   // Create email->user map for quick avatar lookup
-   const userMap = {};
-   allUsers.forEach(user => {
-     userMap[user.email] = user;
-   });
-
    // Sort comments by created_date descending to get the actual last comment
    const sortedComments = [...comments].sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
 
@@ -59,11 +46,10 @@ export default function PostCard({ post, currentUserEmail, onLike, onClick, inde
    const commentersMap = new Map();
    comments.forEach(c => {
      if (!commentersMap.has(c.author_email)) {
-       const userProfile = userMap[c.author_email];
        commentersMap.set(c.author_email, {
          email: c.author_email,
          name: c.author_name,
-         avatarUrl: userProfile?.avatar_url || null,
+         avatarUrl: c.author_avatar || null,
        });
      }
    });
