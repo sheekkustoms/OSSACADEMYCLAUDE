@@ -44,6 +44,8 @@ export default function Dashboard() {
   const { data: user } = useQuery({
     queryKey: ["currentUser"],
     queryFn: () => base44.auth.me(),
+    staleTime: 0,
+    gcTime: 0,
   });
 
   const { data: userPoints } = useQuery({
