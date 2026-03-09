@@ -10,6 +10,7 @@ import XPBar, { getLevelFromXP } from "../components/shared/XPBar";
 import BadgeIcon from "../components/shared/BadgeIcon";
 import CourseCard from "../components/shared/CourseCard";
 import { getOrCreateUserPoints } from "../components/shared/useUserPoints";
+import ProfileSetupModal from "../components/shared/ProfileSetupModal";
 
 function StatCard({ icon: Icon, label, value, gradient, delay }) {
   return (
