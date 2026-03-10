@@ -226,10 +226,7 @@ export default function Community() {
      }
    }, [filteredAndSorted]);
 
-  const handleRefresh = useCallback(async () => {
-    await queryClient.invalidateQueries({ queryKey: ["communityPosts"] });
-    await queryClient.refetchQueries({ queryKey: ["communityPosts"] });
-  }, [queryClient]);
+
 
   return (
     <div className="max-w-5xl mx-auto space-y-8">
