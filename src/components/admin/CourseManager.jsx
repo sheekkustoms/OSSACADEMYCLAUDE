@@ -325,25 +325,34 @@ function CourseEditor({ course, onClose }) {
         {/* Left: Module / Lesson List */}
         <div className="flex-1 border-r border-gray-100 overflow-y-auto">
           <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
-            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Lessons</span>
-            <Button size="sm" onClick={() => addLesson.mutate()} disabled={addLesson.isPending}
-              className="bg-pink-100 text-pink-700 hover:bg-pink-200 gap-1 h-7 text-xs">
-              <Plus className="w-3 h-3" /> Add Lesson
-            </Button>
+            <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Modules & Lessons</span>
+            <div className="flex gap-1">
+              <Button size="sm" onClick={addModule}
+                className="bg-violet-100 text-violet-700 hover:bg-violet-200 gap-1 h-7 text-xs">
+                <Plus className="w-3 h-3" /> Add Module
+              </Button>
+              <Button size="sm" onClick={addLesson}
+                className="bg-pink-100 text-pink-700 hover:bg-pink-200 gap-1 h-7 text-xs">
+                <Plus className="w-3 h-3" /> Add Lesson
+              </Button>
+            </div>
           </div>
 
-          {sortedLessons.length === 0 ? (
+          {sortedModules.length === 0 && standaloneLesson.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-gray-400 text-sm gap-2">
               <BookOpen className="w-8 h-8 text-gray-200" />
-              <p>No lessons yet</p>
-              <Button size="sm" onClick={() => addLesson.mutate()} className="bg-violet-100 text-violet-700 hover:bg-violet-200 gap-1 h-7 text-xs mt-1">
-                <Plus className="w-3 h-3" /> Add First Lesson
+              <p>No modules yet</p>
+              <Button size="sm" onClick={addModule} className="bg-violet-100 text-violet-700 hover:bg-violet-200 gap-1 h-7 text-xs mt-1">
+                <Plus className="w-3 h-3" /> Add First Module
               </Button>
             </div>
           ) : (
-            <div className="divide-y divide-gray-50">
-              {sortedLessons.map((lesson, i) => (
-                <LessonEditor key={lesson.id} lesson={lesson} courseId={course.id} onDelete={(id) => deleteLesson.mutate(id)} index={i} />
+            <div className="p-3">
+              {sortedModules.map((mod) => (
+                <ModuleRow key={mod.id} module={mod} courseId={course.id} onDelete={deleteModule} />
+              ))}
+              {standaloneLesson.map((lesson, i) => (
+                <LessonEditor key={lesson.id} lesson={lesson} courseId={course.id} onDelete={deleteLesson} index={i} />
               ))}
             </div>
           )}
