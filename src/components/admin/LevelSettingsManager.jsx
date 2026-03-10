@@ -30,7 +30,24 @@ export default function LevelSettingsManager() {
     setThresholds(updated);
   };
 
+  const handleEvenDistribution = () => {
+    const total = thresholds.length;
+    const maxXP = thresholds[total - 1] || 10000;
+    const newThresholds = thresholds.map((_, i) => {
+      if (i === 0) return 0;
+      return Math.round((maxXP / (total - 1)) * i);
+    });
+    setThresholds(newThresholds);
+  };
+
   const handleSave = async () => {
+    // Validate: each threshold must be greater than the previous
+    for (let i = 1; i < thresholds.length; i++) {
+      if (thresholds[i] <= thresholds[i - 1]) {
+        alert(`Level ${i + 1} threshold (${thresholds[i]}) must be greater than Level ${i} (${thresholds[i - 1]}). Please fix before saving.`);
+        return;
+      }
+    }
     setSaving(true);
     if (settings.length > 0) {
       await base44.entities.LevelSettings.update(settings[0].id, { thresholds });
