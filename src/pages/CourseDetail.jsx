@@ -13,6 +13,64 @@ import { Badge } from "@/components/ui/badge";
 import { getOrCreateUserPoints, awardXP } from "../components/shared/useUserPoints";
 import VideoPlayer from "../components/shared/VideoPlayer";
 
+function LessonRow({ lesson, index, completed, isActive, enrollment, onClick }) {
+  return (
+    <motion.button
+      whileTap={{ scale: 0.98 }}
+      onClick={onClick}
+      className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors ${
+        isActive ? "bg-violet-50" : "hover:bg-gray-50"
+      } ${!enrollment && index > 0 ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}`}
+    >
+      <span className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
+        completed ? "bg-emerald-100 text-emerald-600" : isActive ? "bg-violet-100 text-violet-600" : "bg-gray-100 text-gray-500"
+      }`}>
+        {completed ? <CheckCircle2 className="w-4 h-4" /> : !enrollment && index > 0 ? <Lock className="w-3.5 h-3.5" /> : index + 1}
+      </span>
+      <div className="flex-1 min-w-0">
+        <p className={`text-sm font-medium truncate ${isActive ? "text-violet-700" : "text-gray-700"}`}>{lesson.title}</p>
+        <div className="flex items-center gap-2 text-xs text-gray-400 mt-0.5">
+          {lesson.duration_minutes > 0 && <span className="flex items-center gap-0.5"><Clock className="w-3 h-3" />{lesson.duration_minutes}m</span>}
+          <span className="flex items-center gap-0.5 text-fuchsia-400"><Zap className="w-3 h-3" />+{lesson.xp_reward || 20}</span>
+        </div>
+      </div>
+      {isActive && <ChevronRight className="w-4 h-4 text-violet-400 shrink-0" />}
+    </motion.button>
+  );
+}
+
+function ModuleSection({ module, lessons, enrollment, activeLesson, setActiveLesson, isLessonCompleted, allLessons }) {
+  const [open, setOpen] = useState(true);
+  const completedCount = lessons.filter(l => isLessonCompleted(l.id)).length;
+  return (
+    <div>
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center gap-2 px-4 py-2.5 bg-gray-50 hover:bg-gray-100 transition-colors text-left border-b border-gray-100"
+      >
+        <BookOpen className="w-3.5 h-3.5 text-violet-400 shrink-0" />
+        <span className="flex-1 text-sm font-semibold text-gray-700">{module.title}</span>
+        <span className="text-xs text-gray-400">{completedCount}/{lessons.length}</span>
+        {open ? <ChevronDown className="w-3.5 h-3.5 text-gray-400" /> : <ChevronRight className="w-3.5 h-3.5 text-gray-400" />}
+      </button>
+      {open && lessons.map((lesson) => {
+        const idx = allLessons.indexOf(lesson);
+        return (
+          <LessonRow
+            key={lesson.id}
+            lesson={lesson}
+            index={idx}
+            completed={isLessonCompleted(lesson.id)}
+            isActive={activeLesson?.id === lesson.id}
+            enrollment={enrollment}
+            onClick={() => { if (enrollment || idx === 0) setActiveLesson(lesson); }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
 const DIFFICULTY_COLORS = {
   beginner: "bg-emerald-100 text-emerald-700",
   intermediate: "bg-amber-100 text-amber-700",
