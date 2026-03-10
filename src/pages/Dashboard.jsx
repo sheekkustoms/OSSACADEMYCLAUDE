@@ -123,6 +123,11 @@ export default function Dashboard() {
   const liveQuizzes = publishedQuizzes.filter(q => q.quiz_type === "live" && (q.status === "waiting" || q.status === "active")).slice(0, 2);
   const practiceQuizzes = publishedQuizzes.filter(q => q.quiz_type === "practice").slice(0, 2);
 
+  const handleRefresh = useCallback(async () => {
+    await queryClient.invalidateQueries();
+    await queryClient.refetchQueries({ type: "active" });
+  }, [queryClient]);
+
   if (!user) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
@@ -132,6 +137,7 @@ export default function Dashboard() {
   }
 
   return (
+    <PullToRefresh onRefresh={handleRefresh}>
     <div className="max-w-7xl mx-auto space-y-10">
       {/* Welcome Header */}
        <div className="flex items-start justify-between">
