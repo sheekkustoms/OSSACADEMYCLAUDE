@@ -126,8 +126,8 @@ export default function Leaderboard() {
         </TabsList>
 
         <TabsContent value="alltime">
-          <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
-            <div className="grid grid-cols-12 gap-4 p-6 bg-gray-50 border-b border-gray-200">
+          <div className="bg-white border border-gray-200 rounded-xl overflow-x-auto">
+            <div className="hidden md:grid grid-cols-12 gap-4 p-6 bg-gray-50 border-b border-gray-200 min-w-full">
               <div className="col-span-1 text-xs font-semibold text-gray-600 uppercase tracking-wide">Rank</div>
               <div className="col-span-5 text-xs font-semibold text-gray-600 uppercase tracking-wide">Member</div>
               <div className="col-span-2 text-xs font-semibold text-gray-600 uppercase tracking-wide text-right">XP</div>
@@ -137,40 +137,69 @@ export default function Leaderboard() {
 
             <div className="divide-y divide-gray-100">
               {topMembers.map((member) => (
-                <div
-                  key={member.id}
-                  className={`grid grid-cols-12 gap-4 p-6 items-center hover:bg-gray-50 transition-colors ${
-                    member.isCurrentUser ? "bg-yellow-50" : ""
-                  }`}
-                >
-                  <div className="col-span-1">
-                    <RankBadge rank={member.rank} />
-                  </div>
-                  <div className="col-span-5 flex items-center gap-3">
-                     <AvatarWithFallback
-                       imageUrl={member.avatar_url}
-                       name={member.user_name}
-                       email={member.user_email}
-                       size="md"
-                     />
-                     <div>
-                      <p className="font-semibold text-gray-900">{member.user_name || member.user_email}</p>
-                      <p className="text-xs text-gray-500">Level {getLevelFromXP(member.total_xp)}</p>
+                <div key={member.id}>
+                  {/* Mobile View */}
+                  <div className="md:hidden p-4 border-b border-gray-100 last:border-b-0">
+                    <div className="flex items-start gap-3 mb-3">
+                      <RankBadge rank={member.rank} />
+                      <AvatarWithFallback
+                        imageUrl={member.avatar_url}
+                        name={member.user_name}
+                        email={member.user_email}
+                        size="md"
+                      />
+                      <div className="flex-1">
+                        <p className="font-semibold text-gray-900 text-sm">{member.user_name || member.user_email}</p>
+                        <p className="text-xs text-gray-500">Level {getLevelFromXP(member.total_xp)}</p>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 text-center">
+                      <div>
+                        <p className="text-xs text-gray-500">XP</p>
+                        <p className="text-sm font-bold text-gray-900">{member.total_xp}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Courses</p>
+                        <p className="text-sm font-bold text-gray-900">{member.courses_completed || 0}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500">Badges</p>
+                        <p className="text-sm font-bold text-gray-900">{member.badges?.length || 0}</p>
+                      </div>
                     </div>
                   </div>
-                  <div className="col-span-2 text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      <Zap className="w-4 h-4 text-yellow-600" />
-                      <span className="font-bold text-gray-900">{member.total_xp}</span>
+
+                  {/* Desktop View */}
+                  <div className="hidden md:grid grid-cols-12 gap-4 p-6 items-center hover:bg-gray-50 transition-colors min-w-full">
+                    <div className="col-span-1">
+                      <RankBadge rank={member.rank} />
                     </div>
-                  </div>
-                  <div className="col-span-2 text-right">
-                    <span className="text-sm font-semibold text-gray-700">{member.courses_completed || 0}</span>
-                  </div>
-                  <div className="col-span-2 text-right">
-                    <div className="flex items-center justify-end gap-1">
-                      <Award className="w-4 h-4 text-pink-500" />
-                      <span className="text-sm font-semibold text-gray-700">{member.badges?.length || 0}</span>
+                    <div className="col-span-5 flex items-center gap-3">
+                       <AvatarWithFallback
+                         imageUrl={member.avatar_url}
+                         name={member.user_name}
+                         email={member.user_email}
+                         size="md"
+                       />
+                       <div>
+                        <p className="font-semibold text-gray-900">{member.user_name || member.user_email}</p>
+                        <p className="text-xs text-gray-500">Level {getLevelFromXP(member.total_xp)}</p>
+                      </div>
+                    </div>
+                    <div className="col-span-2 text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <Zap className="w-4 h-4 text-yellow-600" />
+                        <span className="font-bold text-gray-900">{member.total_xp}</span>
+                      </div>
+                    </div>
+                    <div className="col-span-2 text-right">
+                      <span className="text-sm font-semibold text-gray-700">{member.courses_completed || 0}</span>
+                    </div>
+                    <div className="col-span-2 text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <Award className="w-4 h-4 text-pink-500" />
+                        <span className="text-sm font-semibold text-gray-700">{member.badges?.length || 0}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
