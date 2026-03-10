@@ -358,5 +358,6 @@ export default function Community() {
         </DialogContent>
       </Dialog>
     </div>
+    </PullToRefresh>
   );
 }
