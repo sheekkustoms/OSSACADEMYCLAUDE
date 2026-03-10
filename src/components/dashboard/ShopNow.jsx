@@ -21,12 +21,18 @@ export default function ShopNow() {
     },
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (userPoints?.shop_items) {
-      setItems(typeof userPoints.shop_items === "string" 
+      const parsed = typeof userPoints.shop_items === "string" 
         ? JSON.parse(userPoints.shop_items) 
-        : userPoints.shop_items
-      );
+        : userPoints.shop_items;
+      setItems(parsed);
+    } else {
+      // Default items if none exist
+      setItems([
+        { id: 1, title: "Purchase Fabric", url: "https://cash.app/$SIMPLISUNDAE" },
+        { id: 2, title: "Book a 1 on 1", url: "https://cash.app/$SIMPLISUNDAE" }
+      ]);
     }
   }, [userPoints]);
 
