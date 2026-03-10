@@ -132,7 +132,7 @@ export default function QuizBuilder() {
   const [editingQuizId, setEditingQuizId] = useState(null);
   const [hostingQuizId, setHostingQuizId] = useState(null);
   const [editingQuizSettingsId, setEditingQuizSettingsId] = useState(null);
-  const [newQuizForm, setNewQuizForm] = useState({ title: "", description: "", category: "beginner_sewing", quiz_type: "practice", time_per_question: 20 });
+  const [newQuizForm, setNewQuizForm] = useState({ title: "", description: "", category: "beginner_sewing", quiz_type: "practice", time_per_question: 20, total_duration_seconds: 0 });
   const [totalPoints, setTotalPoints] = useState("");
 
   const { data: user } = useQuery({ queryKey: ["currentUser"], queryFn: () => base44.auth.me() });
@@ -152,7 +152,7 @@ export default function QuizBuilder() {
       const code = generateCode();
       await base44.entities.Quiz.create({ ...newQuizForm, game_code: code, status: "draft", is_published: false, created_by_email: user.email });
     },
-    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["adminQuizzes"] }); setShowNewQuiz(false); setNewQuizForm({ title: "", description: "", category: "beginner_sewing", quiz_type: "practice", time_per_question: 20 }); },
+    onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["adminQuizzes"] }); setShowNewQuiz(false); setNewQuizForm({ title: "", description: "", category: "beginner_sewing", quiz_type: "practice", time_per_question: 20, total_duration_seconds: 0 }); },
   });
 
   const deleteQuiz = useMutation({
@@ -248,6 +248,10 @@ export default function QuizBuilder() {
                   <SelectItem value="live">Live Challenge</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+            <div>
+              <label className="text-xs font-semibold text-gray-700 mb-2 block">Total Quiz Duration (seconds) - Leave 0 to use per-question timing</label>
+              <Input type="number" placeholder="e.g. 300 for 5 minutes" value={newQuizForm.total_duration_seconds} onChange={e => setNewQuizForm({ ...newQuizForm, total_duration_seconds: +e.target.value })} className="border-gray-200 bg-white" min="0" />
             </div>
             <div className="flex gap-2">
               <Button onClick={() => createQuiz.mutate()} disabled={!newQuizForm.title || createQuiz.isPending} className="bg-gradient-to-r from-pink-500 to-violet-500 text-white">
