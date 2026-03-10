@@ -193,11 +193,19 @@ export default function Layout({ children, currentPageName }) {
           video, iframe, .no-print { display: none !important; }
         }
         * { box-sizing: border-box; }
-        body { background-color: #F1EDE9; }
+        body {
+          background-color: #F1EDE9;
+          overscroll-behavior-y: none;
+        }
+        button, a, nav, [role="navigation"] {
+          -webkit-user-select: none;
+          user-select: none;
+        }
         button:hover { background-color: rgba(139, 115, 85, 0.1); }
         .btn-primary { background-color: #6B7A5C !important; }
         .btn-primary:hover { background-color: #556347 !important; }
         :root {
+          --app-bg: #F1EDE9;
           --gold: #8B7355;
           --gold-dark: #6B5344;
           --pink: #E8C4D8;
@@ -228,9 +236,14 @@ export default function Layout({ children, currentPageName }) {
           --input: 0 0% 97%;
           --ring: 0 0% 10%;
           --radius: 0.75rem;
+          --safe-area-inset-bottom: env(safe-area-inset-bottom, 0px);
         }
-        body { background-color: #FFFFFF; }
+        body { background-color: #F1EDE9; }
         * { box-sizing: border-box; }
+        /* Bottom nav safe area padding */
+        .bottom-nav-safe {
+          padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
       `}</style>
 
       {/* PWA install banner */}
