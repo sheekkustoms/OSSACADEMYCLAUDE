@@ -80,6 +80,7 @@ const DIFFICULTY_COLORS = {
 export default function CourseDetail() {
   const urlParams = new URLSearchParams(window.location.search);
   const courseId = urlParams.get("id");
+  const isPreview = urlParams.get("preview") === "1";
   const queryClient = useQueryClient();
   const [activeLesson, setActiveLesson] = useState(null);
 
