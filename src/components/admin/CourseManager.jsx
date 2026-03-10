@@ -6,7 +6,7 @@ import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import {
   Plus, Trash2, Edit2, Eye, BookOpen, Upload, Video,
   ChevronDown, ChevronUp, GripVertical, Zap, Clock, X, CheckCircle2,
-  Settings, FolderOpen, Palette, ChevronRight, MoreVertical
+  Settings, FolderOpen, Palette, ChevronRight, MoreVertical, ExternalLink
 } from "lucide-react";
 
 function getEmbedUrl(url) {
