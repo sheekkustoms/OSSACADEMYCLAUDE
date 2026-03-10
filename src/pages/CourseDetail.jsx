@@ -37,14 +37,23 @@ export default function CourseDetail() {
     queryKey: ["lessons", courseId],
     queryFn: () => base44.entities.Lesson.filter({ course_id: courseId }),
     enabled: !!courseId,
-    onSuccess: (data) => {
-      if (data.length > 0 && !activeLesson) {
-        setActiveLesson(data.sort((a, b) => (a.order || 0) - (b.order || 0))[0]);
-      }
-    },
+  });
+
+  const { data: modules = [] } = useQuery({
+    queryKey: ["modules", courseId],
+    queryFn: () => base44.entities.Module.filter({ course_id: courseId }),
+    enabled: !!courseId,
   });
 
   const sortedLessons = [...lessons].sort((a, b) => (a.order || 0) - (b.order || 0));
+  const sortedModules = [...modules].sort((a, b) => (a.order || 0) - (b.order || 0));
+
+  // Auto-select first lesson
+  React.useEffect(() => {
+    if (sortedLessons.length > 0 && !activeLesson) {
+      setActiveLesson(sortedLessons[0]);
+    }
+  }, [sortedLessons.length]);
 
   const { data: enrollments = [] } = useQuery({
     queryKey: ["enrollment", courseId, user?.email],
