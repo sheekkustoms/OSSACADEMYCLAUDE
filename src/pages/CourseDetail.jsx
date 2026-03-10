@@ -86,12 +86,9 @@ export default function CourseDetail() {
 
   const { data: user } = useQuery({ queryKey: ["currentUser"], queryFn: () => base44.auth.me() });
 
-  const { data: course } = useQuery({
+  const { data: course, isLoading: courseLoading } = useQuery({
     queryKey: ["course", courseId],
-    queryFn: async () => {
-      const results = await base44.entities.Course.list("-created_date", 200);
-      return results.find(c => c.id === courseId) || null;
-    },
+    queryFn: () => base44.entities.Course.filter({ id: courseId }).then(r => r[0] || null),
     enabled: !!courseId,
   });
 
