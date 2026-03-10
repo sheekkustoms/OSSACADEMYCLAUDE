@@ -397,7 +397,7 @@ export default function Layout({ children, currentPageName }) {
       </aside>
 
       {/* Main content */}
-      <main className={`md:ml-64 min-h-screen bg-[#F1EDE9] ${showPWA ? "pt-24 md:pt-10" : "pt-14 md:pt-0"}`}>
+      <main className={`md:ml-64 md:min-h-screen bg-[#F1EDE9] overflow-y-auto md:overflow-y-visible ${showPWA ? "pt-24 md:pt-10" : "pt-14 md:pt-0"}`} style={{ height: 'calc(100vh - ' + (showPWA ? 'calc(10rem + env(safe-area-inset-top, 0px))' : 'calc(3.5rem + env(safe-area-inset-top, 0px))') + ' - env(safe-area-inset-bottom, 0px))' }}>
         {/* Desktop notification bell */}
         <div className="hidden md:block fixed top-6 right-6 z-40">
           <Link to={createPageUrl("Notifications")} className="relative inline-block">
