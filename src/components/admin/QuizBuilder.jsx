@@ -31,7 +31,7 @@ function QuestionEditor({ question, quizId, onDelete, index }) {
 
   useEffect(() => {
     setForm(question);
-  }, [question.points, question.time_limit, question.question_text]);
+  }, [question.points, question.time_limit, question.question_text, question.options, question.correct_answer_index]);
   const queryClient = useQueryClient();
 
   const save = async () => {
