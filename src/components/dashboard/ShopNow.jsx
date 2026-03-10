@@ -80,9 +80,9 @@ export default function ShopNow() {
   const isCurrentUser = user?.email === (userPoints?.user_email || user?.email);
 
   return (
-    <div className="bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 rounded-xl p-6 space-y-4">
+    <div className="bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 rounded-lg p-3 space-y-2">
       <div className="flex items-center justify-between">
-         <h3 className="text-xl font-bold text-gray-900">🛍️ SHOP NOW</h3>
+         <h3 className="text-sm font-bold text-gray-900">🛍️ SHOP NOW</h3>
          {isAdmin && (
           <Button
             size="sm"
