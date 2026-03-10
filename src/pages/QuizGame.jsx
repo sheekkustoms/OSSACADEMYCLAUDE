@@ -135,8 +135,7 @@ export default function QuizGame() {
 
     const isCorrect = answerIndex === currentQ?.correct_answer_index;
     const basePoints = isCorrect ? (currentQ?.points || 100) : 0;
-    const timeBonus = isCorrect ? Math.round((timeLeft / (currentQ?.time_limit || 20)) * 50) : 0;
-    const earned = basePoints + timeBonus;
+    const earned = basePoints;
 
     const newScore = score + earned;
     setScore(newScore);
