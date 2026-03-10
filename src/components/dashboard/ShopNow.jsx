@@ -169,10 +169,10 @@ export default function ShopNow() {
           href="https://cash.app/$SIMPLISUNDAE" 
           target="_blank" 
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-lg border border-amber-200 hover:bg-amber-50 transition-colors"
+          className="inline-flex items-center gap-2 bg-white px-3 py-1 rounded border border-amber-200 hover:bg-amber-50 transition-colors"
         >
-          <span className="text-sm font-semibold text-gray-900">Cash App Pay</span>
-          <ExternalLink className="w-4 h-4 text-gray-500" />
+          <span className="text-xs font-semibold text-gray-900">Cash App Pay</span>
+          <ExternalLink className="w-3 h-3 text-gray-500" />
         </a>
       </div>
     </div>
