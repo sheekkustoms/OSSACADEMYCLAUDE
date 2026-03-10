@@ -187,8 +187,8 @@ export default function Dashboard() {
 
       {/* Admin: Pending Posts Alert */}
       {isAdmin && pendingPosts.length > 0 && (
-        <div className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-5 space-y-3">
-          <div className="flex items-center gap-2 text-amber-700 font-bold text-base">
+        <div className="border-2 rounded-2xl p-5 space-y-3" style={{backgroundColor: "#fdf0f7", borderColor: "#F8C7E2"}}>
+          <div className="flex items-center gap-2 font-bold text-base" style={{color: "#c2608a"}}>
             <Clock className="w-5 h-5" />
             {pendingPosts.length} Post{pendingPosts.length > 1 ? "s" : ""} Awaiting Approval
           </div>
