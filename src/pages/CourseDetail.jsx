@@ -135,7 +135,7 @@ export default function CourseDetail() {
 
   const completeLessonMutation = useMutation({
     mutationFn: async (lesson) => {
-      if (!enrollment) return;
+      if (!enrollment || enrollment._preview) return;
       const completed = enrollment.completed_lessons || [];
       if (completed.includes(lesson.id)) return;
       const newCompleted = [...completed, lesson.id];
