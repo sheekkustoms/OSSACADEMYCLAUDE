@@ -126,7 +126,6 @@ export default function Community() {
       if (idx > -1) likes.splice(idx, 1);
       else likes.push(user.email);
       await base44.entities.CommunityPost.update(post.id, { likes });
-      // Notify post author
       if (isNewLike && post.author_email !== user.email) {
         await base44.entities.Notification.create({
           recipient_email: post.author_email,
@@ -138,7 +137,25 @@ export default function Community() {
         });
       }
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["communityPosts"] }),
+    onMutate: async (post) => {
+      await queryClient.cancelQueries({ queryKey: ["communityPosts"] });
+      const previous = queryClient.getQueryData(["communityPosts"]);
+      queryClient.setQueryData(["communityPosts"], (old = []) =>
+        old.map((p) => {
+          if (p.id !== post.id) return p;
+          const likes = [...(p.likes || [])];
+          const idx = likes.indexOf(user.email);
+          if (idx > -1) likes.splice(idx, 1);
+          else likes.push(user.email);
+          return { ...p, likes };
+        })
+      );
+      return { previous };
+    },
+    onError: (_err, _post, ctx) => {
+      if (ctx?.previous) queryClient.setQueryData(["communityPosts"], ctx.previous);
+    },
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ["communityPosts"] }),
   });
 
   const deletePostMutation = useMutation({
