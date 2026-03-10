@@ -88,7 +88,10 @@ export default function CourseDetail() {
 
   const { data: course } = useQuery({
     queryKey: ["course", courseId],
-    queryFn: () => base44.entities.Course.list().then(r => r.find(c => c.id === courseId)),
+    queryFn: async () => {
+      const results = await base44.entities.Course.list("-created_date", 200);
+      return results.find(c => c.id === courseId) || null;
+    },
     enabled: !!courseId,
   });
 
