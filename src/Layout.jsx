@@ -182,8 +182,11 @@ export default function Layout({ children, currentPageName }) {
     notifications.forEach(n => prevNotifIds.current.add(n.id));
   }, [notifications]);
 
+  const [thresholds, setThresholds] = useState(null);
+  useEffect(() => { loadThresholds(true).then(setThresholds); }, []);
+
   const myPoints = userPoints?.[0];
-  const level = getLevelFromXP(myPoints?.total_xp || 0);
+  const level = thresholds ? getLevelFromXP(myPoints?.total_xp || 0, thresholds) : getLevelFromXP(myPoints?.total_xp || 0);
   const unreadCount = notifications.length;
   const isAdmin = user?.role === "admin";
 
