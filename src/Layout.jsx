@@ -402,10 +402,32 @@ export default function Layout({ children, currentPageName }) {
             </div>
           </Link>
         </div>
-        <div className="p-6 md:p-10">
+        {/* Extra bottom padding on mobile for the bottom nav */}
+        <div className="p-6 md:p-10 pb-24 md:pb-10">
           {children}
         </div>
       </main>
+
+      {/* Mobile Bottom Navigation */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-pink-200 bottom-nav-safe select-none">
+        <div className="flex items-stretch">
+          {BOTTOM_NAV_ITEMS.map((item) => {
+            const isActive = currentPageName === item.page;
+            return (
+              <Link
+                key={item.page}
+                to={createPageUrl(item.page)}
+                className={`flex-1 flex flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-medium transition-colors ${
+                  isActive ? "text-pink-600" : "text-gray-400"
+                }`}
+              >
+                <item.icon className={`w-5 h-5 ${isActive ? "text-pink-600" : "text-gray-400"}`} />
+                <span>{item.name}</span>
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
     </div>
   );
 }
