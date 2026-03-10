@@ -382,7 +382,7 @@ export default function Community() {
                   </Button>
                 )}
               </div>
-              <CommentSection postId={selectedPost.id} user={user} myPoints={myPoints} isAdmin={user?.role === "admin"} />
+              <CommentSection postId={selectedPost.id} user={user} myPoints={myPoints} isAdmin={user?.role === "admin"} adminEmails={adminEmails} />
             </>
           )}
         </DialogContent>

@@ -45,7 +45,7 @@ function CommentAvatar({ email, name, avatarUrl, fallbackAvatarMap }) {
    );
  }
 
-export default function CommentSection({ postId, user, myPoints, isAdmin = false }) {
+export default function CommentSection({ postId, user, myPoints, isAdmin = false, adminEmails = new Set() }) {
   const [newComment, setNewComment] = useState("");
   const [replyingTo, setReplyingTo] = useState(null);
   const queryClient = useQueryClient();
@@ -206,7 +206,7 @@ export default function CommentSection({ postId, user, myPoints, isAdmin = false
                <div className="flex-1">
                  <div className="bg-gray-100 rounded-2xl p-4">
                    <div className="flex items-center gap-2 mb-1">
-                     <span className="font-bold text-gray-900 text-sm">{isAdmin && comment.author_email !== user?.email ? "👑 " : ""}{comment.author_name || comment.author_email}</span>
+                     <span className="font-bold text-gray-900 text-sm">{adminEmails.has(comment.author_email) ? "👑 " : ""}{comment.author_name || comment.author_email}</span>
                      <span className="text-gray-500 text-xs">•</span>
                      <RelativeTime date={comment.created_date} />
                    </div>
@@ -271,7 +271,7 @@ export default function CommentSection({ postId, user, myPoints, isAdmin = false
                        <div className="flex-1">
                          <div className="bg-blue-50 rounded-2xl p-4 border border-blue-100">
                            <div className="flex items-center gap-2 mb-2">
-                             <span className="font-bold text-gray-900 text-sm">{isAdmin && reply.author_email !== user?.email ? "👑 " : ""}{reply.author_name || reply.author_email}</span>
+                             <span className="font-bold text-gray-900 text-sm">{adminEmails.has(reply.author_email) ? "👑 " : ""}{reply.author_name || reply.author_email}</span>
                              <span className="text-gray-500 text-xs">•</span>
                              <RelativeTime date={reply.created_date} />
                            </div>
