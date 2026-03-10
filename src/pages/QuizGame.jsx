@@ -72,10 +72,15 @@ export default function QuizGame() {
   const currentQ = questions[currentQIndex];
   const totalQ = questions.length;
 
+  // Calculate time per question based on quiz's total_duration_seconds
+  const timePerQuestion = quiz?.total_duration_seconds && quiz.total_duration_seconds > 0 
+    ? Math.ceil(quiz.total_duration_seconds / totalQ) 
+    : (quiz?.time_per_question || 20);
+
   // Timer
   useEffect(() => {
     if (phase !== "question") return;
-    setTimeLeft(currentQ?.time_limit || 20);
+    setTimeLeft(timePerQuestion);
     timerRef.current = setInterval(() => {
       setTimeLeft(prev => {
         if (prev <= 1) {
@@ -143,7 +148,7 @@ export default function QuizGame() {
 
     const isCorrect = answerIndex === currentQ?.correct_answer_index;
     const basePoints = isCorrect ? (currentQ?.points || 100) : 0;
-    const timeBonus = isCorrect ? Math.round((timeLeft / (currentQ?.time_limit || 20)) * 15) : 0;
+    const timeBonus = isCorrect ? Math.round((timeLeft / timePerQuestion) * 15) : 0;
     const earned = basePoints + timeBonus;
 
     const newScore = score + earned;
@@ -265,18 +270,22 @@ export default function QuizGame() {
         </div>
 
         {/* Timer */}
-        <div className="flex items-center justify-center gap-3">
-          <div className="relative w-16 h-16">
-            <svg className="w-16 h-16 -rotate-90" viewBox="0 0 64 64">
-              <circle cx="32" cy="32" r="28" fill="none" stroke="#f3f4f6" strokeWidth="6" />
-              <circle cx="32" cy="32" r="28" fill="none" stroke="#a855f7" strokeWidth="6"
-                strokeDasharray={`${2 * Math.PI * 28}`}
-                strokeDashoffset={`${2 * Math.PI * 28 * (1 - timerPct / 100)}`}
-                strokeLinecap="round" className="transition-all duration-1000" />
-            </svg>
-            <span className="absolute inset-0 flex items-center justify-center text-lg font-extrabold text-gray-900">{timeLeft}</span>
-          </div>
-        </div>
+            <div className="flex items-center justify-center gap-3">
+              <div className="relative w-16 h-16">
+                <svg className="w-16 h-16 -rotate-90" viewBox="0 0 64 64">
+                  <circle cx="32" cy="32" r="28" fill="none" stroke="#f3f4f6" strokeWidth="6" />
+                  <circle cx="32" cy="32" r="28" fill="none" stroke="#a855f7" strokeWidth="6"
+                    strokeDasharray={`${2 * Math.PI * 28}`}
+                    strokeDashoffset={`${2 * Math.PI * 28 * (1 - timerPct / 100)}`}
+                    strokeLinecap="round" className="transition-all duration-1000" />
+                </svg>
+                <span className="absolute inset-0 flex items-center justify-center text-lg font-extrabold text-gray-900">{timeLeft}</span>
+              </div>
+              <div className="text-center">
+                <p className="text-xs text-gray-400">Time per question</p>
+                <p className="text-lg font-bold text-gray-900">{timePerQuestion}s</p>
+              </div>
+            </div>
 
         {/* Question card */}
         <motion.div key={currentQIndex} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
