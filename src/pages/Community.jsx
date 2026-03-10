@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Plus, Search, Users, ImagePlus, Pin, X, Trash2 } from "lucide-react";
+import { Plus, Search, Users, ImagePlus, Pin, X, Trash2, Activity } from "lucide-react";
 import PostCard from "../components/community/PostCard";
 import CommentSection from "../components/community/CommentSection";
 import { getOrCreateUserPoints, awardXP } from "../components/shared/useUserPoints";
@@ -54,6 +54,12 @@ export default function Community() {
     queryKey: ["myPointsCommunity", user?.email],
     queryFn: () => getOrCreateUserPoints(user),
     enabled: !!user?.email,
+  });
+
+  const { data: allUserPoints = [] } = useQuery({
+    queryKey: ["allUserPoints"],
+    queryFn: () => base44.entities.UserPoints.list("-last_activity_date", 100),
+    refetchInterval: 30000,
   });
 
   const handleImageSelect = (e) => {
@@ -174,6 +180,20 @@ export default function Community() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["communityPosts"] });
       setSelectedPost(null);
+    },
+  });
+
+  const deleteCommentFromPostMutation = useMutation({
+    mutationFn: async (commentId, postId) => {
+      await base44.entities.Comment.delete(commentId);
+      const posts = await base44.entities.CommunityPost.filter({ id: postId });
+      if (posts[0]) {
+        await base44.entities.CommunityPost.update(postId, { comment_count: Math.max((posts[0].comment_count || 1) - 1, 0) });
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["comments"] });
+      queryClient.invalidateQueries({ queryKey: ["communityPosts"] });
     },
   });
 
@@ -360,7 +380,7 @@ export default function Community() {
                   </Button>
                 )}
               </div>
-              <CommentSection postId={selectedPost.id} user={user} myPoints={myPoints} />
+              <CommentSection postId={selectedPost.id} user={user} myPoints={myPoints} isAdmin={user?.role === "admin"} />
             </>
           )}
         </DialogContent>
