@@ -138,7 +138,7 @@ export default function Dashboard() {
 
   return (
     <PullToRefresh onRefresh={handleRefresh}>
-    <div className="max-w-7xl mx-auto space-y-10">
+      <div className="max-w-7xl mx-auto space-y-10">
       {/* Welcome Header */}
        <div className="flex items-start justify-between">
          <div>
