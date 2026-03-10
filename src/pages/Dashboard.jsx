@@ -197,7 +197,7 @@ export default function Dashboard() {
               <div key={post.id} className="flex items-start justify-between gap-3 bg-white rounded-xl p-3" style={{border: "1px solid #F8C7E2"}}>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-gray-800 truncate">{post.title}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">{post.author_name || post.author_email} · {moment(post.created_date).fromNow()}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">{post.author_name || post.author_email} · {moment.utc(post.created_date).local().fromNow()}</p>
                   <p className="text-xs text-gray-600 mt-1 line-clamp-1">{post.content}</p>
                 </div>
                 <Button
