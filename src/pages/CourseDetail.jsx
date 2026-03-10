@@ -120,7 +120,7 @@ export default function CourseDetail() {
     enabled: !!user?.email && !!courseId,
   });
 
-  const enrollment = enrollments[0] || null;
+  const enrollment = isPreview ? { completed_lessons: [], progress_percent: 0, is_completed: false, _preview: true } : (enrollments[0] || null);
 
   const enrollMutation = useMutation({
     mutationFn: () => base44.entities.Enrollment.create({
