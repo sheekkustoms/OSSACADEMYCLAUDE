@@ -262,26 +262,40 @@ function CourseEditor({ course, onClose }) {
     setSaving(false);
   };
 
-  const addLesson = useMutation({
-    mutationFn: () => base44.entities.Lesson.create({
+  const addModule = async () => {
+    await base44.entities.Module.create({
       course_id: course.id,
-      title: `Lesson ${sortedLessons.length + 1}`,
+      title: `Module ${sortedModules.length + 1}`,
+      order: sortedModules.length,
+    });
+    queryClient.invalidateQueries({ queryKey: ["adminModules", course.id] });
+  };
+
+  const deleteModule = async (id) => {
+    await base44.entities.Module.delete(id);
+    queryClient.invalidateQueries({ queryKey: ["adminModules", course.id] });
+  };
+
+  // Legacy standalone lessons (no module)
+  const standaloneLesson = sortedLessons.filter(l => !l.module_id);
+
+  const addLesson = async () => {
+    await base44.entities.Lesson.create({
+      course_id: course.id,
+      title: `Lesson ${standaloneLesson.length + 1}`,
       description: "",
       video_url: "",
       duration_minutes: 0,
       xp_reward: 20,
-      order: sortedLessons.length,
-    }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["adminLessons", course.id] });
-      base44.entities.Course.update(course.id, { lesson_count: sortedLessons.length + 1 });
-    },
-  });
+      order: standaloneLesson.length,
+    });
+    queryClient.invalidateQueries({ queryKey: ["adminLessons", course.id] });
+  };
 
-  const deleteLesson = useMutation({
-    mutationFn: (id) => base44.entities.Lesson.delete(id),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["adminLessons", course.id] }),
-  });
+  const deleteLesson = async (id) => {
+    await base44.entities.Lesson.delete(id);
+    queryClient.invalidateQueries({ queryKey: ["adminLessons", course.id] });
+  };
 
   const SIDE_MENU = [
     { id: "details", icon: Edit2, label: "Edit Details", sub: "Course Info & Settings" },
