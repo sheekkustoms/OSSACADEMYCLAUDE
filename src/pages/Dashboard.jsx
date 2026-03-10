@@ -185,6 +185,35 @@ export default function Dashboard() {
         <StatCard icon={TrendingUp} label="Level" value={Math.floor((myPoints?.total_xp || 0) / 100) + 1} color="bg-gray-800" />
       </div>
 
+      {/* Admin: Pending Posts Alert */}
+      {isAdmin && pendingPosts.length > 0 && (
+        <div className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-5 space-y-3">
+          <div className="flex items-center gap-2 text-amber-700 font-bold text-base">
+            <Clock className="w-5 h-5" />
+            {pendingPosts.length} Post{pendingPosts.length > 1 ? "s" : ""} Awaiting Approval
+          </div>
+          <div className="space-y-2">
+            {pendingPosts.map(post => (
+              <div key={post.id} className="flex items-start justify-between gap-3 bg-white border border-amber-200 rounded-xl p-3">
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-gray-800 truncate">{post.title}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">{post.author_name || post.author_email} · {moment(post.created_date).fromNow()}</p>
+                  <p className="text-xs text-gray-600 mt-1 line-clamp-1">{post.content}</p>
+                </div>
+                <Button
+                  size="sm"
+                  className="bg-green-600 hover:bg-green-700 text-white h-8 text-xs gap-1 shrink-0"
+                  onClick={() => approvePendingPost.mutate(post.id)}
+                  disabled={approvePendingPost.isPending}
+                >
+                  <CheckCircle className="w-3.5 h-3.5" /> Approve
+                </Button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Dashboard Cards Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Continue Learning */}
