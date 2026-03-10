@@ -343,8 +343,8 @@ export default function AdminDashboard() {
                   {(u.full_name || u.email)?.[0]?.toUpperCase()}
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-gray-800">{u.full_name || u.email}</p>
-                  <p className="text-xs text-gray-400">{u.email} · {u.role}</p>
+                  <p className="text-sm font-semibold text-gray-800">{u.role === "admin" ? "👑 " : ""}{u.full_name || u.email}</p>
+                   <p className="text-xs text-gray-400">{u.email} · {u.role}</p>
                   {userPointsMap[u.email] && (
                     <p className="text-[10px] text-gray-400 mt-0.5">
                       {(() => {
@@ -665,8 +665,11 @@ export default function AdminDashboard() {
         {/* Top members */}
         <TabsContent value="leaderboard" className="mt-4">
           <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
-            <div className="px-5 py-3 border-b border-gray-100 text-sm font-semibold text-gray-700">Most Active Members</div>
-            {allPoints.map((entry, i) => (
+            <div className="px-5 py-3 border-b border-gray-100 text-sm font-semibold text-gray-700">Most Active Members (Excluding Admins)</div>
+            {allPoints.filter(entry => {
+              const user = allUsers.find(u => u.email === entry.user_email);
+              return user?.role !== "admin";
+            }).map((entry, i) => (
               <div key={entry.id} className="flex items-center gap-3 px-5 py-3 border-b border-gray-50 last:border-0">
                 <span className="w-6 text-sm font-bold text-gray-400">#{i + 1}</span>
                 <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-400 to-violet-500 flex items-center justify-center text-white text-xs font-bold">
