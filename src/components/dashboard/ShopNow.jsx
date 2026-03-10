@@ -77,12 +77,13 @@ export default function ShopNow() {
   });
 
   const isAdmin = user?.role === "admin";
+  const isCurrentUser = user?.email === (userPoints?.user_email || user?.email);
 
   return (
     <div className="bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 rounded-xl p-6 space-y-4">
       <div className="flex items-center justify-between">
-        <h3 className="text-xl font-bold text-gray-900">🛍️ SHOP NOW</h3>
-        {isAdmin && (
+         <h3 className="text-xl font-bold text-gray-900">🛍️ SHOP NOW</h3>
+         {(isAdmin || isCurrentUser) && (
           <Button
             size="sm"
             variant={isEditing ? "outline" : "default"}
