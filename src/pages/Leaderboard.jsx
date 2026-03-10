@@ -75,7 +75,7 @@ export default function Leaderboard() {
    });
 
   const currentUserRank = rankings.find(r => r.isCurrentUser);
-  const topMembers = rankings.slice(0, 10);
+  const topMembers = rankings.filter(r => !r.isCurrentUser).slice(0, 10);
 
   return (
     <div className="max-w-5xl mx-auto space-y-10">
