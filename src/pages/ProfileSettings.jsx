@@ -406,8 +406,36 @@ export default function ProfileSettings() {
               <AlertDialogAction
                 className="bg-red-600 hover:bg-red-700 text-white"
                 onClick={async () => {
-                  toast.loading("Deleting account...");
-                  base44.auth.logout();
+                  const toastId = toast.loading("Deleting account data...");
+                  try {
+                    // Delete user's posts
+                    const userPosts = await base44.entities.CommunityPost.filter({ author_email: user.email });
+                    await Promise.all(userPosts.map(p => base44.entities.CommunityPost.delete(p.id)));
+
+                    // Delete user's comments
+                    const userComments = await base44.entities.Comment.filter({ author_email: user.email });
+                    await Promise.all(userComments.map(c => base44.entities.Comment.delete(c.id)));
+
+                    // Delete user's enrollments
+                    const userEnrollments = await base44.entities.Enrollment.filter({ user_email: user.email });
+                    await Promise.all(userEnrollments.map(e => base44.entities.Enrollment.delete(e.id)));
+
+                    // Delete user points record
+                    const userPoints = await base44.entities.UserPoints.filter({ user_email: user.email });
+                    await Promise.all(userPoints.map(p => base44.entities.UserPoints.delete(p.id)));
+
+                    // Delete notification subscriptions
+                    const subs = await base44.entities.NotificationSubscription.filter({ user_email: user.email });
+                    await Promise.all(subs.map(s => base44.entities.NotificationSubscription.delete(s.id)));
+
+                    toast.dismiss(toastId);
+                    toast.success("Account data deleted. Signing out...");
+                    setTimeout(() => base44.auth.logout(), 1500);
+                  } catch (err) {
+                    toast.dismiss(toastId);
+                    toast.error("Failed to delete all data. Signing out anyway...");
+                    setTimeout(() => base44.auth.logout(), 2000);
+                  }
                 }}
               >
                 Yes, Delete My Account
