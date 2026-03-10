@@ -8,6 +8,7 @@ import { base44 } from "@/api/base44Client";
 import moment from "moment";
 import RelativeTime from "@/components/shared/RelativeTime";
 import AvatarWithFallback from "@/components/shared/AvatarWithFallback";
+import { awardXP } from "@/components/shared/useUserPoints";
 
 function useCommenterAvatars(comments) {
   const emailsNeedingAvatars = comments
@@ -54,7 +55,6 @@ export default function PostCard({ post, currentUserEmail, onLike, onClick, inde
    const isLiked = post.likes?.includes(currentUserEmail);
    const likeCount = post.likes?.length || 0;
    const queryClient = useQueryClient();
-   const { awardXP } = require("../shared/useUserPoints");
 
    // Fetch comments to get commenters
    const { data: comments = [] } = useQuery({
