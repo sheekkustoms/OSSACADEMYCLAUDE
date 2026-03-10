@@ -284,6 +284,7 @@ export default function Community() {
                 onClick={() => setSelectedPost(post)}
                 index={i}
                 isAdminPost={adminEmails.has(post.author_email)}
+                isAdmin={user?.role === "admin"}
               />
             ))
           )}
@@ -366,15 +367,16 @@ export default function Community() {
                   by {selectedPost.author_name || selectedPost.author_email} · {new Date(selectedPost.created_date).toLocaleDateString()}
                   {selectedPost.is_pinned && <span className="ml-2 text-yellow-600">📌 Pinned</span>}
                 </p>
-                {selectedPost.author_email === user?.email && (
+                {(selectedPost.author_email === user?.email || user?.role === "admin") && (
                   <Button
                     variant="ghost"
                     size="sm"
                     className="h-7 px-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded text-xs"
                     onClick={() => {
-                      if (window.confirm("Delete this post?")) deletePostMutation.mutate(selectedPost);
+                      if (window.confirm(`Delete this post${user?.role === "admin" && selectedPost.author_email !== user?.email ? " (admin action)" : ""}?`)) deletePostMutation.mutate(selectedPost);
                     }}
                     disabled={deletePostMutation.isPending}
+                    title={user?.role === "admin" && selectedPost.author_email !== user?.email ? "Admin: delete any post" : "Delete"}
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                   </Button>

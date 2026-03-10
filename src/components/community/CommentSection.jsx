@@ -45,7 +45,7 @@ function CommentAvatar({ email, name, avatarUrl, fallbackAvatarMap }) {
    );
  }
 
-export default function CommentSection({ postId, user, myPoints }) {
+export default function CommentSection({ postId, user, myPoints, isAdmin = false }) {
   const [newComment, setNewComment] = useState("");
   const [replyingTo, setReplyingTo] = useState(null);
   const queryClient = useQueryClient();
@@ -235,13 +235,14 @@ export default function CommentSection({ postId, user, myPoints }) {
                    >
                      Reply
                    </button>
-                   {comment.author_email === user?.email && (
+                   {(comment.author_email === user?.email || isAdmin) && (
                      <button
                        onClick={() => {
-                         if (window.confirm("Delete this comment?")) deleteCommentMutation.mutate(comment);
+                         if (window.confirm(`Delete this comment${isAdmin && comment.author_email !== user?.email ? " (admin action)" : ""}?`)) deleteCommentMutation.mutate(comment);
                        }}
                        disabled={deleteCommentMutation.isPending}
                        className="text-gray-400 hover:text-red-600 transition-colors font-medium ml-auto"
+                       title={isAdmin && comment.author_email !== user?.email ? "Admin: delete any comment" : "Delete"}
                      >
                        <Trash2 className="w-3.5 h-3.5" />
                      </button>
@@ -289,13 +290,14 @@ export default function CommentSection({ postId, user, myPoints }) {
                              <Heart className={`w-3.5 h-3.5 ${reply.likes?.includes(user?.email) ? "fill-current" : ""}`} />
                              {reply.likes?.length || 0}
                            </button>
-                           {reply.author_email === user?.email && (
+                           {(reply.author_email === user?.email || isAdmin) && (
                              <button
                                onClick={() => {
-                                 if (window.confirm("Delete this comment?")) deleteCommentMutation.mutate(reply);
+                                 if (window.confirm(`Delete this comment${isAdmin && reply.author_email !== user?.email ? " (admin action)" : ""}?`)) deleteCommentMutation.mutate(reply);
                                }}
                                disabled={deleteCommentMutation.isPending}
                                className="text-gray-400 hover:text-red-600 transition-colors font-medium ml-auto"
+                               title={isAdmin && reply.author_email !== user?.email ? "Admin: delete any comment" : "Delete"}
                              >
                                <Trash2 className="w-3.5 h-3.5" />
                              </button>

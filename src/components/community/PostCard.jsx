@@ -50,7 +50,7 @@ const categoryEmoji = {
   question: "❓", showcase: "✨", resource: "📚",
 };
 
-export default function PostCard({ post, currentUserEmail, onLike, onClick, index = 0, isAdminPost = false }) {
+export default function PostCard({ post, currentUserEmail, onLike, onClick, index = 0, isAdminPost = false, isAdmin = false }) {
    const isLiked = post.likes?.includes(currentUserEmail);
    const likeCount = post.likes?.length || 0;
    const queryClient = useQueryClient();
@@ -132,13 +132,14 @@ export default function PostCard({ post, currentUserEmail, onLike, onClick, inde
                  <Pin className="w-4 h-4" /> Pinned
                </div>
              )}
-             {post.author_email === currentUserEmail && (
+             {(post.author_email === currentUserEmail || isAdmin) && (
                <Button
                  variant="ghost"
                  size="sm"
                  className="h-7 px-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded text-xs"
-                 onClick={(e) => { e.stopPropagation(); if (window.confirm("Delete this post?")) deletePostMutation.mutate(); }}
+                 onClick={(e) => { e.stopPropagation(); if (window.confirm(`Delete this post${isAdmin && post.author_email !== currentUserEmail ? " (admin action)" : ""}?`)) deletePostMutation.mutate(); }}
                  disabled={deletePostMutation.isPending}
+                 title={isAdmin && post.author_email !== currentUserEmail ? "Admin: delete any post" : "Delete"}
                >
                  <Trash2 className="w-3.5 h-3.5" />
                </Button>
