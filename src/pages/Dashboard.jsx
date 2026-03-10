@@ -191,9 +191,6 @@ export default function Dashboard() {
         <StatCard icon={TrendingUp} label="Level" value={level} color="bg-gray-800" />
       </div>
 
-      {/* Shop Now Section */}
-      <ShopNow />
-
       {/* Admin: Pending Posts Alert */}
       {isAdmin && pendingPosts.length > 0 && (
         <div className="border-2 rounded-2xl p-5 space-y-3" style={{backgroundColor: "#fdf0f7", borderColor: "#F8C7E2"}}>
@@ -222,6 +219,9 @@ export default function Dashboard() {
           </div>
         </div>
       )}
+
+      {/* Shop Now Section */}
+      <ShopNow />
 
       {/* Dashboard Cards Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
