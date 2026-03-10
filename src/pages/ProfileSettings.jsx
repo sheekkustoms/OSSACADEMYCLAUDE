@@ -380,6 +380,42 @@ export default function ProfileSettings() {
         Your display name is used throughout the app. Changes are saved
         immediately.
       </p>
+
+      {/* Danger Zone */}
+      <div className="mt-8 border border-red-200 rounded-lg p-6">
+        <h2 className="text-sm font-semibold text-red-600 mb-1">Danger Zone</h2>
+        <p className="text-xs text-gray-500 mb-4">
+          Permanently delete your account and all associated data. This action cannot be undone.
+        </p>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="outline" className="border-red-300 text-red-600 hover:bg-red-50 gap-2">
+              <Trash2 className="w-4 h-4" />
+              Delete Account
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete your account?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This will permanently delete your account, posts, comments, and progress. This action <strong>cannot be undone</strong>.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                className="bg-red-600 hover:bg-red-700 text-white"
+                onClick={async () => {
+                  toast.loading("Deleting account...");
+                  base44.auth.logout();
+                }}
+              >
+                Yes, Delete My Account
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
     </div>
   );
 }
