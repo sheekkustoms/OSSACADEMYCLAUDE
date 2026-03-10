@@ -5,7 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import {
   Plus, Trash2, Edit2, Eye, BookOpen, Upload, Video,
-  ChevronDown, ChevronUp, GripVertical, Zap, Clock, X, CheckCircle2
+  ChevronDown, ChevronUp, GripVertical, Zap, Clock, X, CheckCircle2,
+  Settings, FolderOpen, Palette, ChevronRight, MoreVertical
 } from "lucide-react";
 
 function getEmbedUrl(url) {
