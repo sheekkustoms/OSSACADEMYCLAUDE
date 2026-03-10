@@ -2,7 +2,7 @@ import React, { useState, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Shield, Users, FileText, Pin, Trash2, CheckCircle, XCircle, Megaphone, BarChart2, Ban, Gamepad2, BookOpen, UserPlus, Copy, Check, Brain, Video, Zap, Tags, Mail, Bell, UserX } from "lucide-react";
+import { Shield, Users, FileText, Pin, Trash2, CheckCircle, XCircle, Megaphone, BarChart2, Ban, Gamepad2, BookOpen, UserPlus, Copy, Check, Brain, Video, Zap, Tags, Mail, Bell, UserX, Star } from "lucide-react";
 import QuizBuilder from "../components/admin/QuizBuilder";
 import CourseManager from "../components/admin/CourseManager";
 import WeeklyChallengeManager from "../components/admin/WeeklyChallengeManager";
@@ -43,6 +43,8 @@ export default function AdminDashboard() {
   const [adminMessagingEnabled, setAdminMessagingEnabled] = useState({});
   const [activeTab, setActiveTab] = useState("posts");
   const [forceSubLoading, setForceSubLoading] = useState(false);
+  const [editingPoints, setEditingPoints] = useState({});
+  const [xpToAdd, setXpToAdd] = useState({});
 
   const { data: user } = useQuery({ queryKey: ["currentUser"], queryFn: () => base44.auth.me() });
 
@@ -126,6 +128,53 @@ export default function AdminDashboard() {
     mutationFn: ({ id, enabled }) => base44.entities.User.update(id, { can_message: !enabled }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["adminUsers"] });
+    },
+  });
+
+  const updatePointsMutation = useMutation({
+    mutationFn: async ({ pointsId, newXP }) => {
+      await base44.entities.UserPoints.update(pointsId, { total_xp: newXP });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["adminAllUserPoints"] });
+      queryClient.invalidateQueries({ queryKey: ["adminPoints"] });
+      setEditingPoints({});
+      setXpToAdd({});
+    },
+  });
+
+  const setAllAdminsToLevel10Mutation = useMutation({
+    mutationFn: async () => {
+      // Get all admins
+      const admins = allUsers.filter(u => u.role === "admin");
+      
+      // Calculate XP needed for level 10
+      // Assume standard progression or get thresholds
+      const levelSettings = await base44.entities.LevelSettings.list();
+      const thresholds = levelSettings[0]?.thresholds || [0, 100, 300, 600, 1000, 1500, 2100, 2800, 3600, 4500, 5500];
+      const xpForLevel10 = thresholds[9] || 4500;
+
+      // Update or create UserPoints for each admin
+      await Promise.all(
+        admins.map(async (admin) => {
+          const existing = allUserPoints.find(p => p.user_email === admin.email);
+          if (existing) {
+            await base44.entities.UserPoints.update(existing.id, { total_xp: xpForLevel10 });
+          } else {
+            await base44.entities.UserPoints.create({
+              user_email: admin.email,
+              user_name: admin.full_name || admin.email,
+              total_xp: xpForLevel10,
+              level: 10,
+            });
+          }
+        })
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["adminAllUserPoints"] });
+      queryClient.invalidateQueries({ queryKey: ["adminPoints"] });
+      alert("✓ All admins set to Level 10!");
     },
   });
 
@@ -224,9 +273,12 @@ export default function AdminDashboard() {
             <Tags className="w-3.5 h-3.5" /> Categories
           </TabsTrigger>
           <TabsTrigger value="messaging" className="flex items-center gap-1">
-            <Mail className="w-3.5 h-3.5" /> Messages
-          </TabsTrigger>
-        </TabsList>
+             <Mail className="w-3.5 h-3.5" /> Messages
+           </TabsTrigger>
+           <TabsTrigger value="points" className="flex items-center gap-1">
+             <Star className="w-3.5 h-3.5" /> Manage Points
+           </TabsTrigger>
+          </TabsList>
 
         {/* Posts moderation */}
         <TabsContent value="posts" className="space-y-3 mt-4">
@@ -524,6 +576,90 @@ export default function AdminDashboard() {
         {/* Messaging */}
         <TabsContent value="messaging" className="mt-4">
           <MessagingPanel />
+        </TabsContent>
+
+        {/* Manage Points */}
+        <TabsContent value="points" className="mt-4 space-y-4">
+          <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-violet-600 font-semibold">
+                <Star className="w-5 h-5" /> Manage Member Points & Levels
+              </div>
+              <Button
+                onClick={() => setAllAdminsToLevel10Mutation.mutate()}
+                disabled={setAllAdminsToLevel10Mutation.isPending}
+                className="bg-amber-600 hover:bg-amber-700 text-white text-sm"
+              >
+                {setAllAdminsToLevel10Mutation.isPending ? "Setting..." : "Set All Admins to Level 10"}
+              </Button>
+            </div>
+            <p className="text-sm text-gray-500">Manually add XP to any member's account to adjust their level.</p>
+
+            <div className="space-y-2 max-h-96 overflow-y-auto">
+              {allUserPoints.map((points) => (
+                <div key={points.id} className="bg-gray-50 border border-gray-200 rounded-xl p-3 flex items-center justify-between gap-3">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-gray-800 truncate">{points.user_name || points.user_email}</p>
+                    <p className="text-xs text-gray-500">{points.user_email}</p>
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    {editingPoints[points.id] ? (
+                      <>
+                        <div className="flex items-center gap-1">
+                          <span className="text-xs text-gray-500">Add XP:</span>
+                          <Input
+                            type="number"
+                            value={xpToAdd[points.id] || 0}
+                            onChange={(e) => setXpToAdd({ ...xpToAdd, [points.id]: parseInt(e.target.value) || 0 })}
+                            className="w-20 h-8 border-gray-300 text-sm"
+                            placeholder="0"
+                          />
+                        </div>
+                        <Button
+                          size="sm"
+                          className="bg-green-600 hover:bg-green-700 text-white h-8 text-xs"
+                          onClick={() => {
+                            const newXP = (points.total_xp || 0) + (xpToAdd[points.id] || 0);
+                            updatePointsMutation.mutate({ pointsId: points.id, newXP });
+                          }}
+                          disabled={updatePointsMutation.isPending}
+                        >
+                          Save
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-8 text-xs"
+                          onClick={() => {
+                            setEditingPoints({ ...editingPoints, [points.id]: false });
+                            setXpToAdd({ ...xpToAdd, [points.id]: 0 });
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <div className="text-right">
+                          <p className="text-sm font-bold text-gray-800">{points.total_xp || 0} XP</p>
+                          <p className="text-xs text-gray-400">Level {points.level || 1}</p>
+                        </div>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="h-8 text-xs border-blue-300 text-blue-600 hover:bg-blue-50"
+                          onClick={() => setEditingPoints({ ...editingPoints, [points.id]: true })}
+                        >
+                          Add XP
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </TabsContent>
 
         {/* Top members */}
