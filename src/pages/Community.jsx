@@ -191,7 +191,7 @@ export default function Community() {
 
   return (
     <PullToRefresh onRefresh={handleRefresh}>
-    <div className="max-w-5xl mx-auto space-y-8">
+      <div className="max-w-5xl mx-auto space-y-8">
       <div className="flex items-center justify-between bg-white rounded-lg p-6 shadow-sm">
         <div>
           <h1 className="text-4xl font-bold text-gray-900">Community</h1>
