@@ -49,7 +49,7 @@ export default function CourseDetail() {
   const sortedModules = [...modules].sort((a, b) => (a.order || 0) - (b.order || 0));
 
   // Auto-select first lesson
-  React.useEffect(() => {
+  useEffect(() => {
     if (sortedLessons.length > 0 && !activeLesson) {
       setActiveLesson(sortedLessons[0]);
     }
