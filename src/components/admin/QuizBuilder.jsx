@@ -185,6 +185,18 @@ export default function QuizBuilder() {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["adminQuizQuestions", editingQuizId] }),
   });
 
+  const distributePoints = async () => {
+    const total = parseInt(totalPoints);
+    if (!total || sortedQuestions.length === 0) return;
+    const perQuestion = Math.floor(total / sortedQuestions.length);
+    const remainder = total - perQuestion * sortedQuestions.length;
+    await Promise.all(sortedQuestions.map((q, i) =>
+      base44.entities.QuizQuestion.update(q.id, { points: perQuestion + (i === 0 ? remainder : 0) })
+    ));
+    queryClient.invalidateQueries({ queryKey: ["adminQuizQuestions", editingQuizId] });
+    setTotalPoints("");
+  };
+
   const editingQuiz = quizzes.find(q => q.id === editingQuizId);
 
   const hostingQuiz = quizzes.find(q => q.id === hostingQuizId);
