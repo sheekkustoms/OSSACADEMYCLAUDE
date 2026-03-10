@@ -319,6 +319,15 @@ function CourseEditor({ course, onClose }) {
         <Button size="sm" onClick={saveCourse} disabled={saving} className="bg-gradient-to-r from-pink-500 to-violet-500 text-white h-7 text-xs shrink-0">
           {saving ? "Saving..." : "Save"}
         </Button>
+        <a
+          href={createPageUrl(`CourseDetail?id=${course.id}&preview=1`)}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Button size="sm" variant="outline" className="h-7 text-xs gap-1 shrink-0 border-violet-200 text-violet-600 hover:bg-violet-50">
+            <ExternalLink className="w-3 h-3" /> Preview
+          </Button>
+        </a>
         <Button variant="ghost" size="icon" className="w-7 h-7 text-gray-400 shrink-0" onClick={onClose}><X className="w-4 h-4" /></Button>
       </div>
 
