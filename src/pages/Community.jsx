@@ -184,7 +184,13 @@ export default function Community() {
       return new Date(b.created_date) - new Date(a.created_date);
     });
 
+  const handleRefresh = useCallback(async () => {
+    await queryClient.invalidateQueries({ queryKey: ["communityPosts"] });
+    await queryClient.refetchQueries({ queryKey: ["communityPosts"] });
+  }, [queryClient]);
+
   return (
+    <PullToRefresh onRefresh={handleRefresh}>
     <div className="max-w-5xl mx-auto space-y-8">
       <div className="flex items-center justify-between bg-white rounded-lg p-6 shadow-sm">
         <div>
