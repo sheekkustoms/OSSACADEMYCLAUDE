@@ -212,12 +212,19 @@ export default function Community() {
        return new Date(b.created_date) - new Date(a.created_date);
      });
 
-   // Auto-select most recent post on load
+   // Show latest post modal on first visit per session
    React.useEffect(() => {
-     if (filteredAndSorted.length > 0 && !selectedPost) {
-       setSelectedPost(filteredAndSorted[0]);
+     if (filteredAndSorted.length === 0) return;
+
+     const latestPost = filteredAndSorted[0];
+     const dismissed = JSON.parse(localStorage.getItem("dismissedPosts") || "[]");
+     const hasVisited = sessionStorage.getItem("communityVisited");
+
+     if (!hasVisited && !dismissed.includes(latestPost.id)) {
+       setShowLatestPostModal(true);
+       sessionStorage.setItem("communityVisited", "true");
      }
-   }, []);
+   }, [filteredAndSorted]);
 
   const handleRefresh = useCallback(async () => {
     await queryClient.invalidateQueries({ queryKey: ["communityPosts"] });
