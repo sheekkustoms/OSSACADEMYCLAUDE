@@ -83,7 +83,7 @@ export default function ShopNow() {
     <div className="bg-gradient-to-br from-amber-50 to-orange-50 border-2 border-amber-200 rounded-xl p-6 space-y-4">
       <div className="flex items-center justify-between">
          <h3 className="text-xl font-bold text-gray-900">🛍️ SHOP NOW</h3>
-         {(isAdmin || isCurrentUser) && (
+         {isAdmin && (
           <Button
             size="sm"
             variant={isEditing ? "outline" : "default"}
@@ -104,21 +104,16 @@ export default function ShopNow() {
         )}
       </div>
 
-      <div className="space-y-3">
-        {items.length > 0 ? (
-          items.map((item) => (
-            <div key={item.id} className="flex items-center justify-between bg-white p-3 rounded-lg border border-amber-200">
-              <div className="flex-1">
-                <p className="font-semibold text-gray-900 text-sm">{item.title}</p>
-                <p className="text-xs text-gray-500 mt-0.5 truncate">{item.url}</p>
-              </div>
-              <div className="flex items-center gap-2 ml-3">
-                <a href={item.url} target="_blank" rel="noopener noreferrer">
-                  <Button size="sm" variant="ghost" className="h-7 gap-1">
-                    <ExternalLink className="w-4 h-4" />
-                  </Button>
-                </a>
-                {isEditing && (
+      {isAdmin && isEditing ? (
+        <div className="space-y-3">
+          {items.length > 0 && (
+            items.map((item) => (
+              <div key={item.id} className="flex items-center justify-between bg-white p-3 rounded-lg border border-amber-200">
+                <div className="flex-1">
+                  <p className="font-semibold text-gray-900 text-sm">{item.title}</p>
+                  <p className="text-xs text-gray-500 mt-0.5 truncate">{item.url}</p>
+                </div>
+                <div className="flex items-center gap-2 ml-3">
                   <Button
                     size="sm"
                     variant="ghost"
@@ -127,42 +122,43 @@ export default function ShopNow() {
                   >
                     <Trash2 className="w-4 h-4" />
                   </Button>
-                )}
+                </div>
               </div>
-            </div>
-          ))
-        ) : (
-          <p className="text-gray-500 text-sm text-center py-4">No shop items added yet</p>
-        )}
-      </div>
+            ))
+          )}
 
-      {isEditing && (
-        <div className="space-y-3 border-t border-amber-200 pt-4">
-          <div className="space-y-2">
-            <label className="text-xs font-medium text-gray-700">Item Name</label>
-            <Input
-              placeholder="e.g., Purchase Fabric"
-              value={newItem.title}
-              onChange={(e) => setNewItem({ ...newItem, title: e.target.value })}
-              className="text-sm"
-            />
+          <div className="space-y-3 border-t border-amber-200 pt-4">
+            <div className="space-y-2">
+              <label className="text-xs font-medium text-gray-700">Item Name</label>
+              <Input
+                placeholder="e.g., Purchase Fabric"
+                value={newItem.title}
+                onChange={(e) => setNewItem({ ...newItem, title: e.target.value })}
+                className="text-sm"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-medium text-gray-700">Link (Shopify or Custom)</label>
+              <Input
+                placeholder="https://..."
+                value={newItem.url}
+                onChange={(e) => setNewItem({ ...newItem, url: e.target.value })}
+                className="text-sm"
+              />
+            </div>
+            <Button
+              onClick={handleAddItem}
+              className="w-full bg-amber-600 hover:bg-amber-700 text-white gap-2"
+              size="sm"
+            >
+              <Plus className="w-4 h-4" /> Add Item
+            </Button>
           </div>
-          <div className="space-y-2">
-            <label className="text-xs font-medium text-gray-700">Link (Shopify or Custom)</label>
-            <Input
-              placeholder="https://..."
-              value={newItem.url}
-              onChange={(e) => setNewItem({ ...newItem, url: e.target.value })}
-              className="text-sm"
-            />
-          </div>
-          <Button
-            onClick={handleAddItem}
-            className="w-full bg-amber-600 hover:bg-amber-700 text-white gap-2"
-            size="sm"
-          >
-            <Plus className="w-4 h-4" /> Add Item
-          </Button>
+        </div>
+      ) : (
+        <div className="text-center py-12">
+          <p className="text-lg font-semibold text-gray-700">Coming Soon! 🎉</p>
+          <p className="text-sm text-gray-600 mt-2">Shop items will be available once activated</p>
         </div>
       )}
 
