@@ -295,6 +295,7 @@ export default function Community() {
                 onClick={() => setSelectedPost(post)}
                 index={i}
                 isAdminPost={adminEmails.has(post.author_email)}
+                adminAvatarUrl={adminEmails.has(post.author_email) ? (allUsers.find(u => u.email === post.author_email)?.avatar_url || null) : null}
                 isAdmin={user?.role === "admin"}
               />
             ))
