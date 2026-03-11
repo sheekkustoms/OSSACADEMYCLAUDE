@@ -237,7 +237,7 @@ export default function ProfileSettings() {
                 id="photo-upload"
                 type="file"
                 accept="image/*"
-                onChange={handlePhotoUpload}
+                onChange={handlePhotoSelect}
                 disabled={uploadingPhoto}
                 className="hidden"
               />
