@@ -372,6 +372,15 @@ export default function ProfileSettings() {
         immediately.
       </p>
 
+      {/* Crop Modal */}
+      {cropImageUrl && (
+        <ImageCropModal
+          imageUrl={cropImageUrl}
+          onCrop={handleCroppedPhoto}
+          onCancel={() => setCropImageUrl(null)}
+        />
+      )}
+
       {/* Danger Zone */}
       <div className="mt-8 border border-red-200 rounded-lg p-6">
         <h2 className="text-sm font-semibold text-red-600 mb-1">Danger Zone</h2>
