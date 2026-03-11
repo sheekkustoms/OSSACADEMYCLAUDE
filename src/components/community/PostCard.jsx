@@ -115,10 +115,10 @@ export default function PostCard({ post, currentUserEmail, onLike, onClick, inde
        animate={{ opacity: 1, y: 0 }}
        transition={{ delay: index * 0.04 }}
        onClick={onClick}
-       style={isAdminPostFinal ? { backgroundColor: "#fae8eb", borderColor: "#c9a0b4" } : {}}
-       className={`group border-2 rounded-2xl overflow-hidden hover:shadow-md transition-all cursor-pointer ${
-         isAdminPostFinal ? "" : "border-green-600 bg-white"
-       }`}
+       style={isAdminPostFinal
+         ? { backgroundColor: "#fae8eb", borderColor: "#c9a0b4", border: "2px solid #c9a0b4" }
+         : { backgroundColor: "#ffffff", border: "2px solid #16a34a" }}
+       className="group rounded-2xl overflow-hidden hover:shadow-md transition-all cursor-pointer"
      >
        {post.image_url && (
          <img src={post.image_url} alt="" className="w-full object-contain bg-black" />
