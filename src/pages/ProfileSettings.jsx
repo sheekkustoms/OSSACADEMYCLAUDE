@@ -27,6 +27,8 @@ export default function ProfileSettings() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
+  const [cropImageUrl, setCropImageUrl] = useState(null);
+  const [pendingFile, setPendingFile] = useState(null);
 
   // Fetch current user
    const { data: user, isLoading: userLoading } = useQuery({
