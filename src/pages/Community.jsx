@@ -89,6 +89,7 @@ export default function Community() {
         comment_count: 0,
         is_approved: user.role === "admin" ? true : false,
         is_pinned: false,
+        is_admin_post: user.role === "admin",
       });
 
       console.log("[Community] Post created:", {
