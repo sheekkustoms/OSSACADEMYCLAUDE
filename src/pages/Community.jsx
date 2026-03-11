@@ -199,6 +199,16 @@ export default function Community() {
     },
   });
 
+  // Backfill is_admin_post on old posts that are missing it
+  React.useEffect(() => {
+    if (!posts.length || !adminEmails.size) return;
+    posts.forEach(p => {
+      if (p.is_admin_post !== true && adminEmails.has(p.author_email)) {
+        base44.entities.CommunityPost.update(p.id, { is_admin_post: true });
+      }
+    });
+  }, [posts, adminEmails.size]);
+
   // Sort: pinned first, then by date
    const filteredAndSorted = posts
      .filter((p) => p.is_approved !== false)
