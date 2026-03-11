@@ -101,9 +101,9 @@ export default function PostCard({ post, currentUserEmail, onLike, onClick, inde
        animate={{ opacity: 1, y: 0 }}
        transition={{ delay: index * 0.04 }}
        onClick={onClick}
-       style={isAdminPost ? { backgroundColor: "#fae8eb", borderColor: "#c9a0b4" } : {}}
+       style={isAdminPostFinal ? { backgroundColor: "#fae8eb", borderColor: "#c9a0b4" } : {}}
        className={`group border-2 rounded-2xl overflow-hidden hover:shadow-md transition-all cursor-pointer ${
-         isAdminPost ? "" : "border-green-600 bg-white"
+         isAdminPostFinal ? "" : "border-green-600 bg-white"
        }`}
      >
        {post.image_url && (
