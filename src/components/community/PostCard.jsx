@@ -52,6 +52,7 @@ const categoryEmoji = {
 };
 
 export default function PostCard({ post, currentUserEmail, onLike, onClick, index = 0, isAdminPost = false, adminAvatarUrl = null, isAdmin = false, currentUserPoints = null }) {
+   const isAdminPostFinal = isAdminPost || post.is_admin_post === true;
    const isLiked = post.likes?.includes(currentUserEmail);
    const likeCount = post.likes?.length || 0;
    const queryClient = useQueryClient();
