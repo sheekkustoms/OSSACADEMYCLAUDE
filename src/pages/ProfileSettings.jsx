@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getDisplayName, updateUserDisplayName } from "@/components/shared/useDisplayName";
 import { toast } from "sonner";
+import ImageCropModal from "@/components/shared/ImageCropModal";
 import {
   AlertDialog,
   AlertDialogAction,
