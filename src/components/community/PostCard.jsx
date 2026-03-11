@@ -57,6 +57,20 @@ export default function PostCard({ post, currentUserEmail, onLike, onClick, inde
    const likeCount = post.likes?.length || 0;
    const queryClient = useQueryClient();
 
+   // Always fetch the latest avatar for admin posts directly
+   const { data: liveAdminUser } = useQuery({
+     queryKey: ["adminUser", post.author_email],
+     queryFn: async () => {
+       const users = await base44.entities.User.filter({ email: post.author_email });
+       return users[0] || null;
+     },
+     enabled: isAdminPostFinal,
+     staleTime: 30000,
+   });
+   const resolvedAvatarUrl = isAdminPostFinal
+     ? (liveAdminUser?.avatar_url || adminAvatarUrl || post.author_avatar || null)
+     : post.author_avatar;
+
    // Fetch comments to get commenters
    const { data: comments = [] } = useQuery({
      queryKey: ["postComments", post.id],
