@@ -91,6 +91,11 @@ export default function Dashboard() {
     queryFn: () => base44.entities.LiveClass.filter({ is_active: true }),
   });
 
+  const { data: allLiveClasses = [] } = useQuery({
+    queryKey: ["allLiveClasses"],
+    queryFn: () => base44.entities.LiveClass.list("-scheduled_at", 100),
+  });
+
   const { data: notifications = [] } = useQuery({
     queryKey: ["notifications", user?.email],
     queryFn: () => base44.entities.Notification.filter({ recipient_email: user.email, is_read: false }),
