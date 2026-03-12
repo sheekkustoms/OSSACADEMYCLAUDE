@@ -88,6 +88,10 @@ export default function LiveClassManager() {
           </div>
         </div>
         <div>
+          <label className="text-xs text-gray-400 mb-1 block">Recording Link (Google Drive / YouTube — paste after class)</label>
+          <Input placeholder="https://drive.google.com/file/d/..." value={form.recording_url || ""} onChange={e => setForm({ ...form, recording_url: e.target.value })} />
+        </div>
+        <div>
           <label className="text-xs text-gray-400 mb-1 block">Class Materials PDF</label>
           {form.pdf_url ? (
             <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-lg px-3 py-2">
