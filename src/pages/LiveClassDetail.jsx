@@ -48,7 +48,7 @@ export default function LiveClassDetail() {
     }
   };
 
-  const isPast = new Date(cls.scheduled_at) < new Date();
+  const isPast = new Date(cls.scheduled_at).getTime() + 60 * 60 * 1000 <= Date.now();
 
   const handleDownloadPDF = async () => {
     try {
