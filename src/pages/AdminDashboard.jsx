@@ -600,6 +600,11 @@ export default function AdminDashboard() {
           <MessagingPanel />
         </TabsContent>
 
+        {/* Reward Students */}
+        <TabsContent value="reward" className="mt-4">
+          <RewardPointsPanel adminUser={user} />
+        </TabsContent>
+
         {/* Activity Log */}
         <TabsContent value="activity" className="mt-4 space-y-4">
           <div className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm">
