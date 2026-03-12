@@ -282,33 +282,58 @@ export default function LiveClasses() {
       {past.length > 0 && (
         <div>
           <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">Past Classes & Sewing Patterns</h2>
-          <div className="space-y-3">
-            {past.slice().reverse().map(cls => (
-              <div key={cls.id} className="bg-white border border-gray-100 rounded-xl px-4 py-4 shadow-sm">
-                <div className="flex items-center justify-between gap-3 flex-wrap">
-                  <div>
-                    <span className="font-medium text-gray-700">{cls.title}</span>
-                    <span className="block text-xs text-gray-400 mt-0.5">{moment(cls.scheduled_at).format("MMM D, YYYY [at] h:mm A")}</span>
+          <div className="space-y-4">
+            {past.slice().reverse().map(cls => {
+              // Convert Google Drive share link to embeddable preview link
+              const getEmbedUrl = (url) => {
+                if (!url) return null;
+                const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+                if (match) return `https://drive.google.com/file/d/${match[1]}/preview`;
+                // YouTube
+                const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+                if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`;
+                return url;
+              };
+              const embedUrl = getEmbedUrl(cls.recording_url);
+
+              return (
+                <div key={cls.id} className="bg-white border border-gray-100 rounded-xl p-4 shadow-sm space-y-3">
+                  <div className="flex items-center justify-between gap-3 flex-wrap">
+                    <div>
+                      <span className="font-medium text-gray-700">{cls.title}</span>
+                      <span className="block text-xs text-gray-400 mt-0.5">{moment(cls.scheduled_at).format("MMM D, YYYY [at] h:mm A")}</span>
+                    </div>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      {cls.recording_url && (
+                        <a href={cls.recording_url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}>
+                          <Button size="sm" className="bg-gradient-to-r from-pink-500 to-violet-500 text-white gap-1.5 text-xs">
+                            <Video className="w-3.5 h-3.5" /> Open Recording
+                          </Button>
+                        </a>
+                      )}
+                      {cls.pdf_url && (
+                        <a href={cls.pdf_url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}>
+                          <Button size="sm" className="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 gap-1.5 text-xs">
+                            <Download className="w-3.5 h-3.5" /> Sewing Pattern
+                          </Button>
+                        </a>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2 flex-wrap">
-                    {cls.zoom_url && (
-                      <a href={cls.zoom_url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}>
-                        <Button size="sm" className="bg-gradient-to-r from-pink-500 to-violet-500 text-white gap-1.5 text-xs">
-                          <Video className="w-3.5 h-3.5" /> Recording
-                        </Button>
-                      </a>
-                    )}
-                    {cls.pdf_url && (
-                      <a href={cls.pdf_url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}>
-                        <Button size="sm" className="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 gap-1.5 text-xs">
-                          <Download className="w-3.5 h-3.5" /> Sewing Pattern
-                        </Button>
-                      </a>
-                    )}
-                  </div>
+                  {embedUrl && (
+                    <div className="rounded-xl overflow-hidden border border-gray-100 aspect-video">
+                      <iframe
+                        src={embedUrl}
+                        className="w-full h-full"
+                        allow="autoplay"
+                        allowFullScreen
+                        title={cls.title}
+                      />
+                    </div>
+                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
