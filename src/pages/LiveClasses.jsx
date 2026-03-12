@@ -214,8 +214,10 @@ export default function LiveClasses() {
   });
 
   const sorted = [...classes].sort((a, b) => new Date(a.scheduled_at) - new Date(b.scheduled_at));
-  const upcoming = sorted.filter(c => new Date(c.scheduled_at) > new Date());
-  const past = sorted.filter(c => new Date(c.scheduled_at) <= new Date());
+  // A class is still "upcoming/active" for 1 hour after its scheduled time
+  const oneHourMs = 60 * 60 * 1000;
+  const upcoming = sorted.filter(c => new Date(c.scheduled_at).getTime() + oneHourMs > Date.now());
+  const past = sorted.filter(c => new Date(c.scheduled_at).getTime() + oneHourMs <= Date.now());
   const publishedQuizzes = quizzes.filter(q => q.is_published && q.quiz_type === "live");
 
   return (
