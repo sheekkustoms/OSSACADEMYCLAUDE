@@ -281,12 +281,32 @@ export default function LiveClasses() {
 
       {past.length > 0 && (
         <div>
-          <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">Past Classes</h2>
-          <div className="space-y-2">
+          <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-3">Past Classes & Sewing Patterns</h2>
+          <div className="space-y-3">
             {past.slice().reverse().map(cls => (
-              <div key={cls.id} className="bg-gray-50 border border-gray-100 rounded-xl px-4 py-3 flex items-center justify-between gap-3 text-sm text-gray-500">
-                <span className="font-medium text-gray-700">{cls.title}</span>
-                <span className="text-xs">{moment(cls.scheduled_at).format("MMM D, YYYY")}</span>
+              <div key={cls.id} className="bg-white border border-gray-100 rounded-xl px-4 py-4 shadow-sm">
+                <div className="flex items-center justify-between gap-3 flex-wrap">
+                  <div>
+                    <span className="font-medium text-gray-700">{cls.title}</span>
+                    <span className="block text-xs text-gray-400 mt-0.5">{moment(cls.scheduled_at).format("MMM D, YYYY [at] h:mm A")}</span>
+                  </div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    {cls.zoom_url && (
+                      <a href={cls.zoom_url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}>
+                        <Button size="sm" className="bg-gradient-to-r from-pink-500 to-violet-500 text-white gap-1.5 text-xs">
+                          <Video className="w-3.5 h-3.5" /> Recording
+                        </Button>
+                      </a>
+                    )}
+                    {cls.pdf_url && (
+                      <a href={cls.pdf_url} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}>
+                        <Button size="sm" className="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 gap-1.5 text-xs">
+                          <Download className="w-3.5 h-3.5" /> Sewing Pattern
+                        </Button>
+                      </a>
+                    )}
+                  </div>
+                </div>
               </div>
             ))}
           </div>
