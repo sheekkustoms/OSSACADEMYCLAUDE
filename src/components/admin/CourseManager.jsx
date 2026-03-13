@@ -331,7 +331,7 @@ function CourseEditor({ course, onClose }) {
         <Button variant="ghost" size="icon" className="w-7 h-7 text-gray-400 shrink-0" onClick={onClose}><X className="w-4 h-4" /></Button>
       </div>
 
-      <div className="flex min-h-[520px]">
+      <div className="flex flex-1 min-h-0 overflow-hidden">
         {/* Left: Module / Lesson List */}
         <div className="flex-1 border-r border-gray-100 overflow-y-auto">
           <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
