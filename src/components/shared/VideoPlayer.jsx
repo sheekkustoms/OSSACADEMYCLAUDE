@@ -57,7 +57,7 @@ export default function VideoPlayer({ url, lessonId, enrollmentRequired }) {
           allowFullScreen
           sandbox="allow-scripts allow-same-origin allow-forms"
         />
-        {/* Block the entire Google Drive top bar to prevent "open outside" links */}
+        {/* Block the entire Google Drive top bar */}
         <div
           className="absolute top-0 left-0 right-0 bg-gray-900"
           style={{ height: "52px", zIndex: 10, pointerEvents: "all", cursor: "default" }}
@@ -67,6 +67,12 @@ export default function VideoPlayer({ url, lessonId, enrollmentRequired }) {
             Oh Sew Sheek
           </span>
         </div>
+        {/* Block the pop-out arrow that appears top-right inside the video */}
+        <div
+          className="absolute top-0 right-0 bg-black"
+          style={{ width: "80px", height: "80px", zIndex: 20, pointerEvents: "all", cursor: "default" }}
+          onClick={(e) => e.stopPropagation()}
+        />
       </div>
     );
   }
