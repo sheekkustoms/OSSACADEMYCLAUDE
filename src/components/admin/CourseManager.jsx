@@ -224,6 +224,9 @@ function CourseEditor({ course, onClose }) {
   const [uploadingThumb, setUploadingThumb] = useState(false);
   const [uploadingPdf, setUploadingPdf] = useState(false);
   const [activePanel, setActivePanel] = useState(null);
+  const [showBulk, setShowBulk] = useState(false);
+  const [bulkLinks, setBulkLinks] = useState("");
+  const [bulkSaving, setBulkSaving] = useState(false);
   const queryClient = useQueryClient();
 
   const { data: modules = [] } = useQuery({
