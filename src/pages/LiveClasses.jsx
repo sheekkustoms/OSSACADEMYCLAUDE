@@ -321,13 +321,30 @@ export default function LiveClasses() {
                     </div>
                   </div>
                   {embedUrl && (
-                    <div className="rounded-xl overflow-hidden border border-gray-100 aspect-video">
+                    <div className="rounded-xl overflow-hidden border border-gray-100 aspect-video relative">
                       <iframe
                         src={embedUrl}
                         className="w-full h-full"
                         allow="autoplay"
                         allowFullScreen
                         title={cls.title}
+                        sandbox="allow-scripts allow-same-origin allow-forms"
+                      />
+                      {/* Cover the full top bar + top-right pop-out arrow from Google Drive */}
+                      <div
+                        className="absolute top-0 left-0 right-0 bg-gray-900"
+                        style={{ height: "52px", zIndex: 10, pointerEvents: "all", cursor: "default" }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <span className="text-[11px] font-extrabold bg-gradient-to-r from-pink-400 via-fuchsia-400 to-violet-400 bg-clip-text text-transparent px-3 leading-[52px] inline-block">
+                          Oh Sew Sheek
+                        </span>
+                      </div>
+                      {/* Extra blocker for the pop-out arrow in the video area */}
+                      <div
+                        className="absolute top-0 right-0 bg-black"
+                        style={{ width: "80px", height: "80px", zIndex: 20, pointerEvents: "all", cursor: "default" }}
+                        onClick={(e) => e.stopPropagation()}
                       />
                     </div>
                   )}
