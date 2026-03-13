@@ -342,8 +342,53 @@ function CourseEditor({ course, onClose }) {
                 className="bg-pink-100 text-pink-700 hover:bg-pink-200 gap-1 h-7 text-xs">
                 <Plus className="w-3 h-3" /> Add Lesson
               </Button>
+              <Button size="sm" onClick={() => setShowBulk(v => !v)}
+                className="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 gap-1 h-7 text-xs">
+                <Upload className="w-3 h-3" /> Bulk Add
+              </Button>
             </div>
           </div>
+
+          {/* Bulk video upload panel */}
+          {showBulk && (
+            <div className="m-3 p-4 bg-emerald-50 border border-emerald-200 rounded-xl space-y-3">
+              <p className="text-xs font-semibold text-emerald-800">Paste one Google Drive link per line — a lesson will be created for each.</p>
+              <Textarea
+                placeholder={"https://drive.google.com/file/d/ABC/view\nhttps://drive.google.com/file/d/XYZ/view\n..."}
+                value={bulkLinks}
+                onChange={e => setBulkLinks(e.target.value)}
+                className="bg-white border-emerald-200 text-xs min-h-[100px] font-mono"
+              />
+              <div className="flex gap-2">
+                <Button size="sm" disabled={bulkSaving || !bulkLinks.trim()}
+                  onClick={async () => {
+                    const lines = bulkLinks.split("\n").map(l => l.trim()).filter(Boolean);
+                    if (!lines.length) return;
+                    setBulkSaving(true);
+                    const currentStandalone = sortedLessons.filter(l => !l.module_id);
+                    await Promise.all(lines.map((url, i) =>
+                      base44.entities.Lesson.create({
+                        course_id: course.id,
+                        title: `Lesson ${currentStandalone.length + i + 1}`,
+                        description: "",
+                        video_url: url,
+                        duration_minutes: 0,
+                        xp_reward: 20,
+                        order: currentStandalone.length + i,
+                      })
+                    ));
+                    queryClient.invalidateQueries({ queryKey: ["adminLessons", course.id] });
+                    setBulkLinks("");
+                    setShowBulk(false);
+                    setBulkSaving(false);
+                  }}
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs gap-1">
+                  {bulkSaving ? "Creating..." : `Create ${bulkLinks.split("\n").filter(l => l.trim()).length} Lessons`}
+                </Button>
+                <Button size="sm" variant="outline" onClick={() => { setShowBulk(false); setBulkLinks(""); }} className="text-xs">Cancel</Button>
+              </div>
+            </div>
+          )}
 
           {sortedModules.length === 0 && standaloneLesson.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-12 text-gray-400 text-sm gap-2">
