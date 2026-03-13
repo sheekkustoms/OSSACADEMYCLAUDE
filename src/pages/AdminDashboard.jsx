@@ -56,7 +56,10 @@ export default function AdminDashboard() {
 
   const { data: allUsers = [] } = useQuery({
     queryKey: ["adminUsers"],
-    queryFn: () => base44.entities.User.list(),
+    queryFn: async () => {
+      const res = await base44.functions.invoke('getAllUsers', {});
+      return res.data?.users || [];
+    },
   });
 
   const { data: allPoints = [] } = useQuery({
