@@ -50,21 +50,18 @@ export default function Classes() {
     <div className="max-w-7xl mx-auto">
       {/* Top bar */}
       <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-5">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Classes</h1>
-            <p className="text-sm text-gray-500 mt-0.5">Learn at your own pace</p>
+            <h1 className="text-3xl font-extrabold text-[#111] tracking-tight">Classes</h1>
+            <p className="text-sm text-[#666] mt-0.5">Learn at your own pace</p>
           </div>
-          {/* Filter tabs */}
-          <div className="hidden md:flex items-center gap-1 bg-white border border-gray-200 rounded-xl p-1 shadow-sm">
+          <div className="hidden md:flex items-center gap-1 bg-white border border-[#EEEEEE] rounded-2xl p-1.5 shadow-sm">
             {FILTERS.map(f => (
               <button
                 key={f.value}
                 onClick={() => setFilter(f.value)}
-                className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                  filter === f.value
-                    ? "bg-gray-900 text-white shadow-sm"
-                    : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                className={`px-4 py-1.5 rounded-xl text-sm font-semibold transition-all ${
+                  filter === f.value ? "bg-black text-[#D4AF37]" : "text-[#666] hover:text-[#111] hover:bg-[#F5F5F5]"
                 }`}
               >
                 {f.label}
@@ -74,19 +71,17 @@ export default function Classes() {
         </div>
         {isAdmin && (
           <Button
-            variant="outline"
             size="sm"
             onClick={() => setShowAdminEditor(true)}
-            className="gap-2 border-gray-200 text-gray-600 hover:text-gray-900"
+            className="gap-2 bg-black hover:bg-[#222] text-[#D4AF37] font-semibold rounded-xl"
           >
-            <Settings className="w-4 h-4" /> Manage Courses
+            <Settings className="w-4 h-4" /> Manage
           </Button>
         )}
       </div>
 
       {/* Two-column layout */}
-      <div className="flex gap-6 min-h-[75vh]">
-        {/* Left sidebar: course list */}
+      <div className="flex gap-5 min-h-[75vh]">
         <div className="w-72 shrink-0">
           <CoursesSidebar
             courses={publishedCourses}
@@ -96,8 +91,6 @@ export default function Classes() {
             isLoading={isLoading}
           />
         </div>
-
-        {/* Main content */}
         <div className="flex-1 min-w-0">
           {selectedCourse ? (
             <CourseView
@@ -106,17 +99,16 @@ export default function Classes() {
               enrollment={userEnrollments.find(e => e.course_id === selectedCourseId) || null}
             />
           ) : (
-            <div className="flex items-center justify-center h-full bg-white rounded-2xl border border-gray-200 text-gray-400">
+            <div className="flex items-center justify-center h-full bg-white rounded-2xl border border-[#EEEEEE] text-[#999]">
               <p className="text-sm">Select a course to get started</p>
             </div>
           )}
         </div>
       </div>
 
-      {/* Admin Editor Modal */}
       {isAdmin && (
         <Dialog open={showAdminEditor} onOpenChange={setShowAdminEditor}>
-          <DialogContent className="max-w-6xl w-full h-[90vh] p-0 overflow-hidden rounded-2xl border border-gray-200">
+          <DialogContent className="max-w-6xl w-full h-[90vh] p-0 overflow-hidden rounded-2xl border border-[#EEEEEE]">
             <AdminCourseEditor />
           </DialogContent>
         </Dialog>
