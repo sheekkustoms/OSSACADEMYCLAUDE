@@ -223,20 +223,19 @@ export default function Dashboard() {
       {/* Welcome Header */}
       <div className="flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-1">
+          <h1 className="text-3xl lg:text-4xl font-extrabold text-[#111] mb-1 tracking-tight">
             Welcome back, {getDisplayName(user)?.split(" ")[0] || "Member"} 👋
           </h1>
-          <p className="text-gray-500">
+          <p className="text-[#666] text-sm">
             {moment().hour() < 12 ? "Good morning" : moment().hour() < 18 ? "Good afternoon" : "Good evening"} — continue your sewing journey.
           </p>
         </div>
         {notifications.length > 0 && (
           <Button
-            variant="outline"
             size="sm"
             onClick={() => markAllRead.mutate()}
             disabled={markAllRead.isPending}
-            className="gap-2 text-gray-600 whitespace-nowrap shrink-0"
+            className="gap-2 bg-black text-[#D4AF37] hover:bg-[#222] whitespace-nowrap shrink-0 rounded-xl font-semibold"
           >
             <CheckCheck className="w-4 h-4" /> Mark all read
           </Button>
@@ -245,9 +244,9 @@ export default function Dashboard() {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-3 gap-4">
-        <StatCard icon={Zap} label="Total Points" value={myPoints?.total_xp || 0} color="bg-amber-500" />
-        <StatCard icon={BookOpen} label="Courses Done" value={myPoints?.courses_completed || 0} color="bg-pink-500" />
-        <StatCard icon={TrendingUp} label="Level" value={level} color="bg-gray-800" />
+        <StatCard icon={Zap} label="Total XP" value={myPoints?.total_xp || 0} color="bg-[#D4AF37]" />
+        <StatCard icon={BookOpen} label="Courses Done" value={myPoints?.courses_completed || 0} color="bg-[#111]" />
+        <StatCard icon={TrendingUp} label="Level" value={level} color="bg-[#333]" />
       </div>
 
       {/* Quick Nav Links */}
@@ -259,10 +258,10 @@ export default function Dashboard() {
           { page: "MemberProfile", label: "My Profile", emoji: "👤", desc: "View your progress" },
         ].map(item => (
           <Link key={item.page} to={createPageUrl(item.page)}>
-            <div className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md hover:border-gray-300 transition-all cursor-pointer group">
+            <div className="bg-white border border-[#EEEEEE] rounded-2xl p-4 hover:shadow-md hover:border-[#D4AF37] transition-all cursor-pointer group">
               <span className="text-2xl mb-2 block">{item.emoji}</span>
-              <p className="font-semibold text-gray-900 text-sm group-hover:text-gray-700">{item.label}</p>
-              <p className="text-xs text-gray-400 mt-0.5">{item.desc}</p>
+              <p className="font-bold text-[#111] text-sm">{item.label}</p>
+              <p className="text-xs text-[#999] mt-0.5">{item.desc}</p>
             </div>
           </Link>
         ))}
