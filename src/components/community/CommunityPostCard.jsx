@@ -42,8 +42,10 @@ export default function CommunityPostCard({ post, currentUser, adminEmails, onLi
     ? (liveAdminUser?.avatar_url || post.author_avatar || null)
     : post.author_avatar;
 
-  // is_coach=true → "Coach" badge; is_coach=false/undefined → "Moderator" badge
-  const isCoach = isAdminPost ? (liveAdminUser?.is_coach === true) : false;
+  // Wait for liveAdminUser to load before showing any badge to avoid flashing "Moderator"
+  const badgeRole = isAdminPost && liveAdminUser
+    ? getRoleBadgeProps(true, liveAdminUser.is_coach === true)
+    : null;
 
   return (
     <motion.div
