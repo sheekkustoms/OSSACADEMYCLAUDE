@@ -27,18 +27,21 @@ export default function CommunityPostCard({ post, currentUser, adminEmails, onLi
   const isOwner = post.author_email === currentUser?.email;
   const cat = categoryConfig[post.category] || { label: post.category?.replace(/_/g, " "), bg: "bg-gray-100 text-gray-600" };
 
-  // Fetch live user data for admin posts (avatar + real role)
+  const OWNER_EMAIL = "sheek24kustoms@gmail.com";
+  const shouldFetchLiveUser = isAdminPost || post.author_email === OWNER_EMAIL;
+
+  // Fetch live user data for admin/owner posts (avatar + real role)
   const { data: liveAdminUser } = useQuery({
     queryKey: ["adminUser", post.author_email],
     queryFn: async () => {
       const users = await base44.entities.User.filter({ email: post.author_email });
       return users[0] || null;
     },
-    enabled: isAdminPost,
+    enabled: shouldFetchLiveUser,
     staleTime: 60000,
   });
 
-  const avatarUrl = isAdminPost
+  const avatarUrl = shouldFetchLiveUser
     ? (liveAdminUser?.avatar_url || post.author_avatar || null)
     : post.author_avatar;
 
