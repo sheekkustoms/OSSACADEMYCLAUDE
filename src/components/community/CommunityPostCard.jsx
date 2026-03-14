@@ -6,6 +6,7 @@ import AvatarWithFallback from "@/components/shared/AvatarWithFallback";
 import RelativeTime from "@/components/shared/RelativeTime";
 import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
+import RoleBadge, { getRoleBadgeProps } from "@/components/shared/RoleBadge";
 
 const categoryConfig = {
   announcement: { label: "Announcement", bg: "bg-[#E74C3C]/10 text-[#E74C3C]" },
