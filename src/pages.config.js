@@ -48,7 +48,6 @@
  * The mainPage value must match a key in the PAGES object exactly.
  */
 import AdminDashboard from './pages/AdminDashboard';
-import Community from './pages/Community';
 import CourseDetail from './pages/CourseDetail';
 import Courses from './pages/Courses';
 import DailyChallenges from './pages/DailyChallenges';
@@ -67,7 +66,6 @@ import __Layout from './Layout.jsx';
 
 export const PAGES = {
     "AdminDashboard": AdminDashboard,
-    "Community": Community,
     "CourseDetail": CourseDetail,
     "Courses": Courses,
     "DailyChallenges": DailyChallenges,
@@ -84,7 +82,7 @@ export const PAGES = {
 }
 
 export const pagesConfig = {
-    mainPage: "Community",
+    mainPage: "AdminDashboard",
     Pages: PAGES,
     Layout: __Layout,
 };
