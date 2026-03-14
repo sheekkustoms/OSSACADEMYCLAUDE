@@ -84,7 +84,7 @@ const BOTTOM_NAV_ITEMS = [
   { name: "Home", icon: Home, page: "Dashboard" },
   { name: "Courses", icon: BookOpen, page: "Courses" },
   { name: "Community", icon: Users, page: "Community" },
-  { name: "Profile", icon: User, page: "ProfileSettings" },
+  { name: "Profile", icon: User, page: "MemberProfile" },
 ];
 
 // Pages that are "root" screens — show logo on mobile top bar; others show back button
