@@ -202,7 +202,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-10">
+    <div className="max-w-6xl mx-auto space-y-8">
       {showOnboarding && (
         <OnboardingModal
           onClose={handleCloseOnboarding}
@@ -211,7 +211,7 @@ export default function Dashboard() {
         />
       )}
 
-      {/* Onboarding reminder (shown if not all steps done & not dismissed) */}
+      {/* Onboarding reminder */}
       {!showOnboarding && !reminderDismissed && completedSteps.length < 4 && (
         <OnboardingReminder
           completedSteps={completedSteps}
@@ -221,33 +221,51 @@ export default function Dashboard() {
       )}
 
       {/* Welcome Header */}
-       <div className="flex items-start justify-between">
-         <div>
-          <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-2">
-            Welcome back, {getDisplayName(user)?.split(" ")[0] || "Member"}
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-1">
+            Welcome back, {getDisplayName(user)?.split(" ")[0] || "Member"} 👋
           </h1>
-         <p className="text-lg text-gray-600">
-           {moment().hour() < 12 ? "Good morning" : moment().hour() < 18 ? "Good afternoon" : "Good evening"}. Continue your learning journey.
-         </p>
-         </div>
-         {notifications.length > 0 && (
-           <Button 
-             variant="outline" 
-             size="sm" 
-             onClick={() => markAllRead.mutate()}
-             disabled={markAllRead.isPending}
-             className="gap-2 text-gray-600 whitespace-nowrap"
-           >
-             <CheckCheck className="w-4 h-4" /> Mark {notifications.length} as read
-           </Button>
-         )}
-       </div>
+          <p className="text-gray-500">
+            {moment().hour() < 12 ? "Good morning" : moment().hour() < 18 ? "Good afternoon" : "Good evening"} — continue your sewing journey.
+          </p>
+        </div>
+        {notifications.length > 0 && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => markAllRead.mutate()}
+            disabled={markAllRead.isPending}
+            className="gap-2 text-gray-600 whitespace-nowrap shrink-0"
+          >
+            <CheckCheck className="w-4 h-4" /> Mark all read
+          </Button>
+        )}
+      </div>
 
       {/* Quick Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <StatCard icon={Zap} label="Total Points" value={myPoints?.total_xp || 0} color="bg-yellow-500" />
-        <StatCard icon={BookOpen} label="Courses" value={myPoints?.courses_completed || 0} color="bg-pink-400" />
+      <div className="grid grid-cols-3 gap-4">
+        <StatCard icon={Zap} label="Total Points" value={myPoints?.total_xp || 0} color="bg-amber-500" />
+        <StatCard icon={BookOpen} label="Courses Done" value={myPoints?.courses_completed || 0} color="bg-pink-500" />
         <StatCard icon={TrendingUp} label="Level" value={level} color="bg-gray-800" />
+      </div>
+
+      {/* Quick Nav Links */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {[
+          { page: "Community", label: "Community", emoji: "💬", desc: "Posts & discussions" },
+          { page: "Classes", label: "Classes", emoji: "🎓", desc: "Watch & learn" },
+          { page: "LiveClasses", label: "Patterns", emoji: "📄", desc: "Download PDFs" },
+          { page: "MemberProfile", label: "My Profile", emoji: "👤", desc: "View your progress" },
+        ].map(item => (
+          <Link key={item.page} to={createPageUrl(item.page)}>
+            <div className="bg-white border border-gray-200 rounded-xl p-4 hover:shadow-md hover:border-gray-300 transition-all cursor-pointer group">
+              <span className="text-2xl mb-2 block">{item.emoji}</span>
+              <p className="font-semibold text-gray-900 text-sm group-hover:text-gray-700">{item.label}</p>
+              <p className="text-xs text-gray-400 mt-0.5">{item.desc}</p>
+            </div>
+          </Link>
+        ))}
       </div>
 
       {/* Admin: Pending Posts Alert */}
