@@ -16,27 +16,27 @@ import OnboardingModal from "../components/onboarding/OnboardingModal";
 import OnboardingReminder from "../components/onboarding/OnboardingReminder";
 
 const StatCard = ({ icon: Icon, label, value, color }) => (
-  <div className="bg-white border border-gray-200 rounded-lg p-5 flex items-center gap-4">
-    <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${color}`}>
+  <div className="bg-white border border-[#EEEEEE] rounded-2xl p-5 flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow">
+    <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${color} shrink-0`}>
       <Icon className="w-6 h-6 text-white" />
     </div>
     <div>
-      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">{label}</p>
-      <p className="text-2xl font-bold text-gray-900">{value}</p>
+      <p className="text-[11px] font-semibold text-[#999] uppercase tracking-widest">{label}</p>
+      <p className="text-2xl font-bold text-[#111]">{value}</p>
     </div>
   </div>
 );
 
 const DashboardCard = ({ title, children, action, actionLabel }) => (
-  <div className="bg-white border border-gray-200 rounded-xl p-6 lg:p-8">
-    <div className="flex items-center justify-between mb-6">
-      <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+  <div className="bg-white border border-[#EEEEEE] rounded-2xl p-6 shadow-sm">
+    <div className="flex items-center justify-between mb-5">
+      <h3 className="text-base font-bold text-[#111] tracking-tight">{title}</h3>
     </div>
     {children}
     {action && actionLabel && (
-      <div className="mt-6">
+      <div className="mt-5">
         <Link to={createPageUrl(action)}>
-          <Button className="w-full bg-gray-900 hover:bg-gray-800 text-white font-medium py-2.5 rounded-lg transition-colors">
+          <Button className="w-full bg-black hover:bg-[#222] text-[#D4AF37] font-semibold rounded-xl h-10 transition-all hover:scale-[1.01]">
             {actionLabel}
           </Button>
         </Link>
