@@ -301,14 +301,14 @@ export default function Dashboard() {
 
       {/* Sewing Patterns Library */}
       {sewingPatterns.length > 0 && (
-        <div className="bg-white border border-emerald-200 rounded-xl p-6 lg:p-8">
+        <div className="bg-white border border-[#EEEEEE] rounded-2xl p-6 shadow-sm">
           <div className="flex items-center gap-3 mb-5">
-            <div className="w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center">
-              <FileText className="w-5 h-5 text-emerald-600" />
+            <div className="w-10 h-10 rounded-xl bg-[#D4AF37]/10 flex items-center justify-center">
+              <FileText className="w-5 h-5 text-[#D4AF37]" />
             </div>
             <div>
-              <h3 className="text-lg font-semibold text-gray-900">Sewing Patterns</h3>
-              <p className="text-xs text-gray-500">PDF patterns from all past live classes</p>
+              <h3 className="text-base font-bold text-[#111]">Sewing Patterns</h3>
+              <p className="text-xs text-[#999]">PDF patterns from all past live classes</p>
             </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -318,14 +318,14 @@ export default function Dashboard() {
                 href={cls.pdf_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-3 p-3 rounded-lg border border-emerald-100 bg-emerald-50 hover:bg-emerald-100 transition-colors group"
+                className="flex items-center gap-3 p-3 rounded-xl border border-[#EEEEEE] bg-[#F5F5F5] hover:border-[#D4AF37] hover:bg-[#D4AF37]/5 transition-all group"
               >
-                <div className="w-9 h-9 rounded-lg bg-emerald-200 flex items-center justify-center shrink-0">
-                  <Download className="w-4 h-4 text-emerald-700" />
+                <div className="w-9 h-9 rounded-lg bg-black flex items-center justify-center shrink-0">
+                  <Download className="w-4 h-4 text-[#D4AF37]" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-800 truncate">{cls.title}</p>
-                  <p className="text-xs text-gray-500">{moment(cls.scheduled_at).format("MMM D, YYYY")}</p>
+                  <p className="text-sm font-semibold text-[#111] truncate">{cls.title}</p>
+                  <p className="text-xs text-[#999]">{moment(cls.scheduled_at).format("MMM D, YYYY")}</p>
                 </div>
               </a>
             ))}
