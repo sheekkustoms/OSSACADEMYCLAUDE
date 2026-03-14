@@ -269,22 +269,22 @@ export default function Dashboard() {
 
       {/* Admin: Pending Posts Alert */}
       {isAdmin && pendingPosts.length > 0 && (
-        <div className="border-2 rounded-2xl p-5 space-y-3" style={{backgroundColor: "#fdf0f7", borderColor: "#F8C7E2"}}>
-          <div className="flex items-center gap-2 font-bold text-base" style={{color: "#c2608a"}}>
+        <div className="border border-[#D4AF37]/40 bg-[#D4AF37]/5 rounded-2xl p-5 space-y-3">
+          <div className="flex items-center gap-2 font-bold text-base text-[#B8960C]">
             <Clock className="w-5 h-5" />
             {pendingPosts.length} Post{pendingPosts.length > 1 ? "s" : ""} Awaiting Approval
           </div>
           <div className="space-y-2">
             {pendingPosts.map(post => (
-              <div key={post.id} className="flex items-start justify-between gap-3 bg-white rounded-xl p-3" style={{border: "1px solid #F8C7E2"}}>
+              <div key={post.id} className="flex items-start justify-between gap-3 bg-white rounded-xl p-3 border border-[#EEEEEE]">
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-gray-800 truncate">{post.title}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">{post.author_name || post.author_email} · {moment.utc(post.created_date).local().fromNow()}</p>
-                  <p className="text-xs text-gray-600 mt-1 line-clamp-1">{post.content}</p>
+                  <p className="text-sm font-semibold text-[#111] truncate">{post.title}</p>
+                  <p className="text-xs text-[#999] mt-0.5">{post.author_name || post.author_email} · {moment.utc(post.created_date).local().fromNow()}</p>
+                  <p className="text-xs text-[#666] mt-1 line-clamp-1">{post.content}</p>
                 </div>
                 <Button
                   size="sm"
-                  className="bg-green-600 hover:bg-green-700 text-white h-8 text-xs gap-1 shrink-0"
+                  className="bg-[#2ECC71] hover:bg-[#27ae60] text-white h-8 text-xs gap-1 shrink-0 rounded-lg font-semibold"
                   onClick={() => approvePendingPost.mutate(post.id)}
                   disabled={approvePendingPost.isPending}
                 >
