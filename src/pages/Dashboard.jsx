@@ -139,6 +139,39 @@ export default function Dashboard() {
   const [thresholds, setThresholds] = useState(null);
   useEffect(() => { loadThresholds(true).then(setThresholds); }, []);
 
+  // Onboarding state
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [reminderDismissed, setReminderDismissed] = useState(
+    () => !!localStorage.getItem("onboarding_reminder_dismissed")
+  );
+
+  useEffect(() => {
+    if (!user) return;
+    const hasSeen = user.has_seen_onboarding || user.data?.has_seen_onboarding;
+    if (!hasSeen) setShowOnboarding(true);
+  }, [user?.email]);
+
+  const completedSteps = user?.onboarding_steps || user?.data?.onboarding_steps || [];
+
+  const handleMarkStep = async (stepId) => {
+    const current = user?.onboarding_steps || user?.data?.onboarding_steps || [];
+    if (current.includes(stepId)) return;
+    const updated = [...current, stepId];
+    await base44.auth.updateMe({ onboarding_steps: updated });
+    queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+  };
+
+  const handleCloseOnboarding = async () => {
+    setShowOnboarding(false);
+    await base44.auth.updateMe({ has_seen_onboarding: true });
+    queryClient.invalidateQueries({ queryKey: ["currentUser"] });
+  };
+
+  const handleDismissReminder = () => {
+    setReminderDismissed(true);
+    localStorage.setItem("onboarding_reminder_dismissed", "1");
+  };
+
   const myPoints = userPoints?.[0];
   const level = isAdmin ? 10 : (thresholds ? getLevelFromXP(myPoints?.total_xp || 0, thresholds) : getLevelFromXP(myPoints?.total_xp || 0));
   const lastEnrollment = enrollments?.[0];
