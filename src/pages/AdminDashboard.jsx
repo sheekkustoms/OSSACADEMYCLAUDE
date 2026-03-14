@@ -311,6 +311,9 @@ export default function AdminDashboard() {
           <TabsTrigger value="reward" className="flex items-center gap-1">
               <Trophy className="w-3.5 h-3.5" /> Reward Students
             </TabsTrigger>
+          <TabsTrigger value="onboarding" className="flex items-center gap-1">
+              <Video className="w-3.5 h-3.5" /> Onboarding
+            </TabsTrigger>
            </TabsList>
 
         {/* Posts moderation */}
@@ -624,6 +627,11 @@ export default function AdminDashboard() {
         {/* Reward Students */}
         <TabsContent value="reward" className="mt-4">
           <RewardPointsPanel adminUser={user} />
+        </TabsContent>
+
+        {/* Onboarding Settings */}
+        <TabsContent value="onboarding" className="mt-4">
+          <OnboardingSettingsManager />
         </TabsContent>
 
         {/* Activity Log */}
