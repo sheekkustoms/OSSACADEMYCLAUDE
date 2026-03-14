@@ -42,8 +42,10 @@ export default function CommunityPostCard({ post, currentUser, adminEmails, onLi
     ? (liveAdminUser?.avatar_url || post.author_avatar || null)
     : post.author_avatar;
 
-  // Use the author's actual role from the DB, not viewer-relative logic
-  const authorRole = isAdminPost ? (liveAdminUser?.role || "admin") : null;
+  // Use the author's actual role from the DB.
+  // liveAdminUser?.role will be "admin" for the Coach and anything else (e.g. "moderator") for moderators.
+  // Default to "admin" (Coach) while the query is still loading, so there's no flash to Moderator.
+  const authorRole = isAdminPost ? (liveAdminUser ? liveAdminUser.role : "admin") : null;
 
   return (
     <motion.div
