@@ -3,6 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Settings, Video, Download } from "lucide-react";
+import ReplayPlayer from "../components/classes/ReplayPlayer";
 import CoursesSidebar from "../components/classes/CoursesSidebar";
 import CourseView from "../components/classes/CourseView";
 import AdminCourseEditor from "../components/admin/CourseManager";
