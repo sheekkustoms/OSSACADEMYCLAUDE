@@ -141,27 +141,27 @@ export default function Community() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Community</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Connect, share, and grow together</p>
+          <h1 className="text-3xl font-extrabold text-[#111] tracking-tight">Community</h1>
+          <p className="text-sm text-[#666] mt-0.5">Connect, share, and grow together</p>
         </div>
         <Button
           onClick={() => setShowComposer(true)}
-          className="bg-gray-900 hover:bg-gray-800 text-white gap-2"
+          className="bg-black hover:bg-[#222] text-[#D4AF37] font-semibold gap-2 rounded-xl h-10 px-5 transition-all hover:scale-[1.02]"
         >
           <Plus className="w-4 h-4" /> New Post
         </Button>
       </div>
 
       {/* Filter tabs */}
-      <div className="flex items-center gap-1 bg-white border border-gray-200 rounded-xl p-1 shadow-sm mb-6 overflow-x-auto">
+      <div className="flex items-center gap-1 bg-white border border-[#EEEEEE] rounded-2xl p-1.5 shadow-sm mb-6 overflow-x-auto">
         {FILTERS.map(f => (
           <button
             key={f.value}
             onClick={() => setFilter(f.value)}
-            className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+            className={`px-4 py-1.5 rounded-xl text-sm font-semibold transition-all whitespace-nowrap ${
               filter === f.value
-                ? "bg-gray-900 text-white shadow-sm"
-                : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
+                ? "bg-black text-[#D4AF37]"
+                : "text-[#666] hover:text-[#111] hover:bg-[#F5F5F5]"
             }`}
           >
             {f.label}
