@@ -11,10 +11,15 @@ import { getDisplayName } from "../shared/useDisplayName";
 import AvatarWithFallback from "../shared/AvatarWithFallback";
 import RoleBadge, { getRoleBadgeProps } from "../shared/RoleBadge";
 
+const OWNER_EMAIL = "sheek24kustoms@gmail.com";
+
 function useCommentAuthorAvatars(comments) {
-  const emailsNeedingAvatars = comments
-    .filter(c => !c.author_avatar && c.author_email)
-    .map(c => c.author_email);
+  // Always re-fetch avatar for owner email (to stay up-to-date), plus any comment missing an avatar
+  const emailsNeedingAvatars = [...new Set(
+    comments
+      .filter(c => c.author_email && (!c.author_avatar || c.author_email === OWNER_EMAIL))
+      .map(c => c.author_email)
+  )];
 
   return useQuery({
     queryKey: ["commentAvatars", emailsNeedingAvatars.sort().join(",")],
