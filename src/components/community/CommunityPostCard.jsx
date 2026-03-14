@@ -63,8 +63,8 @@ export default function CommunityPostCard({ post, currentUser, adminEmails, onLi
             <AvatarWithFallback imageUrl={avatarUrl} name={post.author_name} email={post.author_email} size="md" />
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 flex-nowrap overflow-hidden">
-                <span className="font-bold text-[#111] text-sm truncate min-w-0">{post.author_name === "COACH" ? "Coach" : (post.author_name || post.author_email)}</span>
-                <RoleBadge role={getRoleBadgeProps(isAdminPost, post.author_name)} />
+                <span className="font-bold text-[#111] text-sm truncate min-w-0">{post.author_name || post.author_email}</span>
+                <RoleBadge role={getRoleBadgeProps(isAdminPost, post.author_email, currentUser?.email)} />
               </div>
               <p className="text-xs text-[#999] mt-0.5"><RelativeTime date={post.created_date} /></p>
             </div>
