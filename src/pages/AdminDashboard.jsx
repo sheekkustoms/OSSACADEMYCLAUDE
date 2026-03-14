@@ -11,6 +11,7 @@ import LevelSettingsManager from "../components/admin/LevelSettingsManager";
 import CategoryManager from "../components/admin/CategoryManager";
 import MessagingPanel from "../components/admin/MessagingPanel";
 import RewardPointsPanel from "../components/admin/RewardPointsPanel";
+import OnboardingSettingsManager from "../components/admin/OnboardingSettingsManager";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";

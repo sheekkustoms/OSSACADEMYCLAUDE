@@ -25,7 +25,7 @@ const STEPS = [
     label: "Enroll in Your First Class",
     description: "Pick a course and start your sewing journey.",
     cta: "View Classes",
-    page: "Courses",
+    page: "Classes",
   },
   {
     id: "starter_pattern",
