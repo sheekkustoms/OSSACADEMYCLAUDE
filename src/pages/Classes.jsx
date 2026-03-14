@@ -44,13 +44,19 @@ export default function Classes() {
     .filter(c => new Date(c.scheduled_at).getTime() + oneHourMs <= Date.now())
     .sort((a, b) => new Date(b.scheduled_at) - new Date(a.scheduled_at));
 
-  const getEmbedUrl = (url) => {
+  // Returns { type: "iframe"|"video", url } or null
+  const getPlayerInfo = (url) => {
     if (!url) return null;
-    const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-    if (match) return `https://drive.google.com/file/d/${match[1]}/preview`;
-    const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
-    if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`;
-    return url;
+    // Vimeo
+    const vimeoMatch = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+    if (vimeoMatch) return { type: "iframe", url: `https://player.vimeo.com/video/${vimeoMatch[1]}?dnt=1&title=0&byline=0&portrait=0` };
+    // Google Drive — preview embed (no download button shown)
+    const driveMatch = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    if (driveMatch) return { type: "iframe", url: `https://drive.google.com/file/d/${driveMatch[1]}/preview` };
+    // Direct video file
+    if (/\.(mp4|webm|ogg|mov)(\?|$)/i.test(url)) return { type: "video", url };
+    // Fallback iframe
+    return { type: "iframe", url };
   };
 
   const publishedCourses = courses
