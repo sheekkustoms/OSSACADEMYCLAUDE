@@ -395,13 +395,19 @@ export default function AdminDashboard() {
                 </div>
               </div>
               <div className="flex items-center gap-2 flex-wrap justify-end">
-                {u.is_banned && <Badge className="bg-red-100 text-red-600 text-[10px]">Banned</Badge>}
-                {u.role === "admin" && <Badge className="bg-violet-100 text-violet-700 text-[10px]">Admin</Badge>}
-                {u.email !== user?.email && !ADMIN_EMAILS.includes(u.email) && (
-                  <>
-                    <Button size="sm" variant="outline" className={`h-8 text-xs gap-1 ${u.role === "admin" ? "text-violet-600 hover:bg-violet-50 border-violet-200" : "text-gray-500 hover:bg-gray-50"}`} onClick={() => toggleAdminMutation.mutate({ id: u.id, currentRole: u.role })}>
-                      <Shield className="w-3 h-3" /> {u.role === "admin" ? "Remove Admin" : "Make Admin"}
-                    </Button>
+                 {u.is_banned && <Badge className="bg-red-100 text-red-600 text-[10px]">Banned</Badge>}
+                 {u.email !== user?.email && !ADMIN_EMAILS.includes(u.email) && (
+                   <>
+                     {/* Make/Remove Moderator (all admins can do this) */}
+                     <Button size="sm" variant="outline" className={`h-8 text-xs gap-1 ${u.role === "admin" ? "text-violet-600 hover:bg-violet-50 border-violet-200" : "text-gray-500 hover:bg-gray-50"}`} onClick={() => toggleAdminMutation.mutate({ id: u.id, currentRole: u.role })}>
+                       <Shield className="w-3 h-3" /> {u.role === "admin" ? "Remove Moderator" : "Make Moderator"}
+                     </Button>
+                     {/* Coach toggle — owner only, only shows on admin users */}
+                     {isOwner && u.role === "admin" && (
+                       <Button size="sm" variant="outline" className={`h-8 text-xs gap-1 ${u.is_coach ? "text-[#B8960C] bg-[#D4AF37]/10 border-[#D4AF37]/40" : "text-gray-500 hover:bg-gray-50"}`} onClick={() => toggleCoachMutation.mutate({ id: u.id, isCoach: u.is_coach })}>
+                         👑 {u.is_coach ? "Demote to Moderator" : "Promote to Coach"}
+                       </Button>
+                     )}
                     <Button size="sm" variant="outline" className={`h-8 text-xs gap-1 ${u.can_message ? "text-blue-600 hover:bg-blue-50 border-blue-200" : "text-gray-500 hover:bg-gray-50"}`} onClick={() => toggleMessagingPermissionMutation.mutate({ id: u.id, enabled: u.can_message })}>
                       <Mail className="w-3 h-3" /> {u.can_message ? "Block Messages" : "Allow Messages"}
                     </Button>
