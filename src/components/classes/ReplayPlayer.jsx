@@ -20,18 +20,22 @@ export default function ReplayPlayer({ player, title }) {
     else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
   };
 
-  // iframe-based (Vimeo / Drive) — fullscreen only, no custom play/pause
+  // iframe-based (Vimeo / Drive) — no downloads, no URL exposure, no new tab
   if (player.type === "iframe") {
     return (
-      <div ref={containerRef} className="aspect-video relative bg-black group">
+      <div
+        ref={containerRef}
+        className="aspect-video relative bg-black group"
+        onContextMenu={e => e.preventDefault()}
+      >
         <iframe
           src={player.url}
           className="w-full h-full"
-          allow="autoplay; fullscreen"
+          allow="autoplay; fullscreen; encrypted-media"
           allowFullScreen
           title={title}
-          sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"
           referrerPolicy="no-referrer"
+          style={{ pointerEvents: "auto" }}
         />
         {/* Fullscreen button overlay */}
         <button
