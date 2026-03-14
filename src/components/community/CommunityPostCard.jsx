@@ -8,15 +8,15 @@ import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 
 const categoryConfig = {
-  announcement: { label: "Announcement", bg: "bg-red-100 text-red-700" },
-  student_projects: { label: "Win 🏆", bg: "bg-emerald-100 text-emerald-700" },
-  question: { label: "Question", bg: "bg-amber-100 text-amber-700" },
-  discussion: { label: "Discussion", bg: "bg-blue-100 text-blue-700" },
-  resource: { label: "Resource", bg: "bg-purple-100 text-purple-700" },
-  ask_the_coach: { label: "Ask Coach", bg: "bg-pink-100 text-pink-700" },
-  beginner_help: { label: "Beginner Help", bg: "bg-green-100 text-green-700" },
-  troubleshooting: { label: "Help", bg: "bg-orange-100 text-orange-700" },
-  showcase: { label: "Showcase", bg: "bg-violet-100 text-violet-700" },
+  announcement: { label: "Announcement", bg: "bg-[#E74C3C]/10 text-[#E74C3C]" },
+  student_projects: { label: "Win 🏆", bg: "bg-[#2ECC71]/10 text-[#27ae60]" },
+  question: { label: "Question", bg: "bg-[#D4AF37]/10 text-[#B8960C]" },
+  discussion: { label: "Discussion", bg: "bg-[#111]/5 text-[#444]" },
+  resource: { label: "Resource", bg: "bg-[#333]/10 text-[#333]" },
+  ask_the_coach: { label: "Ask Coach", bg: "bg-[#D4AF37]/15 text-[#D4AF37]" },
+  beginner_help: { label: "Beginner Help", bg: "bg-[#2ECC71]/10 text-[#27ae60]" },
+  troubleshooting: { label: "Help", bg: "bg-[#E74C3C]/10 text-[#E74C3C]" },
+  showcase: { label: "Showcase", bg: "bg-[#D4AF37]/10 text-[#B8960C]" },
 };
 
 export default function CommunityPostCard({ post, currentUser, adminEmails, onLike, onPin, onDelete, onOpen, isAdmin, index = 0 }) {
