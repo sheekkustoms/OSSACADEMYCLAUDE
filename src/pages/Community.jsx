@@ -233,6 +233,7 @@ export default function Community() {
 import CommentSection from "../components/community/CommentSection";
 import AvatarWithFallback from "../components/shared/AvatarWithFallback";
 import RelativeTime from "../components/shared/RelativeTime";
+import RoleBadge, { getRoleBadgeProps } from "../components/shared/RoleBadge";
 import { Heart, MessageCircle, Pin, Trash2 } from "lucide-react";
 
 function PostDetailDrawer({ post, currentUser, isAdmin, onClose, onLike, onPin, onDelete }) {
