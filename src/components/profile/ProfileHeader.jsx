@@ -3,12 +3,7 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-const ROLE_CONFIG = {
-  coach:     { label: "Coach",     bg: "bg-[#D4AF37]/15 text-[#B8960C] border-[#D4AF37]/30" },
-  moderator: { label: "Moderator", bg: "bg-[#333]/10 text-[#333] border-[#333]/20" },
-  student:   { label: "Member",    bg: "bg-[#F5F5F5] text-[#666] border-[#EEEEEE]" },
-};
+import RoleBadge from "@/components/shared/RoleBadge";
 
 export default function ProfileHeader({ name, email, avatarUrl, role, isOwnProfile }) {
   const cfg = ROLE_CONFIG[role] || ROLE_CONFIG.student;
