@@ -8,6 +8,8 @@ import { useQuery } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import RoleBadge, { getRoleBadgeProps } from "@/components/shared/RoleBadge";
 
+const OWNER_EMAIL = "sheek24kustoms@gmail.com";
+
 const categoryConfig = {
   announcement: { label: "Announcement", bg: "bg-[#E74C3C]/10 text-[#E74C3C]" },
   student_projects: { label: "Win 🏆", bg: "bg-[#2ECC71]/10 text-[#27ae60]" },
