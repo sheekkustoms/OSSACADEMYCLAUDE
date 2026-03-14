@@ -162,12 +162,17 @@ export default function OnboardingModal({ onClose, completedSteps, onMarkStep })
                         <p className={`text-sm font-bold ${done ? "line-through text-[#999]" : "text-[#111]"}`}>{step.label}</p>
                         {!done && <p className="text-xs text-[#666] mt-0.5">{step.description}</p>}
                       </div>
-                      {!done && (
+                      {!done && step.id !== "welcome_video" && (
                         <Link to={createPageUrl(step.page)} onClick={onClose}>
                           <Button size="sm" className="shrink-0 bg-black hover:bg-[#222] text-[#D4AF37] text-xs h-8 whitespace-nowrap rounded-lg font-semibold">
                             {step.cta}
                           </Button>
                         </Link>
+                      )}
+                      {!done && step.id === "welcome_video" && (
+                        <Button size="sm" className="shrink-0 bg-black hover:bg-[#222] text-[#D4AF37] text-xs h-8 whitespace-nowrap rounded-lg font-semibold" onClick={() => onMarkStep("welcome_video")}>
+                          Mark as Watched
+                        </Button>
                       )}
                     </motion.div>
                   );
