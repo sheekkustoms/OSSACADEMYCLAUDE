@@ -203,6 +203,23 @@ export default function Dashboard() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-10">
+      {showOnboarding && (
+        <OnboardingModal
+          onClose={handleCloseOnboarding}
+          completedSteps={completedSteps}
+          onMarkStep={handleMarkStep}
+        />
+      )}
+
+      {/* Onboarding reminder (shown if not all steps done & not dismissed) */}
+      {!showOnboarding && !reminderDismissed && completedSteps.length < 4 && (
+        <OnboardingReminder
+          completedSteps={completedSteps}
+          onOpen={() => setShowOnboarding(true)}
+          onDismiss={handleDismissReminder}
+        />
+      )}
+
       {/* Welcome Header */}
        <div className="flex items-start justify-between">
          <div>
