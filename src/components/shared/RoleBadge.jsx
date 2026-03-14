@@ -14,11 +14,13 @@ import React from "react";
  * Legacy: if called with (isAdminPost, authorEmail, currentUserEmail) it falls back
  * to the old viewer-relative logic only as a last resort.
  */
-export function getRoleBadgeProps(isAdminPost, authorRole, _unused) {
+/**
+ * @param isAdminPost  - whether the author is an admin
+ * @param isCoach      - whether the author has is_coach=true on their User record
+ */
+export function getRoleBadgeProps(isAdminPost, isCoach) {
   if (!isAdminPost) return null;
-  // authorRole here is the actual role string from the User entity
-  if (authorRole === "admin") return "coach";
-  return "moderator";
+  return isCoach ? "coach" : "moderator";
 }
 
 const CONFIG = {
