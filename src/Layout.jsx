@@ -81,13 +81,13 @@ const NAV_ITEMS = [
 
 const BOTTOM_NAV_ITEMS = [
   { name: "Home", icon: Home, page: "Dashboard" },
-  { name: "Courses", icon: BookOpen, page: "Courses" },
+  { name: "Classes", icon: BookOpen, page: "Classes" },
   { name: "Community", icon: Users, page: "Community" },
   { name: "Profile", icon: User, page: "MemberProfile" },
 ];
 
 // Pages that are "root" screens — show logo on mobile top bar; others show back button
-const ROOT_PAGES = ["Dashboard", "Courses", "Community", "Leaderboard", "LiveClasses", "ProfileSettings", "QuizHome", "AdminDashboard"];
+const ROOT_PAGES = ["Dashboard", "Courses", "Classes", "Community", "Leaderboard", "LiveClasses", "MemberProfile", "QuizHome", "AdminDashboard"];
 
 export default function Layout({ children, currentPageName }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
