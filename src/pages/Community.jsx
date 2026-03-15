@@ -18,6 +18,18 @@ export default function Community() {
   const [openPost, setOpenPost] = useState(null);
 
   const { data: user } = useQuery({ queryKey: ["currentUser"], queryFn: () => base44.auth.me() });
+
+  const { data: categorySettings = [] } = useQuery({
+    queryKey: ["categorySettings"],
+    queryFn: () => base44.entities.CategorySettings.list(),
+  });
+  const dynamicFilters = [
+    { value: "all", label: "All" },
+    ...((categorySettings[0]?.categories || []).map(c => ({
+      value: c.id,
+      label: `${c.emoji || ""} ${c.label}`.trim(),
+    }))),
+  ];
   const isAdmin = user?.role === "admin";
 
   const { data: posts = [], isLoading } = useQuery({
