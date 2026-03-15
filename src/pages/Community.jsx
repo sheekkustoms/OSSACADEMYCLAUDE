@@ -108,10 +108,13 @@ export default function Community() {
       }
       return created;
     },
-    onSuccess: () => {
+    onSuccess: (_, vars) => {
       queryClient.invalidateQueries({ queryKey: ["communityPosts"] });
       queryClient.invalidateQueries({ queryKey: ["myPoints", user?.email] });
       setShowComposer(false);
+      if (!isAdmin) {
+        import("sonner").then(({ toast }) => toast.info("Your post is pending approval and will appear once an admin approves it."));
+      }
     },
   });
 
