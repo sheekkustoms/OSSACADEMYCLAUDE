@@ -157,7 +157,7 @@ export default function Community() {
 
       {/* Filter tabs */}
       <div className="flex items-center gap-1 bg-white border border-[#EEEEEE] rounded-2xl p-1.5 shadow-sm mb-6 overflow-x-auto">
-        {FILTERS.map(f => (
+        {dynamicFilters.map(f => (
           <button
             key={f.value}
             onClick={() => setFilter(f.value)}
