@@ -241,7 +241,7 @@ import { Heart, MessageCircle, Pin, Trash2 } from "lucide-react";
 
 const OWNER_EMAIL = "sheek24kustoms@gmail.com";
 
-function PostDetailDrawer({ post, currentUser, isAdmin, onClose, onLike, onPin, onDelete }) {
+function PostDetailDrawer({ post, currentUser, isAdmin, adminEmails, onClose, onLike, onPin, onDelete }) {
   const isLiked = post.likes?.includes(currentUser?.email);
   const queryClient = useQueryClient();
 
