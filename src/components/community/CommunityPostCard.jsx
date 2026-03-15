@@ -22,29 +22,26 @@ const categoryConfig = {
   showcase: { label: "Showcase", bg: "bg-[#D4AF37]/10 text-[#B8960C]" },
 };
 
-export default function CommunityPostCard({ post, currentUser, adminEmails, onLike, onPin, onDelete, onOpen, isAdmin, index = 0 }) {
+export default function CommunityPostCard({ post, currentUser, adminEmails, onLike, onPin, onDelete, onOpen, isAdmin, index = 0, liveAvatarMap = {} }) {
   const isLiked = post.likes?.includes(currentUser?.email);
   const likeCount = post.likes?.length || 0;
   const isAdminPost = post.is_admin_post || adminEmails?.has(post.author_email);
   const isOwner = post.author_email === currentUser?.email;
   const cat = categoryConfig[post.category] || { label: post.category?.replace(/_/g, " "), bg: "bg-gray-100 text-gray-600" };
 
-  const shouldFetchLiveUser = isAdminPost || post.author_email === OWNER_EMAIL;
-
-  // Fetch live user data for admin/owner posts (avatar + real role)
+  // Fetch live user data for admin/owner posts (for role badge)
   const { data: liveAdminUser } = useQuery({
     queryKey: ["adminUser", post.author_email],
     queryFn: async () => {
       const users = await base44.entities.User.filter({ email: post.author_email });
       return users[0] || null;
     },
-    enabled: shouldFetchLiveUser,
+    enabled: isAdminPost || post.author_email === OWNER_EMAIL,
     staleTime: 60000,
   });
 
-  const avatarUrl = shouldFetchLiveUser
-    ? (liveAdminUser?.avatar_url || post.author_avatar || null)
-    : post.author_avatar;
+  // Always prefer live avatar from map (fetched fresh for all authors)
+  const avatarUrl = liveAvatarMap[post.author_email] || post.author_avatar || null;
 
   const badgeRole = isAdminPost && liveAdminUser
     ? getRoleBadgeProps(true, liveAdminUser.is_coach === true || post.author_email === OWNER_EMAIL)
