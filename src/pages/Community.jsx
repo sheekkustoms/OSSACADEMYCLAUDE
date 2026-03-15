@@ -221,6 +221,7 @@ export default function Community() {
             post={openPost}
             currentUser={user}
             isAdmin={isAdmin}
+            adminEmails={adminEmailSet}
             onClose={() => setOpenPost(null)}
             onLike={(post) => likeMutation.mutate(post)}
             onPin={(post) => pinMutation.mutate(post)}
