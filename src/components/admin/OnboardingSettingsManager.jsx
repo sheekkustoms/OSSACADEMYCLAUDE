@@ -3,13 +3,14 @@ import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Save, Video, CheckCircle } from "lucide-react";
+import { Save, Video, CheckCircle, Upload } from "lucide-react";
 
 export default function OnboardingSettingsManager() {
   const queryClient = useQueryClient();
   const [videoUrl, setVideoUrl] = useState("");
   const [videoTitle, setVideoTitle] = useState("");
   const [saved, setSaved] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const { data: settings = [] } = useQuery({
     queryKey: ["onboardingSettings"],
@@ -90,6 +91,26 @@ export default function OnboardingSettingsManager() {
             onChange={(e) => setVideoUrl(e.target.value)}
             className="border-gray-200 font-mono text-sm"
           />
+        </div>
+        <div>
+          <label className="text-xs font-semibold text-gray-600 mb-1 block">— or upload a video file —</label>
+          <label className={`flex items-center gap-2 cursor-pointer border-2 border-dashed border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-500 hover:border-violet-400 hover:text-violet-600 transition-colors ${uploading ? "opacity-60 pointer-events-none" : ""}`}>
+            <Upload className="w-4 h-4 shrink-0" />
+            {uploading ? "Uploading..." : "Click to upload video"}
+            <input
+              type="file"
+              accept="video/*"
+              className="hidden"
+              onChange={async (e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                setUploading(true);
+                const { file_url } = await base44.integrations.Core.UploadFile({ file });
+                setVideoUrl(file_url);
+                setUploading(false);
+              }}
+            />
+          </label>
         </div>
       </div>
 
