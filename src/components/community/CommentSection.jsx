@@ -13,11 +13,11 @@ import RoleBadge, { getRoleBadgeProps } from "../shared/RoleBadge";
 
 const OWNER_EMAIL = "sheek24kustoms@gmail.com";
 
-function useCommentAuthorAvatars(comments) {
-  // Always re-fetch avatar for owner email (to stay up-to-date), plus any comment missing an avatar
+function useCommentAuthorAvatars(comments, adminEmails = new Set()) {
+  // Always re-fetch avatar for admin/owner emails (to stay up-to-date), plus any comment missing an avatar
   const emailsNeedingAvatars = [...new Set(
     comments
-      .filter(c => c.author_email && (!c.author_avatar || c.author_email === OWNER_EMAIL))
+      .filter(c => c.author_email && (!c.author_avatar || c.author_email === OWNER_EMAIL || adminEmails.has(c.author_email)))
       .map(c => c.author_email)
   )];
 
@@ -63,8 +63,8 @@ export default function CommentSection({ postId, user, myPoints, isAdmin = false
     enabled: !!postId,
   });
 
-  // Get avatars for comments missing them
-  const { data: fallbackAvatarMap = {} } = useCommentAuthorAvatars(comments);
+  // Get avatars for comments missing them (always live for admins)
+  const { data: fallbackAvatarMap = {} } = useCommentAuthorAvatars(comments, adminEmails);
 
   // Get current user's display_name with fallback chain
     const userDisplayName = getDisplayName(user);
