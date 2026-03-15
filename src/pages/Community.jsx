@@ -252,10 +252,10 @@ function PostDetailDrawer({ post, currentUser, isAdmin, onClose, onLike, onPin, 
       const users = await base44.entities.User.filter({ email: post.author_email });
       return users[0] || null;
     },
-    enabled: isAdminPost,
-    staleTime: 60000,
+    enabled: true,
+    staleTime: 30000,
   });
-  const drawerAvatarUrl = isAdminPost ? (liveAuthor?.avatar_url || post.author_avatar) : post.author_avatar;
+  const drawerAvatarUrl = liveAuthor?.avatar_url || post.author_avatar;
 
   // Sync latest post data
   const { data: latestPost } = useQuery({
