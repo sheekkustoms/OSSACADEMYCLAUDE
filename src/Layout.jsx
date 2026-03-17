@@ -18,8 +18,12 @@ const registerServiceWorker = async () => {
   if (!('serviceWorker' in navigator) || !('PushManager' in window)) return;
   try {
     const registration = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+    await navigator.serviceWorker.ready;
     if (Notification.permission === 'granted') await subscribeUserToPush(registration);
-  } catch {}
+    return registration;
+  } catch (e) {
+    console.error('[SW] Registration failed:', e);
+  }
 };
 
 const subscribeUserToPush = async (registration) => {
