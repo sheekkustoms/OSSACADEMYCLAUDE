@@ -149,9 +149,13 @@ export default function CommentSection({ postId, user, myPoints, isAdmin = false
        content: commentContent,
        likes: [],
      });
-     const posts = await base44.entities.CommunityPost.filter({ id: postId });
+     // Use actual DB count to stay in sync
+     const [posts, allComments] = await Promise.all([
+       base44.entities.CommunityPost.filter({ id: postId }),
+       base44.entities.Comment.filter({ post_id: postId }, "created_date", 500),
+     ]);
      if (posts[0]) {
-       await base44.entities.CommunityPost.update(postId, { comment_count: (posts[0].comment_count || 0) + 1 });
+       await base44.entities.CommunityPost.update(postId, { comment_count: allComments.length });
 
        // Notify post author (if not replying to them)
        if (posts[0].author_email !== user.email && !replyingTo) {
