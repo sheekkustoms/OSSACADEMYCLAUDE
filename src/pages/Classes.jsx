@@ -245,13 +245,22 @@ export default function Classes() {
   return (
     <div className="max-w-7xl mx-auto">
       {/* Top bar */}
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center gap-4">
+      <div className="flex items-start justify-between gap-3 mb-6">
+        <div className="flex flex-col gap-2 flex-1 min-w-0">
+          <div className="flex items-center justify-between gap-2">
             <div>
-              <h1 className="text-3xl font-extrabold text-[#111] tracking-tight">Classes</h1>
+              <h1 className="text-2xl md:text-3xl font-extrabold text-[#111] tracking-tight">Classes</h1>
               <p className="text-sm text-[#666] mt-0.5">Live sessions, replays & courses</p>
             </div>
+            {isAdmin && (
+              <Button
+                size="sm"
+                onClick={() => setShowAdminEditor(true)}
+                className="gap-2 bg-black hover:bg-[#222] text-[#D4AF37] font-semibold rounded-xl shrink-0"
+              >
+                <Settings className="w-4 h-4" /> <span className="hidden sm:inline">Manage</span>
+              </Button>
+            )}
           </div>
           {/* Filter tabs — scrollable on mobile */}
           <div className="flex items-center gap-1 bg-white border border-[#EEEEEE] rounded-2xl p-1.5 shadow-sm overflow-x-auto max-w-full">
@@ -268,15 +277,6 @@ export default function Classes() {
             ))}
           </div>
         </div>
-        {isAdmin && (
-          <Button
-            size="sm"
-            onClick={() => setShowAdminEditor(true)}
-            className="gap-2 bg-black hover:bg-[#222] text-[#D4AF37] font-semibold rounded-xl"
-          >
-            <Settings className="w-4 h-4" /> Manage
-          </Button>
-        )}
       </div>
 
       <div className="space-y-8">
