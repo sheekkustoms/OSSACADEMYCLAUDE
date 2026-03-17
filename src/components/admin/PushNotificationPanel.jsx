@@ -46,6 +46,24 @@ export default function PushNotificationPanel() {
         <span className="ml-1 font-semibold text-gray-700">{subscriptions.length} subscriber{subscriptions.length !== 1 ? "s" : ""}</span>
       </p>
 
+      {/* Who has push enabled */}
+      <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 space-y-2">
+        <p className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Subscribed Members</p>
+        {subscriptions.length === 0 ? (
+          <p className="text-sm text-gray-400 italic">No one has enabled push notifications yet.</p>
+        ) : (
+          <div className="space-y-1.5 max-h-48 overflow-y-auto">
+            {subscriptions.map(sub => (
+              <div key={sub.id} className="flex items-center gap-2 text-sm">
+                <div className="w-2 h-2 rounded-full bg-green-400 shrink-0" />
+                <span className="text-gray-800 font-medium">{sub.user_name || sub.user_email}</span>
+                <span className="text-gray-400 text-xs truncate">{sub.user_email}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       <Input
         placeholder="Notification title..."
         value={title}
