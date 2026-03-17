@@ -203,9 +203,12 @@ export default function Classes() {
     refetchOnWindowFocus: true,
   });
 
+  // Only show published classes (treat missing status as published for legacy records)
+  const publishedClasses = allLiveClasses.filter(c => !c.status || c.status === "published");
+
   // Separate by class_type
-  const liveClasses = allLiveClasses.filter(c => c.class_type === "live" || !c.class_type);
-  const prerecordedClasses = allLiveClasses.filter(c => c.class_type === "prerecorded");
+  const liveClasses = publishedClasses.filter(c => c.class_type === "live" || !c.class_type);
+  const prerecordedClasses = publishedClasses.filter(c => c.class_type === "prerecorded");
 
   // Sort live: upcoming first, then past
   const now = Date.now();
