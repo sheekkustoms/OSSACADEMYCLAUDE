@@ -44,9 +44,18 @@ export default function LiveClassManager() {
     } else {
       await base44.entities.LiveClass.create(form);
       queryClient.invalidateQueries({ queryKey: ["adminLiveClasses", "liveClasses"] });
+      if (notifyMembers) {
+        await base44.functions.invoke('notifyNewLiveClass', {
+          title: form.title,
+          scheduled_at: form.scheduled_at,
+          zoom_url: form.zoom_url,
+          description: form.description,
+        });
+      }
     }
     setForm(EMPTY);
     setEditingId(null);
+    setNotifyMembers(false);
     setSaving(false);
   };
 
