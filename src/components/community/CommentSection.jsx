@@ -58,11 +58,23 @@ export default function CommentSection({ postId, user, myPoints, isAdmin = false
   const queryClient = useQueryClient();
   const textareaRef = useRef(null);
 
-  const { data: comments = [] } = useQuery({
+  const { data: comments = [], refetch: refetchComments } = useQuery({
     queryKey: ["comments", postId],
-    queryFn: () => base44.entities.Comment.filter({ post_id: postId }),
+    queryFn: () => base44.entities.Comment.filter({ post_id: postId }, "created_date", 500),
     enabled: !!postId,
+    refetchInterval: 5000, // poll every 5 seconds for real-time feel
   });
+
+  // Real-time subscription for instant updates
+  useEffect(() => {
+    if (!postId) return;
+    const unsubscribe = base44.entities.Comment.subscribe((event) => {
+      if (event.data?.post_id === postId || event.type === "delete") {
+        refetchComments();
+      }
+    });
+    return () => unsubscribe();
+  }, [postId]);
 
   // Get avatars for comments missing them (always live for admins)
   const { data: fallbackAvatarMap = {} } = useCommentAuthorAvatars(comments, adminEmails);
