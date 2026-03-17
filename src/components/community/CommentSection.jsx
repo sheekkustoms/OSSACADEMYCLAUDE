@@ -55,6 +55,8 @@ function CommentAvatar({ email, name, avatarUrl, fallbackAvatarMap }) {
 export default function CommentSection({ postId, user, myPoints, isAdmin = false, adminEmails = new Set() }) {
   const [newComment, setNewComment] = useState("");
   const [replyingTo, setReplyingTo] = useState(null);
+  const [editingId, setEditingId] = useState(null);
+  const [editContent, setEditContent] = useState("");
   const queryClient = useQueryClient();
   const textareaRef = useRef(null);
 
