@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { getDisplayName, updateUserDisplayName } from "@/components/shared/useDisplayName";
 import { toast } from "sonner";
 import ImageCropModal from "@/components/shared/ImageCropModal";
+import NotificationSettings from "@/components/shared/NotificationSettings";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -422,7 +423,12 @@ export default function ProfileSettings() {
         />
       )}
 
-      {/* Notifications Section */}
+      {/* Notification Preferences */}
+      <div className="mt-8 bg-white border border-gray-200 rounded-lg shadow-sm p-6">
+        <NotificationSettings user={user} />
+      </div>
+
+      {/* Push Notifications Section */}
       <div className="mt-8 bg-white border border-gray-200 rounded-lg shadow-sm p-6 space-y-3">
         <div className="flex items-center gap-2">
           <Bell className="w-4 h-4 text-[#D4AF37]" />

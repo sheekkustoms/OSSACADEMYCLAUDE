@@ -13,6 +13,7 @@ import MessagingPanel from "../components/admin/MessagingPanel";
 import RewardPointsPanel from "../components/admin/RewardPointsPanel";
 import OnboardingSettingsManager from "../components/admin/OnboardingSettingsManager";
 import PushNotificationPanel from "../components/admin/PushNotificationPanel";
+import AnnouncementPanel from "../components/admin/AnnouncementPanel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
