@@ -15,6 +15,7 @@ export default function LiveClassManager() {
   const [editingId, setEditingId] = useState(null);
   const [saving, setSaving] = useState(false);
   const [uploadingPdf, setUploadingPdf] = useState(false);
+  const [notifyMembers, setNotifyMembers] = useState(false);
 
   const { data: classes = [] } = useQuery({
     queryKey: ["adminLiveClasses"],
