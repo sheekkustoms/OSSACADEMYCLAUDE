@@ -195,12 +195,12 @@ export default function Classes() {
     enabled: !!user?.email,
   });
 
-  // Fetch ALL published LiveClass records — single source of truth
+  // Fetch ALL LiveClass records — filter client-side so no records are missed
   const { data: allLiveClasses = [] } = useQuery({
     queryKey: ["memberClasses"],
-    queryFn: () => base44.entities.LiveClass.filter({ status: "published" }),
-    refetchInterval: 15000,
-    staleTime: 5000,
+    queryFn: () => base44.entities.LiveClass.list("-created_date", 100),
+    staleTime: 30000,
+    refetchOnWindowFocus: true,
   });
 
   // Separate by class_type
