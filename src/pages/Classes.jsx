@@ -186,7 +186,7 @@ export default function Classes() {
   const { data: courses = [], isLoading: coursesLoading } = useQuery({
     queryKey: ["courses"],
     queryFn: () => base44.entities.Course.list("-created_date", 200),
-    refetchInterval: 30000,
+    staleTime: 60000,
   });
 
   const { data: userEnrollments = [] } = useQuery({
