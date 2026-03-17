@@ -96,21 +96,21 @@ export default function Leaderboard() {
 
       {/* Your Rank Card */}
       {currentUserRank && (
-        <div className="bg-gradient-to-br from-yellow-50 to-pink-50 border border-yellow-200 rounded-xl p-6 lg:p-8">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+        <div className="bg-gradient-to-br from-yellow-50 to-pink-50 border border-yellow-200 rounded-xl p-4 lg:p-8">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
               <RankBadge rank={currentUserRank.rank} />
-              <div>
-                <p className="text-sm text-gray-600 font-medium">YOUR RANKING</p>
-                <h3 className="text-2xl font-bold text-gray-900">{currentUserRank.rank}{currentUserRank.rank === 1 ? "st" : currentUserRank.rank === 2 ? "nd" : currentUserRank.rank === 3 ? "rd" : "th"} Place</h3>
-                <p className="text-sm text-gray-700 mt-1">{currentUserRank.user_name || currentUserRank.user_email}</p>
+              <div className="min-w-0">
+                <p className="text-xs text-gray-600 font-medium uppercase tracking-wide">Your Ranking</p>
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900">{currentUserRank.rank}{currentUserRank.rank === 1 ? "st" : currentUserRank.rank === 2 ? "nd" : currentUserRank.rank === 3 ? "rd" : "th"} Place</h3>
+                <p className="text-sm text-gray-700 mt-0.5 truncate">{currentUserRank.user_name || currentUserRank.user_email}</p>
               </div>
             </div>
-            <div className="text-right">
-              <p className="text-sm text-gray-600 font-medium mb-1">YOUR LEVEL</p>
-              <div className="flex items-center justify-end gap-2">
-                <Award className="w-6 h-6 text-yellow-600" />
-                <p className="text-3xl font-bold text-gray-900">Level {currentUserLevel}</p>
+            <div className="text-right shrink-0">
+              <p className="text-xs text-gray-600 font-medium mb-1 uppercase tracking-wide">Level</p>
+              <div className="flex items-center justify-end gap-1.5">
+                <Award className="w-5 h-5 text-yellow-600" />
+                <p className="text-2xl md:text-3xl font-bold text-gray-900">{currentUserLevel}</p>
               </div>
             </div>
           </div>
