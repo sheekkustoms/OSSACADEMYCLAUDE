@@ -196,7 +196,7 @@ export default function Classes() {
   });
 
   // Fetch ALL LiveClass records — filter client-side so no records are missed
-  const { data: allLiveClasses = [] } = useQuery({
+  const { data: allLiveClasses = [], isLoading: classesLoading } = useQuery({
     queryKey: ["memberClasses"],
     queryFn: () => base44.entities.LiveClass.list("-created_date", 100),
     staleTime: 30000,
