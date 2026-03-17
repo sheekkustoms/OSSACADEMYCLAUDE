@@ -35,6 +35,8 @@ export default function Community() {
   const { data: posts = [], isLoading } = useQuery({
     queryKey: ["communityPosts"],
     queryFn: () => base44.entities.CommunityPost.list("-created_date", 100),
+    refetchInterval: 15000, // refresh every 15s for cross-device sync
+    staleTime: 5000,
   });
 
   const { data: liveClasses = [] } = useQuery({
