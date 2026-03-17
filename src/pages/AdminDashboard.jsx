@@ -205,36 +205,7 @@ export default function AdminDashboard() {
     },
   });
 
-  const sendAnnouncementMutation = useMutation({
-    mutationFn: async () => {
-      await base44.entities.CommunityPost.create({
-        title: announcementTitle,
-        content: announcement,
-        author_email: user.email,
-        author_name: "Admin",
-        category: "announcement",
-        is_pinned: true,
-        is_approved: true,
-        likes: [],
-        comment_count: 0,
-      });
-      const users = await base44.entities.User.list();
-      await Promise.all(users.map((u) =>
-        base44.entities.Notification.create({
-          recipient_email: u.email,
-          type: "announcement",
-          message: `📢 Admin announcement: ${announcementTitle}`,
-          from_name: "Admin",
-          is_read: false,
-        })
-      ));
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["adminPosts", "communityPosts"] });
-      setAnnouncement("");
-      setAnnouncementTitle("");
-    },
-  });
+  // sendAnnouncementMutation moved to AnnouncementPanel component
 
   const OWNER_EMAIL = "sheek24kustoms@gmail.com";
   const ADMIN_EMAILS = [OWNER_EMAIL];
