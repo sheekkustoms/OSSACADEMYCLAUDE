@@ -93,7 +93,7 @@ export default function Community() {
         author_name: postAsCoach ? "COACH" : displayName,
         author_avatar: user.avatar_url || user.data?.avatar_url || null,
         is_admin_post: postAsCoach || false,
-        is_approved: isAdmin ? true : false,
+        is_approved: true,
         is_pinned: false,
         likes: [],
         comment_count: 0,
