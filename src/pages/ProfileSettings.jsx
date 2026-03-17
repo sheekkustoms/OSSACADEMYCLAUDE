@@ -422,6 +422,35 @@ export default function ProfileSettings() {
         />
       )}
 
+      {/* Notifications Section */}
+      <div className="mt-8 bg-white border border-gray-200 rounded-lg shadow-sm p-6 space-y-3">
+        <div className="flex items-center gap-2">
+          <Bell className="w-4 h-4 text-[#D4AF37]" />
+          <h2 className="text-sm font-semibold text-gray-900">Push Notifications</h2>
+        </div>
+        <p className="text-xs text-gray-500">
+          Get notified about new announcements, posts, and activity even when the app is closed.
+        </p>
+        {notifStatus === 'granted' ? (
+          <div className="flex items-center gap-2 text-sm text-green-700 bg-green-50 border border-green-200 rounded-lg px-4 py-2.5">
+            <Check className="w-4 h-4 shrink-0" /> Push notifications are enabled
+          </div>
+        ) : notifStatus === 'denied' ? (
+          <div className="flex items-center gap-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-2.5">
+            <BellOff className="w-4 h-4 shrink-0" /> Notifications are blocked — please enable them in your browser settings
+          </div>
+        ) : (
+          <Button
+            onClick={handleEnableNotifications}
+            disabled={subscribing}
+            className="bg-black text-[#D4AF37] hover:bg-[#222] font-semibold gap-2"
+          >
+            {subscribing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Bell className="w-4 h-4" />}
+            {subscribing ? "Enabling..." : "Enable Push Notifications"}
+          </Button>
+        )}
+      </div>
+
       {/* Danger Zone */}
       <div className="mt-8 border border-red-200 rounded-lg p-6">
         <h2 className="text-sm font-semibold text-red-600 mb-1">Danger Zone</h2>
