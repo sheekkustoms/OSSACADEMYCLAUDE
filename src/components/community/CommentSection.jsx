@@ -264,10 +264,22 @@ export default function CommentSection({ postId, user, myPoints, isAdmin = false
     },
   });
 
+  // Sync comment_count on the post to match actual fetched count whenever there's a mismatch
+  useEffect(() => {
+    if (!postId || comments.length === 0) return;
+    // Fire-and-forget: reconcile stored count with actual
+    base44.entities.CommunityPost.filter({ id: postId }).then(posts => {
+      if (posts[0] && posts[0].comment_count !== comments.length) {
+        base44.entities.CommunityPost.update(postId, { comment_count: comments.length });
+        queryClient.invalidateQueries({ queryKey: ["communityPosts"] });
+      }
+    });
+  }, [comments.length, postId]);
+
   return (
      <div className="space-y-4">
        <h4 className="text-sm font-semibold text-gray-700">Comments ({comments.length})</h4>
-       <div className="space-y-3 max-h-[400px] overflow-y-auto pr-2">
+       <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
          {topLevelComments.map((comment, i) => (
            <div key={comment.id}>
              <motion.div
