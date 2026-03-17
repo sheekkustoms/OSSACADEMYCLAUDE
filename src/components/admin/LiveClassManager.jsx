@@ -133,6 +133,18 @@ export default function LiveClassManager() {
             rows={4}
           />
         </div>
+        {!editingId && (
+          <label className="flex items-center gap-2 cursor-pointer select-none">
+            <div
+              onClick={() => setNotifyMembers(v => !v)}
+              className={`relative w-10 h-5 rounded-full transition-colors ${notifyMembers ? "bg-violet-500" : "bg-gray-200"}`}
+            >
+              <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${notifyMembers ? "translate-x-5" : ""}`} />
+            </div>
+            <Bell className={`w-3.5 h-3.5 ${notifyMembers ? "text-violet-500" : "text-gray-400"}`} />
+            <span className="text-sm text-gray-600">Notify all members via email</span>
+          </label>
+        )}
         <div className="flex gap-2">
           <Button onClick={handleSave} disabled={saving || !form.title || !form.scheduled_at} className="bg-gradient-to-r from-pink-500 to-violet-500 text-white gap-2 flex-1">
             <Plus className="w-4 h-4" /> {saving ? "Saving..." : editingId ? "Update Class" : "Add Class"}
