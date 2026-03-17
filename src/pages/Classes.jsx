@@ -253,13 +253,13 @@ export default function Classes() {
               <p className="text-sm text-[#666] mt-0.5">Live sessions, replays & courses</p>
             </div>
           </div>
-          {/* Filter tabs */}
-          <div className="flex items-center gap-1 bg-white border border-[#EEEEEE] rounded-2xl p-1.5 shadow-sm w-fit">
+          {/* Filter tabs — scrollable on mobile */}
+          <div className="flex items-center gap-1 bg-white border border-[#EEEEEE] rounded-2xl p-1.5 shadow-sm overflow-x-auto max-w-full">
             {FILTERS.map(f => (
               <button
                 key={f.value}
                 onClick={() => setFilter(f.value)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all whitespace-nowrap shrink-0 ${
                   filter === f.value ? "bg-black text-[#D4AF37]" : "text-[#666] hover:text-[#111] hover:bg-[#F5F5F5]"
                 }`}
               >
