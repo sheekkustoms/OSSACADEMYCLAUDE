@@ -29,6 +29,15 @@ export default function CommunityPostCard({ post, currentUser, adminEmails, onLi
   const isOwner = post.author_email === currentUser?.email;
   const cat = categoryConfig[post.category] || { label: post.category?.replace(/_/g, " "), bg: "bg-gray-100 text-gray-600" };
 
+  // Fetch real comment count directly from source of truth
+  const { data: liveComments = [] } = useQuery({
+    queryKey: ["comments", post.id],
+    queryFn: () => base44.entities.Comment.filter({ post_id: post.id }, "created_date", 500),
+    staleTime: 10000,
+    refetchInterval: 30000,
+  });
+  const commentCount = liveComments.length > 0 ? liveComments.length : (post.comment_count || 0);
+
   // Fetch live user data for admin/owner posts (for role badge)
   const { data: liveAdminUser } = useQuery({
     queryKey: ["adminUser", post.author_email],
