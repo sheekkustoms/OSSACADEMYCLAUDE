@@ -67,6 +67,7 @@ export default function CommunityFeed({ posts, isLoading, currentUser, adminEmai
           isAdmin={isAdmin}
           index={i}
           liveAvatarMap={liveAvatarMap}
+          liveNameMap={liveNameMap}
         />
       ))}
     </div>
