@@ -43,8 +43,9 @@ export default function CommunityPostCard({ post, currentUser, adminEmails, onLi
     staleTime: 300000, // 5 min — role rarely changes
   });
 
-  // Always prefer live avatar from map (fetched fresh for all authors)
+  // Always prefer live avatar and live display name from map (fetched fresh for all authors)
   const avatarUrl = liveAvatarMap[post.author_email] || post.author_avatar || null;
+  const displayName = liveNameMap[post.author_email] || post.author_name || post.author_email;
 
   const badgeRole = isAdminPost && liveAdminUser
     ? getRoleBadgeProps(true, liveAdminUser.is_coach === true || post.author_email === OWNER_EMAIL)
