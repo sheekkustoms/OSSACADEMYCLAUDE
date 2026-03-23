@@ -369,28 +369,6 @@ export default function Dashboard() {
           )}
         </DashboardCard>
 
-        {/* Community Activity */}
-        <DashboardCard title="Community Activity" action="Community" actionLabel="View Community">
-          {recentActivity.length > 0 ? (
-            <div className="space-y-3">
-              {recentActivity.map(post => (
-                <div key={post.id} className="border-b border-[#F5F5F5] pb-3 last:border-b-0 last:pb-0">
-                  <div className="flex items-start justify-between gap-2 mb-1">
-                    <h4 className="font-semibold text-[#111] text-sm leading-snug">{post.title}</h4>
-                    <span className="text-[10px] bg-[#D4AF37]/10 text-[#B8960C] px-2 py-0.5 rounded-full font-semibold shrink-0 capitalize">
-                      {post.category?.replace(/_/g, " ")}
-                    </span>
-                  </div>
-                  <p className="text-xs text-[#666] line-clamp-2">{post.content}</p>
-                  <p className="text-[11px] text-[#999] mt-1">by {post.author_name || post.author_email}</p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="text-[#999] py-8 text-center text-sm">No community posts yet</p>
-          )}
-        </DashboardCard>
-
         {/* Leaderboard Snapshot */}
         <DashboardCard title="Top Members" action="Leaderboard" actionLabel="View Full Leaderboard">
           {topMembers.length > 0 ? (
