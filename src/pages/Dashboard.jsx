@@ -4,7 +4,7 @@ import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { 
-  Loader2, Play, MessageSquare, Trophy, Calendar, TrendingUp,
+  Loader2, Play, Trophy, Calendar, TrendingUp,
   ChevronRight, BookOpen, Zap, Bell, CheckCheck, Gamepad2, Clock, CheckCircle, Download, FileText
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
