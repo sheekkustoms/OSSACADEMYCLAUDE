@@ -10,11 +10,17 @@ import AdminCourseEditor from "../components/admin/CourseManager";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import moment from "moment";
 
-const FILTERS = [
-  { value: "all",          label: "All Classes" },
-  { value: "live",         label: "Live" },
-  { value: "prerecorded",  label: "Prerecorded" },
-  { value: "courses",      label: "Courses" },
+const MEMBER_FILTERS = [
+  { value: "all",         label: "All Classes" },
+  { value: "live",        label: "Live Replays" },
+  { value: "prerecorded", label: "Prerecorded" },
+];
+
+const ADMIN_FILTERS = [
+  { value: "all",         label: "All Classes" },
+  { value: "live",        label: "Live" },
+  { value: "prerecorded", label: "Prerecorded" },
+  { value: "courses",     label: "Courses" },
 ];
 
 // Extract clean video player info from raw URL or iframe embed
