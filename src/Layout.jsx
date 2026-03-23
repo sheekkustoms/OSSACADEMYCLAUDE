@@ -165,7 +165,45 @@ export default function Layout({ children, currentPageName }) {
         video, iframe { -webkit-user-select: none; user-select: none; }
         button, a, nav, [role="navigation"] { -webkit-user-select: none; user-select: none; }
         .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }
+
+        /* Screen capture / screenshot protection */
+        @media (display-mode: picture-in-picture) { body { display: none !important; } }
+        video::-webkit-media-controls-download-button { display: none !important; }
+        video::-webkit-media-controls-enclosure { overflow: hidden !important; }
+        video { pointer-events: auto; }
+
+        /* Blur content when screen recording is detected via visibilitychange */
+        body.recording-detected video,
+        body.recording-detected iframe {
+          filter: blur(20px) !important;
+        }
       `}</style>
+      <script dangerouslySetInnerHTML={{ __html: `
+        (function() {
+          // Block right-click on video/iframe
+          document.addEventListener('contextmenu', function(e) {
+            if (e.target.tagName === 'VIDEO' || e.target.tagName === 'IFRAME') {
+              e.preventDefault();
+            }
+          });
+
+          // Detect screen capture API if available and blur video
+          if (navigator.mediaDevices && navigator.mediaDevices.getDisplayMedia) {
+            const orig = navigator.mediaDevices.getDisplayMedia.bind(navigator.mediaDevices);
+            navigator.mediaDevices.getDisplayMedia = function(opts) {
+              document.body.classList.add('recording-detected');
+              return orig(opts).then(function(stream) {
+                stream.getVideoTracks().forEach(function(track) {
+                  track.addEventListener('ended', function() {
+                    document.body.classList.remove('recording-detected');
+                  });
+                });
+                return stream;
+              });
+            };
+          }
+        })();
+      ` }} />
 
       {/* PWA Install Banner */}
       {showPWA && (
