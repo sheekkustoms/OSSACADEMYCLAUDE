@@ -247,8 +247,7 @@ export default function Dashboard() {
       {/* Quick Nav Links */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { page: "Classes", label: "Classes", emoji: "🎓", desc: "Watch & learn" },
-          { page: "LiveClasses", label: "Patterns", emoji: "📄", desc: "Download PDFs" },
+          { page: "Classes", label: "Classes & Replays", emoji: "🎓", desc: "Watch live sessions & replays" },
           { page: "MemberProfile", label: "My Profile", emoji: "👤", desc: "View your progress" },
         ].map(item => (
           <Link key={item.page} to={createPageUrl(item.page)}>
