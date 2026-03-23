@@ -257,7 +257,7 @@ export default function Classes() {
           <div className="flex items-center justify-between gap-2">
             <div>
               <h1 className="text-2xl md:text-3xl font-extrabold text-[#111] tracking-tight">Classes</h1>
-              <p className="text-sm text-[#666] mt-0.5">Live sessions, replays & courses</p>
+              <p className="text-sm text-[#666] mt-0.5">{isAdmin ? "Live sessions, replays & courses" : "Live sessions, replays & PDF patterns"}</p>
             </div>
             {isAdmin && (
               <Button
