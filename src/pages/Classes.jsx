@@ -12,16 +12,11 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import moment from "moment";
 
 const MEMBER_FILTERS = [
-  { value: "all",         label: "All Classes" },
-  { value: "live",        label: "Live Replays" },
-  { value: "prerecorded", label: "Prerecorded" },
+  { value: "courses", label: "All Courses" },
 ];
 
 const ADMIN_FILTERS = [
-  { value: "all",         label: "All Classes" },
-  { value: "live",        label: "Live" },
-  { value: "prerecorded", label: "Prerecorded" },
-  { value: "courses",     label: "Courses" },
+  { value: "courses", label: "Courses" },
 ];
 
 // Extract clean video player info from raw URL or iframe embed
@@ -211,7 +206,7 @@ function AdminManagerTabs() {
 }
 
 export default function Classes() {
-  const [filter, setFilter] = useState("all");
+  const [filter, setFilter] = useState("courses");
   const [selectedCourseId, setSelectedCourseId] = useState(null);
   const [showAdminEditor, setShowAdminEditor] = useState(false);
 
@@ -285,8 +280,8 @@ export default function Classes() {
         <div className="flex flex-col gap-2 flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2">
             <div>
-              <h1 className="text-2xl md:text-3xl font-extrabold text-[#111] tracking-tight">Classes</h1>
-              <p className="text-sm text-[#666] mt-0.5">{isAdmin ? "Live sessions, replays & courses" : "Live sessions, replays & PDF patterns"}</p>
+              <h1 className="text-2xl md:text-3xl font-extrabold text-[#111] tracking-tight">Courses</h1>
+              <p className="text-sm text-[#666] mt-0.5">Structured learning with modules and lessons</p>
             </div>
             {isAdmin && (
               <Button

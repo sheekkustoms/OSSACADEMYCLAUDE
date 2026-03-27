@@ -1,60 +1,50 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery, useQueryClient, useMutation } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { 
-  Loader2, Play, Trophy, Calendar, TrendingUp,
-  ChevronRight, BookOpen, Zap, Bell, CheckCheck, Gamepad2, Clock, CheckCircle, Download, FileText
+import {
+  Loader2, Radio, PlayCircle, BookOpen, GraduationCap, TrendingUp,
+  Calendar, ChevronRight, Clock, Search, Zap
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { getDisplayName } from "@/components/shared/useDisplayName";
 import { getLevelFromXP, loadThresholds } from "@/components/shared/XPBar";
 import moment from "moment";
-import ShopNow from "../components/dashboard/ShopNow";
-import OnboardingModal from "../components/onboarding/OnboardingModal";
-import OnboardingReminder from "../components/onboarding/OnboardingReminder";
 
-const StatCard = ({ icon: Icon, label, value, color }) => (
-  <div className="bg-white border border-[#EEEEEE] rounded-2xl p-3 md:p-5 flex items-center gap-2 md:gap-4 shadow-sm hover:shadow-md transition-shadow">
-    <div className={`w-8 h-8 md:w-12 md:h-12 rounded-xl flex items-center justify-center ${color} shrink-0`}>
-      <Icon className="w-4 h-4 md:w-6 md:h-6 text-white" />
-    </div>
-    <div className="min-w-0">
-      <p className="text-[9px] md:text-[11px] font-semibold text-[#999] uppercase tracking-widest truncate">{label}</p>
-      <p className="text-xl md:text-2xl font-bold text-[#111]">{value}</p>
-    </div>
-  </div>
-);
-
-const DashboardCard = ({ title, children, action, actionLabel }) => (
-  <div className="bg-white border border-[#EEEEEE] rounded-2xl p-6 shadow-sm">
-    <div className="flex items-center justify-between mb-5">
-      <h3 className="text-base font-bold text-[#111] tracking-tight">{title}</h3>
-    </div>
-    {children}
-    {action && actionLabel && (
-      <div className="mt-5">
-        <Link to={createPageUrl(action)}>
-          <Button className="w-full bg-black hover:bg-[#222] text-[#D4AF37] font-semibold rounded-xl h-10 transition-all hover:scale-[1.01]">
-            {actionLabel}
-          </Button>
-        </Link>
+function ContentTypeCard({ icon: Icon, title, desc, page, color, count }) {
+  return (
+    <Link to={createPageUrl(page)}>
+      <div className={`bg-white border border-[#EEEEEE] rounded-2xl p-5 hover:shadow-md hover:border-[#D4AF37]/40 transition-all cursor-pointer group`}>
+        <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 ${color}`}>
+          <Icon className="w-5 h-5 text-white" />
+        </div>
+        <div className="flex items-start justify-between">
+          <div>
+            <p className="font-bold text-[#111] text-sm">{title}</p>
+            <p className="text-xs text-[#999] mt-0.5">{desc}</p>
+          </div>
+          {count != null && <span className="text-xs font-bold text-[#D4AF37] bg-[#D4AF37]/10 px-2 py-0.5 rounded-full">{count}</span>}
+        </div>
+        <div className="flex items-center gap-1 mt-3 text-xs text-[#D4AF37] font-semibold opacity-0 group-hover:opacity-100 transition-opacity">
+          View all <ChevronRight className="w-3.5 h-3.5" />
+        </div>
       </div>
-    )}
-  </div>
-);
+    </Link>
+  );
+}
 
 export default function Dashboard() {
+  const [search, setSearch] = useState("");
+  const [thresholds, setThresholds] = useState(null);
+
   const { data: user } = useQuery({
     queryKey: ["currentUser"],
     queryFn: () => base44.auth.me(),
     staleTime: 0,
-    gcTime: 0,
-    refetchInterval: 5000,
+    refetchInterval: 30000,
   });
-
-  const isAdmin = user?.role === "admin";
 
   const { data: userPoints } = useQuery({
     queryKey: ["myPoints", user?.email],
@@ -70,407 +60,270 @@ export default function Dashboard() {
 
   const { data: courses = [] } = useQuery({
     queryKey: ["courses"],
-    queryFn: () => base44.entities.Course.list(),
+    queryFn: () => base44.entities.Course.list("-created_date", 100),
   });
 
   const { data: lessons = [] } = useQuery({
     queryKey: ["lessons"],
-    queryFn: () => base44.entities.Lesson.list(),
+    queryFn: () => base44.entities.Lesson.list("-created_date", 200),
   });
 
-  const { data: leaderboard = [] } = useQuery({
-    queryKey: ["leaderboard"],
-    queryFn: () => base44.entities.UserPoints.list("-total_xp", 3),
+  const { data: allClasses = [] } = useQuery({
+    queryKey: ["allClassesHub"],
+    queryFn: () => base44.entities.LiveClass.list("-created_date", 200),
+    staleTime: 30000,
   });
 
-  const { data: liveClasses = [] } = useQuery({
-    queryKey: ["liveClasses"],
-    queryFn: () => base44.entities.LiveClass.filter({ is_active: true }),
-  });
-
-  const { data: allLiveClasses = [] } = useQuery({
-    queryKey: ["allLiveClasses"],
-    queryFn: () => base44.entities.LiveClass.list("-scheduled_at", 100),
-  });
-
-  const { data: notifications = [] } = useQuery({
-    queryKey: ["notifications", user?.email],
-    queryFn: () => base44.entities.Notification.filter({ recipient_email: user.email, is_read: false }),
-    enabled: !!user?.email,
-  });
-
-  const { data: publishedQuizzes = [] } = useQuery({
-    queryKey: ["publishedQuizzes"],
-    queryFn: () => base44.entities.Quiz.filter({ is_published: true }),
-  });
-
-  const { data: pendingPosts = [], refetch: refetchPending } = useQuery({
-    queryKey: ["pendingPosts"],
-    queryFn: () => base44.entities.CommunityPost.filter({ is_approved: false }, "-created_date", 20),
-    enabled: isAdmin,
-    refetchInterval: 30000,
-  });
-
-  const queryClient = useQueryClient();
-  const approvePendingPost = useMutation({
-    mutationFn: (id) => base44.entities.CommunityPost.update(id, { is_approved: true }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["pendingPosts"] });
-      queryClient.invalidateQueries({ queryKey: ["communityPosts"] });
-    },
-  });
-
-  const markAllRead = useMutation({
-    mutationFn: async () => {
-      const unread = notifications.filter((n) => !n.is_read);
-      await Promise.all(unread.map((n) => base44.entities.Notification.update(n.id, { is_read: true })));
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notifications"] });
-      queryClient.invalidateQueries({ queryKey: ["allNotifications"] });
-    },
-  });
-
-  const [thresholds, setThresholds] = useState(null);
   useEffect(() => { loadThresholds(true).then(setThresholds); }, []);
 
-  // Onboarding state
-  const [showOnboarding, setShowOnboarding] = useState(false);
-  const [reminderDismissed, setReminderDismissed] = useState(
-    () => !!localStorage.getItem("onboarding_reminder_dismissed")
-  );
-
-  useEffect(() => {
-    if (!user) return;
-    const hasSeen = user.has_seen_onboarding || user.data?.has_seen_onboarding;
-    if (!hasSeen) setShowOnboarding(true);
-  }, [user?.email]);
-
-  const completedSteps = user?.onboarding_steps || user?.data?.onboarding_steps || [];
-
-  const handleMarkStep = async (stepId) => {
-    const current = user?.onboarding_steps || user?.data?.onboarding_steps || [];
-    if (current.includes(stepId)) return;
-    const updated = [...current, stepId];
-    await base44.auth.updateMe({ onboarding_steps: updated });
-    queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-  };
-
-  const handleCloseOnboarding = async () => {
-    setShowOnboarding(false);
-    await base44.auth.updateMe({ has_seen_onboarding: true });
-    queryClient.invalidateQueries({ queryKey: ["currentUser"] });
-  };
-
-  const handleDismissReminder = () => {
-    setReminderDismissed(true);
-    localStorage.setItem("onboarding_reminder_dismissed", "1");
-  };
+  if (!user) {
+    return <div className="flex items-center justify-center min-h-[60vh]"><Loader2 className="w-6 h-6 animate-spin text-gray-400" /></div>;
+  }
 
   const myPoints = userPoints?.[0];
-  const level = isAdmin ? 10 : (thresholds ? getLevelFromXP(myPoints?.total_xp || 0, thresholds) : getLevelFromXP(myPoints?.total_xp || 0));
-  const lastEnrollment = enrollments?.[0];
-  const lastCourse = courses?.find(c => c.id === lastEnrollment?.course_id);
-  const lastLesson = lessons?.sort((a, b) => new Date(b.created_date) - new Date(a.created_date))?.[0];
-  const nextLiveClass = liveClasses?.find(lc => new Date(lc.scheduled_at) > new Date());
-  const oneHourMs = 60 * 60 * 1000;
-  const sewingPatterns = allLiveClasses.filter(
-    c => c.pdf_url && new Date(c.scheduled_at).getTime() + oneHourMs <= Date.now()
-  );
+  const level = thresholds ? getLevelFromXP(myPoints?.total_xp || 0, thresholds) : getLevelFromXP(myPoints?.total_xp || 0);
 
+  const published = allClasses.filter(c => !c.status || c.status === "published");
+  const now = Date.now();
 
-  const topMembers = leaderboard?.slice(0, 3) || [];
-  const liveQuizzes = publishedQuizzes.filter(q => q.quiz_type === "live" && (q.status === "waiting" || q.status === "active")).slice(0, 2);
-  const practiceQuizzes = publishedQuizzes.filter(q => q.quiz_type === "practice").slice(0, 2);
+  const liveClasses = published.filter(c => c.class_type === "live" || !c.class_type);
+  const upcomingLive = liveClasses.filter(c => c.scheduled_at && new Date(c.scheduled_at).getTime() > now)
+    .sort((a, b) => new Date(a.scheduled_at) - new Date(b.scheduled_at));
 
-  const handleRefresh = useCallback(async () => {
-    await queryClient.invalidateQueries();
-    await queryClient.refetchQueries({ type: "active" });
-  }, [queryClient]);
+  const replays = published.filter(c => {
+    if (c.class_type === "replay") return true;
+    if ((c.class_type === "live" || !c.class_type) && c.recording_url && c.scheduled_at)
+      return new Date(c.scheduled_at).getTime() + 60 * 60 * 1000 <= now;
+    return false;
+  });
 
-  if (!user) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-6 h-6 animate-spin text-gray-400" />
-      </div>
-    );
-  }
+  const tutorials = published.filter(c => c.class_type === "prerecorded" || c.class_type === "tutorial");
+  const publishedCourses = courses.filter(c => c.is_published);
+
+  // Continue learning — most recently active enrollment
+  const activeEnrollments = enrollments
+    .filter(e => !e.is_completed && e.progress_percent > 0)
+    .sort((a, b) => new Date(b.updated_date) - new Date(a.updated_date));
+  const continueCourse = activeEnrollments[0] ? courses.find(c => c.id === activeEnrollments[0].course_id) : null;
+  const continueEnrollment = activeEnrollments[0] || null;
+
+  // Search across all content
+  const searchResults = search.trim()
+    ? [
+        ...liveClasses.filter(c => c.title?.toLowerCase().includes(search.toLowerCase())).map(c => ({ ...c, _type: "live" })),
+        ...replays.filter(c => c.title?.toLowerCase().includes(search.toLowerCase())).map(c => ({ ...c, _type: "replay" })),
+        ...tutorials.filter(c => c.title?.toLowerCase().includes(search.toLowerCase())).map(c => ({ ...c, _type: "tutorial" })),
+        ...publishedCourses.filter(c => c.title?.toLowerCase().includes(search.toLowerCase())).map(c => ({ ...c, _type: "course" })),
+      ]
+    : [];
+
+  const typeLabel = { live: "Live Class", replay: "Replay", tutorial: "Tutorial", course: "Course" };
+  const typeColor = { live: "bg-red-100 text-red-600", replay: "bg-orange-100 text-orange-600", tutorial: "bg-violet-100 text-violet-600", course: "bg-[#D4AF37]/15 text-[#B8960C]" };
+  const typePage = { live: "LiveClassesHub", replay: "ReplaysHub", tutorial: "TutorialsHub", course: "Classes" };
 
   return (
     <div className="max-w-6xl mx-auto space-y-8">
-      {showOnboarding && (
-        <OnboardingModal
-          onClose={handleCloseOnboarding}
-          completedSteps={completedSteps}
-          onMarkStep={handleMarkStep}
+      {/* Welcome */}
+      <div>
+        <h1 className="text-2xl md:text-3xl font-extrabold text-[#111] tracking-tight">
+          Welcome back, {getDisplayName(user)?.split(" ")[0] || "Student"} 👋
+        </h1>
+        <p className="text-sm text-[#666] mt-1">Ready to keep learning? Jump right in.</p>
+      </div>
+
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[#999]" />
+        <Input
+          placeholder="Search classes, tutorials, courses..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          className="pl-11 h-12 rounded-2xl border-[#EEEEEE] bg-white shadow-sm text-sm"
         />
-      )}
-
-      {/* Onboarding reminder */}
-      {!showOnboarding && !reminderDismissed && completedSteps.length < 4 && (
-        <OnboardingReminder
-          completedSteps={completedSteps}
-          onOpen={() => setShowOnboarding(true)}
-          onDismiss={handleDismissReminder}
-        />
-      )}
-
-      {/* Welcome Header */}
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <h1 className="text-3xl lg:text-4xl font-extrabold text-[#111] mb-1 tracking-tight">
-            Welcome back, {getDisplayName(user)?.split(" ")[0] || "Member"} 👋
-          </h1>
-          <p className="text-[#666] text-sm">
-            {moment().hour() < 12 ? "Good morning" : moment().hour() < 18 ? "Good afternoon" : "Good evening"} — continue your sewing journey.
-          </p>
-        </div>
-        {notifications.length > 0 && (
-          <Button
-            size="sm"
-            onClick={() => markAllRead.mutate()}
-            disabled={markAllRead.isPending}
-            className="gap-2 bg-black text-[#D4AF37] hover:bg-[#222] whitespace-nowrap shrink-0 rounded-xl font-semibold"
-          >
-            <CheckCheck className="w-4 h-4" /> Mark all read
-          </Button>
-        )}
       </div>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-3 gap-2 md:gap-4">
-        <StatCard icon={Zap} label="Total XP" value={myPoints?.total_xp || 0} color="bg-[#D4AF37]" />
-        <StatCard icon={BookOpen} label="Courses Done" value={myPoints?.courses_completed || 0} color="bg-[#111]" />
-        <StatCard icon={TrendingUp} label="Level" value={level} color="bg-[#333]" />
-      </div>
-
-      {/* Quick Nav Links */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        {[
-          { page: "Classes", label: "Classes & Replays", emoji: "🎓", desc: "Watch live sessions & replays" },
-          { page: "MemberProfile", label: "My Profile", emoji: "👤", desc: "View your progress" },
-        ].map(item => (
-          <Link key={item.page} to={createPageUrl(item.page)}>
-            <div className="bg-white border border-[#EEEEEE] rounded-2xl p-4 hover:shadow-md hover:border-[#D4AF37] transition-all cursor-pointer group">
-              <span className="text-2xl mb-2 block">{item.emoji}</span>
-              <p className="font-bold text-[#111] text-sm">{item.label}</p>
-              <p className="text-xs text-[#999] mt-0.5">{item.desc}</p>
-            </div>
-          </Link>
-        ))}
-      </div>
-
-      {/* Admin: Pending Posts Alert */}
-      {isAdmin && pendingPosts.length > 0 && (
-        <div className="border border-[#D4AF37]/40 bg-[#D4AF37]/5 rounded-2xl p-5 space-y-3">
-          <div className="flex items-center gap-2 font-bold text-base text-[#B8960C]">
-            <Clock className="w-5 h-5" />
-            {pendingPosts.length} Post{pendingPosts.length > 1 ? "s" : ""} Awaiting Approval
+      {/* Search Results */}
+      {search.trim() && (
+        <div className="bg-white border border-[#EEEEEE] rounded-2xl shadow-sm overflow-hidden">
+          <div className="px-4 py-3 border-b border-[#F5F5F5]">
+            <p className="text-sm font-semibold text-[#333]">{searchResults.length} result{searchResults.length !== 1 ? "s" : ""} for "{search}"</p>
           </div>
-          <div className="space-y-2">
-            {pendingPosts.map(post => (
-              <div key={post.id} className="flex items-start justify-between gap-3 bg-white rounded-xl p-3 border border-[#EEEEEE]">
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-[#111] truncate">{post.title}</p>
-                  <p className="text-xs text-[#999] mt-0.5">{post.author_name || post.author_email} · {moment.utc(post.created_date).local().fromNow()}</p>
-                  <p className="text-xs text-[#666] mt-1 line-clamp-1">{post.content}</p>
-                </div>
-                <Button
-                  size="sm"
-                  className="bg-[#2ECC71] hover:bg-[#27ae60] text-white h-8 text-xs gap-1 shrink-0 rounded-lg font-semibold"
-                  onClick={() => approvePendingPost.mutate(post.id)}
-                  disabled={approvePendingPost.isPending}
-                >
-                  <CheckCircle className="w-3.5 h-3.5" /> Approve
-                </Button>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Shop Now Section */}
-      <ShopNow />
-
-      {/* Sewing Patterns Library */}
-      {sewingPatterns.length > 0 && (
-        <div className="bg-white border border-[#EEEEEE] rounded-2xl p-6 shadow-sm">
-          <div className="flex items-center gap-3 mb-5">
-            <div className="w-10 h-10 rounded-xl bg-[#D4AF37]/10 flex items-center justify-center">
-              <FileText className="w-5 h-5 text-[#D4AF37]" />
-            </div>
-            <div>
-              <h3 className="text-base font-bold text-[#111]">Sewing Patterns</h3>
-              <p className="text-xs text-[#999]">PDF patterns from all past live classes</p>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {sewingPatterns.map(cls => (
-              <a
-                key={cls.id}
-                href={cls.pdf_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 p-3 rounded-xl border border-[#EEEEEE] bg-[#F5F5F5] hover:border-[#D4AF37] hover:bg-[#D4AF37]/5 transition-all group"
-              >
-                <div className="w-9 h-9 rounded-lg bg-black flex items-center justify-center shrink-0">
-                  <Download className="w-4 h-4 text-[#D4AF37]" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-[#111] truncate">{cls.title}</p>
-                  <p className="text-xs text-[#999]">{moment(cls.scheduled_at).format("MMM D, YYYY")}</p>
-                </div>
-              </a>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Dashboard Cards Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Continue Learning */}
-        <DashboardCard title="Continue Learning" action="Classes" actionLabel="Browse Classes">
-          {lastCourse ? (
-            <div className="space-y-4">
-              {lastCourse.thumbnail_url && (
-                <img src={lastCourse.thumbnail_url} alt="" className="w-full h-40 object-cover rounded-xl" />
-              )}
-              <div>
-                <p className="text-[11px] font-semibold text-[#999] uppercase tracking-wide mb-1">Last Course</p>
-                <h4 className="text-base font-bold text-[#111]">{lastCourse.title}</h4>
-                <p className="text-sm text-[#666] mt-1">{lastEnrollment?.progress_percent || 0}% Complete</p>
-                <div className="w-full bg-[#EEEEEE] rounded-full h-2 mt-3">
-                  <div className="bg-[#D4AF37] h-2 rounded-full transition-all" style={{ width: `${lastEnrollment?.progress_percent || 0}%` }} />
-                </div>
-              </div>
-            </div>
+          {searchResults.length === 0 ? (
+            <p className="text-sm text-[#999] px-4 py-6 text-center">Nothing found. Try a different search term.</p>
           ) : (
-            <p className="text-[#999] py-8 text-center text-sm">Start your first course to see progress here</p>
-          )}
-        </DashboardCard>
-
-        {/* Latest Lesson */}
-        <DashboardCard title="Latest Lesson" action="Classes" actionLabel="View Classes">
-          {lastLesson ? (
-            <div className="space-y-4">
-              <div className="bg-[#F5F5F5] rounded-xl p-6 text-center border border-[#EEEEEE]">
-                <Play className="w-8 h-8 text-[#D4AF37] mx-auto mb-2" />
-                <p className="text-sm text-[#666] font-medium">New Lesson Available</p>
-              </div>
-              <div>
-                <h4 className="text-base font-bold text-[#111]">{lastLesson.title}</h4>
-                <p className="text-sm text-[#666] mt-1">{lastLesson.description}</p>
-                <p className="text-xs text-[#999] mt-2">{lastLesson.duration_minutes} minutes</p>
-              </div>
-            </div>
-          ) : (
-            <p className="text-[#999] py-8 text-center text-sm">New lessons will appear here</p>
-          )}
-        </DashboardCard>
-
-        {/* Leaderboard Snapshot */}
-        <DashboardCard title="Top Members" action="Leaderboard" actionLabel="View Full Leaderboard">
-          {topMembers.length > 0 ? (
-            <div className="space-y-2">
-              {topMembers.map((member, idx) => (
-                <div key={member.id} className="flex items-center justify-between p-3 bg-[#F5F5F5] rounded-xl border border-[#EEEEEE]">
-                  <div className="flex items-center gap-3">
-                    <span className={`text-sm font-bold w-6 ${idx === 0 ? "text-[#D4AF37]" : "text-[#999]"}`}>{idx + 1}</span>
-                    <div>
-                      <p className="font-semibold text-[#111] text-sm">{member.user_name || member.user_email}</p>
-                      <p className="text-xs text-[#999]">{member.total_xp} XP</p>
-                    </div>
+            <div className="divide-y divide-[#F5F5F5]">
+              {searchResults.slice(0, 8).map((item, i) => (
+                <Link key={i} to={createPageUrl(typePage[item._type])} className="flex items-center gap-3 px-4 py-3 hover:bg-[#F5F5F5] transition-colors">
+                  {item.thumbnail_url ? (
+                    <img src={item.thumbnail_url} className="w-12 h-9 rounded-lg object-cover shrink-0" />
+                  ) : (
+                    <div className="w-12 h-9 rounded-lg bg-[#F5F5F5] shrink-0" />
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-[#111] truncate">{item.title}</p>
                   </div>
-                  <Zap className={`w-4 h-4 ${idx === 0 ? "text-[#D4AF37]" : "text-[#CFCFCF]"}`} />
-                </div>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 ${typeColor[item._type]}`}>{typeLabel[item._type]}</span>
+                </Link>
               ))}
             </div>
-          ) : (
-            <p className="text-[#999] py-8 text-center text-sm">Leaderboard coming soon</p>
           )}
-        </DashboardCard>
+        </div>
+      )}
 
-        {/* Upcoming Live Session */}
-        <DashboardCard title="Live Room" action="LiveClasses" actionLabel="Join Now">
-          {nextLiveClass ? (
-            <div className="bg-[#F5F5F5] rounded-xl p-5 border border-[#D4AF37]/30">
-              <h4 className="font-bold text-[#111] mb-1">{nextLiveClass.title}</h4>
-              <p className="text-sm text-[#666] mb-3">{nextLiveClass.description}</p>
-              <div className="flex items-center gap-2 text-sm text-[#333] font-medium">
-                <Calendar className="w-4 h-4 text-[#D4AF37]" />
-                {moment(nextLiveClass.scheduled_at).format("MMM D, h:mm A")}
+      {/* Continue Learning */}
+      {continueCourse && !search && (
+        <div className="bg-black rounded-2xl p-5 md:p-6 flex flex-col md:flex-row md:items-center gap-4">
+          <div className="flex-1">
+            <p className="text-[10px] font-bold text-[#D4AF37] uppercase tracking-widest mb-1">Continue Learning</p>
+            <h3 className="text-lg font-bold text-white">{continueCourse.title}</h3>
+            <div className="flex items-center gap-2 mt-2">
+              <div className="flex-1 bg-white/10 rounded-full h-1.5 max-w-xs">
+                <div className="bg-[#D4AF37] h-1.5 rounded-full" style={{ width: `${continueEnrollment.progress_percent || 0}%` }} />
               </div>
-            </div>
-          ) : (
-            <p className="text-[#999] py-8 text-center text-sm">No live sessions scheduled yet</p>
-          )}
-        </DashboardCard>
-
-        {/* Quiz Games */}
-        <DashboardCard title="Quiz Games" action="QuizHome" actionLabel="Play More Quizzes">
-          <div className="space-y-3">
-            {liveQuizzes.length > 0 && (
-              <div>
-                <p className="text-[10px] font-bold text-[#E74C3C] mb-2 uppercase tracking-widest">🔴 Live Games</p>
-                {liveQuizzes.map(quiz => (
-                  <Link key={quiz.id} to={createPageUrl("QuizGame") + `?id=${quiz.id}&mode=live`}>
-                    <div className="p-3 bg-[#E74C3C]/5 border border-[#E74C3C]/20 rounded-xl hover:border-[#E74C3C]/40 transition-all mb-2">
-                      <p className="font-semibold text-[#111] text-sm">{quiz.title}</p>
-                      <p className="text-xs text-[#999] mt-0.5">Code: {quiz.game_code}</p>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            )}
-            {practiceQuizzes.length > 0 && (
-              <div>
-                <p className="text-[10px] font-bold text-[#333] mb-2 uppercase tracking-widest">📋 Practice</p>
-                {practiceQuizzes.map(quiz => (
-                  <Link key={quiz.id} to={createPageUrl("QuizGame") + `?id=${quiz.id}&mode=practice`}>
-                    <div className="p-3 bg-[#F5F5F5] border border-[#EEEEEE] rounded-xl hover:border-[#D4AF37] transition-all mb-2">
-                      <p className="font-semibold text-[#111] text-sm">{quiz.title}</p>
-                      <p className="text-xs text-[#999] mt-0.5 capitalize">{quiz.category?.replace(/_/g, " ")}</p>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            )}
-            {liveQuizzes.length === 0 && practiceQuizzes.length === 0 && (
-              <p className="text-[#999] text-center py-6 text-sm">No quizzes available yet</p>
-            )}
-          </div>
-        </DashboardCard>
-
-        {/* Progress Overview */}
-        <DashboardCard title="Your Progress">
-          <div className="space-y-5">
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-semibold text-[#333]">Overall Progress</span>
-                <span className="text-sm font-bold text-[#111]">
-                  {enrollments.length > 0 ? Math.round(enrollments.reduce((sum, e) => sum + (e.progress_percent || 0), 0) / enrollments.length) : 0}%
-                </span>
-              </div>
-              <div className="w-full bg-[#EEEEEE] rounded-full h-2.5">
-                <div
-                  className="bg-[#D4AF37] h-2.5 rounded-full transition-all"
-                  style={{ width: `${enrollments.length > 0 ? Math.round(enrollments.reduce((sum, e) => sum + (e.progress_percent || 0), 0) / enrollments.length) : 0}%` }}
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-[#F5F5F5]">
-              <div>
-                <p className="text-[10px] text-[#999] uppercase tracking-widest font-semibold">Lessons Done</p>
-                <p className="text-2xl font-bold text-[#111]">{myPoints?.lessons_completed || 0}</p>
-              </div>
-              <div>
-                <p className="text-[10px] text-[#999] uppercase tracking-widest font-semibold">Badges</p>
-                <p className="text-2xl font-bold text-[#111]">{myPoints?.badges?.length || 0}</p>
-              </div>
+              <span className="text-xs text-white/60">{continueEnrollment.progress_percent || 0}%</span>
             </div>
           </div>
-        </DashboardCard>
-      </div>
+          <Link to={createPageUrl("Classes")}>
+            <Button className="bg-[#D4AF37] hover:bg-[#C49B2A] text-black font-bold rounded-xl shrink-0">
+              Resume Course
+            </Button>
+          </Link>
+        </div>
+      )}
+
+      {/* Content Type Grid */}
+      {!search && (
+        <div>
+          <h2 className="text-base font-bold text-[#111] mb-4">Browse Content</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+            <ContentTypeCard icon={Radio}         title="Live Classes"  desc="Join scheduled sessions" page="LiveClassesHub" color="bg-red-500"       count={upcomingLive.length > 0 ? `${upcomingLive.length} upcoming` : undefined} />
+            <ContentTypeCard icon={PlayCircle}    title="Replays"       desc="Watch past sessions"    page="ReplaysHub"    color="bg-orange-500"    count={replays.length} />
+            <ContentTypeCard icon={BookOpen}      title="Tutorials"     desc="Learn at your pace"     page="TutorialsHub"  color="bg-violet-500"    count={tutorials.length} />
+            <ContentTypeCard icon={GraduationCap} title="Courses"       desc="Structured learning"    page="Classes"       color="bg-[#D4AF37]"     count={publishedCourses.length} />
+          </div>
+        </div>
+      )}
+
+      {/* Upcoming Live */}
+      {!search && upcomingLive.length > 0 && (
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-base font-bold text-[#111] flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse inline-block" /> Upcoming Live Classes
+            </h2>
+            <Link to={createPageUrl("LiveClassesHub")} className="text-xs text-[#D4AF37] font-semibold hover:underline">View all</Link>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {upcomingLive.slice(0, 2).map(cls => (
+              <div key={cls.id} className="bg-white border border-[#EEEEEE] rounded-2xl p-4 flex gap-3 hover:shadow-md transition-all">
+                {cls.thumbnail_url ? (
+                  <img src={cls.thumbnail_url} className="w-20 h-16 rounded-xl object-cover shrink-0" />
+                ) : (
+                  <div className="w-20 h-16 rounded-xl bg-red-50 flex items-center justify-center shrink-0">
+                    <Radio className="w-6 h-6 text-red-300" />
+                  </div>
+                )}
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-bold text-sm text-[#111] truncate">{cls.title}</h4>
+                  <p className="text-xs text-[#999] mt-0.5 flex items-center gap-1">
+                    <Calendar className="w-3 h-3" /> {moment(cls.scheduled_at).format("MMM D [at] h:mm A")}
+                  </p>
+                  {cls.zoom_url && (
+                    <a href={cls.zoom_url} target="_blank" rel="noopener noreferrer">
+                      <span className="text-xs text-red-500 font-semibold hover:underline mt-1 inline-block">Join →</span>
+                    </a>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Recent Replays */}
+      {!search && replays.length > 0 && (
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-base font-bold text-[#111]">Recent Replays</h2>
+            <Link to={createPageUrl("ReplaysHub")} className="text-xs text-[#D4AF37] font-semibold hover:underline">View all</Link>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {replays.slice(0, 4).map(cls => (
+              <Link key={cls.id} to={createPageUrl("ReplaysHub")}>
+                <div className="bg-white border border-[#EEEEEE] rounded-2xl overflow-hidden hover:shadow-md hover:border-[#D4AF37]/30 transition-all">
+                  {cls.thumbnail_url ? (
+                    <img src={cls.thumbnail_url} alt={cls.title} className="w-full aspect-video object-cover" />
+                  ) : (
+                    <div className="aspect-video bg-orange-50 flex items-center justify-center">
+                      <PlayCircle className="w-7 h-7 text-orange-200" />
+                    </div>
+                  )}
+                  <div className="p-3">
+                    <p className="text-xs font-bold text-[#111] line-clamp-2">{cls.title}</p>
+                    <p className="text-[10px] text-[#999] mt-1">{moment(cls.scheduled_at || cls.created_date).format("MMM D, YYYY")}</p>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* My Courses Progress */}
+      {!search && enrollments.length > 0 && (
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-base font-bold text-[#111]">My Courses</h2>
+            <Link to={createPageUrl("Classes")} className="text-xs text-[#D4AF37] font-semibold hover:underline">View all</Link>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {enrollments.slice(0, 4).map(enrollment => {
+              const course = courses.find(c => c.id === enrollment.course_id);
+              if (!course) return null;
+              return (
+                <Link key={enrollment.id} to={createPageUrl("Classes")}>
+                  <div className="bg-white border border-[#EEEEEE] rounded-2xl p-4 hover:shadow-md transition-all flex gap-3">
+                    {course.thumbnail_url ? (
+                      <img src={course.thumbnail_url} className="w-16 h-12 rounded-xl object-cover shrink-0" />
+                    ) : (
+                      <div className="w-16 h-12 rounded-xl bg-[#D4AF37]/10 flex items-center justify-center shrink-0">
+                        <GraduationCap className="w-5 h-5 text-[#D4AF37]" />
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-bold text-[#111] truncate">{course.title}</p>
+                      <div className="flex items-center gap-2 mt-1.5">
+                        <div className="flex-1 bg-[#EEEEEE] rounded-full h-1.5">
+                          <div className="bg-[#D4AF37] h-1.5 rounded-full transition-all" style={{ width: `${enrollment.progress_percent || 0}%` }} />
+                        </div>
+                        <span className="text-[10px] text-[#999] font-semibold shrink-0">{enrollment.progress_percent || 0}%</span>
+                      </div>
+                      {enrollment.is_completed && <span className="text-[10px] text-green-600 font-bold">✓ Completed</span>}
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Stats */}
+      {!search && (
+        <div className="grid grid-cols-3 gap-3">
+          {[
+            { label: "XP Earned", value: myPoints?.total_xp || 0, icon: Zap },
+            { label: "Level", value: level, icon: TrendingUp },
+            { label: "Courses", value: myPoints?.courses_completed || 0, icon: GraduationCap },
+          ].map(stat => (
+            <div key={stat.label} className="bg-white border border-[#EEEEEE] rounded-2xl p-4 flex flex-col items-center text-center shadow-sm">
+              <stat.icon className="w-5 h-5 text-[#D4AF37] mb-1" />
+              <p className="text-xl font-bold text-[#111]">{stat.value}</p>
+              <p className="text-[10px] text-[#999] uppercase tracking-wide mt-0.5">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

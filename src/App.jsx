@@ -9,8 +9,10 @@ import Layout from './Layout';
 
 // Page imports
 import Dashboard from './pages/Dashboard';
-import Community from './pages/Community';
 import Classes from './pages/Classes';
+import LiveClassesHub from './pages/LiveClassesHub';
+import ReplaysHub from './pages/ReplaysHub';
+import TutorialsHub from './pages/TutorialsHub';
 import LiveClasses from './pages/LiveClasses';
 import MemberProfile from './pages/MemberProfile';
 import Leaderboard from './pages/Leaderboard';
@@ -50,7 +52,9 @@ const AuthenticatedApp = () => {
       <Route path="/" element={<Navigate to="/Dashboard" replace />} />
 
       <Route path="/Dashboard" element={<LayoutWrapper currentPageName="Dashboard"><Dashboard /></LayoutWrapper>} />
-      <Route path="/Community" element={<LayoutWrapper currentPageName="Community"><Community /></LayoutWrapper>} />
+      <Route path="/LiveClassesHub" element={<LayoutWrapper currentPageName="LiveClassesHub"><LiveClassesHub /></LayoutWrapper>} />
+      <Route path="/ReplaysHub" element={<LayoutWrapper currentPageName="ReplaysHub"><ReplaysHub /></LayoutWrapper>} />
+      <Route path="/TutorialsHub" element={<LayoutWrapper currentPageName="TutorialsHub"><TutorialsHub /></LayoutWrapper>} />
       <Route path="/Classes" element={<LayoutWrapper currentPageName="Classes"><Classes /></LayoutWrapper>} />
       <Route path="/LiveClasses" element={<LayoutWrapper currentPageName="LiveClasses"><LiveClasses /></LayoutWrapper>} />
       <Route path="/MemberProfile" element={<LayoutWrapper currentPageName="MemberProfile"><MemberProfile /></LayoutWrapper>} />

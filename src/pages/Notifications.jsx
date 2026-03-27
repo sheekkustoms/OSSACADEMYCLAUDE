@@ -59,8 +59,6 @@ export default function Notifications() {
     }
     if (n.type === "message") {
       navigate(createPageUrl("Messages"));
-    } else if (n.post_id) {
-      navigate(createPageUrl("Community") + `?postId=${n.post_id}`);
     }
   };
 

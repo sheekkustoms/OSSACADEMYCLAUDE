@@ -45,7 +45,7 @@ export default function AdminDashboard() {
   const [inviteResults, setInviteResults] = useState(null);
   const [linkCopied, setLinkCopied] = useState(false);
   const [adminMessagingEnabled, setAdminMessagingEnabled] = useState({});
-  const [activeTab, setActiveTab] = useState("posts");
+  const [activeTab, setActiveTab] = useState("liveclasses");
   const [forceSubLoading, setForceSubLoading] = useState(false);
   const [editingPoints, setEditingPoints] = useState({});
   const [xpToAdd, setXpToAdd] = useState({});
@@ -228,100 +228,54 @@ export default function AdminDashboard() {
   return (
     <div className="max-w-5xl mx-auto space-y-7">
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-red-500 flex items-center justify-center">
-          <Shield className="w-5 h-5 text-white" />
+        <div className="w-10 h-10 rounded-xl bg-black flex items-center justify-center">
+          <Shield className="w-5 h-5 text-[#D4AF37]" />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
-          <p className="text-sm text-gray-500">Manage your community</p>
+          <h1 className="text-2xl font-bold text-gray-900">Admin Panel</h1>
+          <p className="text-sm text-gray-500">Manage your learning platform content</p>
         </div>
       </div>
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <StatCard icon={Users} label="Total Members" value={allUsers.length} color="bg-blue-500" onClick={() => setActiveTab("users")} />
-        <StatCard icon={FileText} label="Total Posts" value={allPosts.length} color="bg-violet-500" onClick={() => setActiveTab("posts")} />
-        <StatCard icon={BarChart2} label="Posts Today" value={postsToday} color="bg-pink-500" onClick={() => setActiveTab("posts")} />
-        <StatCard icon={CheckCircle} label="Pending Approval" value={allPosts.filter(p => !p.is_approved).length} color="bg-amber-500" onClick={() => setActiveTab("posts")} />
+        <StatCard icon={Video} label="Live Classes" color="bg-red-500" onClick={() => setActiveTab("liveclasses")} value={undefined} />
+        <StatCard icon={BookOpen} label="Courses" color="bg-violet-500" onClick={() => setActiveTab("courses")} value={undefined} />
+        <StatCard icon={UserPlus} label="Invite Students" color="bg-amber-500" onClick={() => setActiveTab("invite")} value={undefined} />
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="bg-gray-100 rounded-xl flex-wrap h-auto gap-1">
-          <TabsTrigger value="posts">Posts</TabsTrigger>
-          <TabsTrigger value="users">Users</TabsTrigger>
-          <TabsTrigger value="announce">Announce</TabsTrigger>
-          <TabsTrigger value="leaderboard">Top Members</TabsTrigger>
-          <TabsTrigger value="quizzes" className="flex items-center gap-1">
-            <Gamepad2 className="w-3.5 h-3.5" /> Quizzes
+          <TabsTrigger value="liveclasses" className="flex items-center gap-1">
+            <Video className="w-3.5 h-3.5" /> Live Classes
           </TabsTrigger>
           <TabsTrigger value="courses" className="flex items-center gap-1">
             <BookOpen className="w-3.5 h-3.5" /> Courses
           </TabsTrigger>
-          <TabsTrigger value="weekly" className="flex items-center gap-1">
-            <Brain className="w-3.5 h-3.5" /> Weekly Challenge
-          </TabsTrigger>
+          <TabsTrigger value="users">Students</TabsTrigger>
           <TabsTrigger value="invite" className="flex items-center gap-1">
             <UserPlus className="w-3.5 h-3.5" /> Invite
           </TabsTrigger>
-          <TabsTrigger value="liveclasses" className="flex items-center gap-1">
-            <Video className="w-3.5 h-3.5" /> Live Classes
-          </TabsTrigger>
-          <TabsTrigger value="levels" className="flex items-center gap-1">
-            <Zap className="w-3.5 h-3.5" /> Levels
-          </TabsTrigger>
-          <TabsTrigger value="categories" className="flex items-center gap-1">
-            <Tags className="w-3.5 h-3.5" /> Categories
-          </TabsTrigger>
+          <TabsTrigger value="announce">Announcements</TabsTrigger>
           <TabsTrigger value="messaging" className="flex items-center gap-1">
-             <Mail className="w-3.5 h-3.5" /> Messages
-           </TabsTrigger>
-           <TabsTrigger value="points" className="flex items-center gap-1">
-              <Star className="w-3.5 h-3.5" /> Manage Points
-            </TabsTrigger>
-            <TabsTrigger value="activity" className="flex items-center gap-1">
-              <BarChart2 className="w-3.5 h-3.5" /> Activity Log
-            </TabsTrigger>
+            <Mail className="w-3.5 h-3.5" /> Messages
+          </TabsTrigger>
+          <TabsTrigger value="points" className="flex items-center gap-1">
+            <Star className="w-3.5 h-3.5" /> Points
+          </TabsTrigger>
           <TabsTrigger value="reward" className="flex items-center gap-1">
-              <Trophy className="w-3.5 h-3.5" /> Reward Students
-            </TabsTrigger>
+            <Trophy className="w-3.5 h-3.5" /> Reward
+          </TabsTrigger>
           <TabsTrigger value="onboarding" className="flex items-center gap-1">
-              <Video className="w-3.5 h-3.5" /> Onboarding
-            </TabsTrigger>
+            <Video className="w-3.5 h-3.5" /> Onboarding
+          </TabsTrigger>
           <TabsTrigger value="push" className="flex items-center gap-1">
-              <Bell className="w-3.5 h-3.5" /> Push Notifs
-            </TabsTrigger>
-           </TabsList>
+            <Bell className="w-3.5 h-3.5" /> Push Notifs
+          </TabsTrigger>
+        </TabsList>
 
-        {/* Posts moderation */}
-        <TabsContent value="posts" className="space-y-3 mt-4">
-          {allPosts.map((post) => (
-            <div key={post.id} className="bg-white border border-gray-100 rounded-2xl p-4 flex items-start justify-between gap-3 shadow-sm">
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-1 flex-wrap">
-                  <span className="font-semibold text-gray-800 text-sm truncate">{post.title}</span>
-                  {post.is_pinned && <Badge className="bg-amber-100 text-amber-700 border-amber-200 text-[10px]">📌 Pinned</Badge>}
-                  {!post.is_approved && <Badge className="bg-red-100 text-red-600 border-red-200 text-[10px]">Pending</Badge>}
-                </div>
-                <p className="text-xs text-gray-400">{post.author_name} · {moment(post.created_date).fromNow()} · {post.category}</p>
-                <p className={`text-sm text-gray-500 mt-1 ${post.is_approved ? "line-clamp-1" : ""}`}>{post.content}</p>
-                {post.image_url && !post.is_approved && (
-                  <img src={post.image_url} className="mt-2 rounded-xl max-h-48 object-cover border border-gray-100" />
-                )}
-              </div>
-              <div className="flex items-center gap-1.5 shrink-0">
-                <Button size="icon" variant="ghost" className="w-8 h-8 text-amber-500 hover:bg-amber-50" onClick={() => pinPostMutation.mutate({ id: post.id, pinned: post.is_pinned })} title={post.is_pinned ? "Unpin" : "Pin"}>
-                  <Pin className="w-3.5 h-3.5" />
-                </Button>
-                <Button size="icon" variant="ghost" className={`w-8 h-8 ${post.is_approved ? "text-green-500 hover:bg-green-50" : "text-gray-400 hover:bg-gray-50"}`} onClick={() => approvePostMutation.mutate({ id: post.id, approved: post.is_approved })} title={post.is_approved ? "Unapprove" : "Approve"}>
-                  {post.is_approved ? <CheckCircle className="w-3.5 h-3.5" /> : <XCircle className="w-3.5 h-3.5" />}
-                </Button>
-                <Button size="icon" variant="ghost" className="w-8 h-8 text-red-500 hover:bg-red-50" onClick={() => deletePostMutation.mutate(post.id)}>
-                  <Trash2 className="w-3.5 h-3.5" />
-                </Button>
-              </div>
-            </div>
-          ))}
-        </TabsContent>
+
 
         {/* Users */}
         <TabsContent value="users" className="space-y-3 mt-4">
@@ -736,25 +690,7 @@ export default function AdminDashboard() {
           </div>
         </TabsContent>
 
-        {/* Top members */}
-        <TabsContent value="leaderboard" className="mt-4">
-          <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
-            <div className="px-5 py-3 border-b border-gray-100 text-sm font-semibold text-gray-700">Most Active Members (Excluding Admins)</div>
-            {allPoints.filter(entry => {
-              const user = allUsers.find(u => u.email === entry.user_email);
-              return user?.role !== "admin";
-            }).map((entry, i) => (
-              <div key={entry.id} className="flex items-center gap-3 px-5 py-3 border-b border-gray-50 last:border-0">
-                <span className="w-6 text-sm font-bold text-gray-400">#{i + 1}</span>
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-400 to-violet-500 flex items-center justify-center text-white text-xs font-bold">
-                  {(entry.user_name || entry.user_email || "?")[0].toUpperCase()}
-                </div>
-                <span className="flex-1 text-sm text-gray-800">{entry.user_name || entry.user_email}</span>
-                <span className="text-sm font-bold text-fuchsia-600">{entry.total_xp || 0} XP</span>
-              </div>
-            ))}
-          </div>
-        </TabsContent>
+
       </Tabs>
     </div>
   );
