@@ -449,10 +449,12 @@ export default function AdminDashboard() {
                  disabled={!inviteEmails.trim() || inviteSent}
                  className="bg-gradient-to-r from-pink-500 to-violet-500 text-white"
                  onClick={async () => {
-                   const emails = inviteEmails.split("\n").map(e => e.trim()).filter(e => e.length > 0);
+                   const emails = inviteEmails.split("\n").map(e => e.trim()).filter(e => e.includes("@"));
                    const results = await Promise.all(emails.map(async (email) => {
                      try {
-                       await base44.functions.invoke("handleUserInvite", { email });
+                       await base44.users.inviteUser(email, "user");
+                       // Log to InvitedEmail entity
+                       await base44.entities.InvitedEmail.create({ email, invited_by: user?.email });
                        return { email, ok: true };
                      } catch (err) {
                        return { email, ok: false, error: err.message || "Failed" };
