@@ -61,14 +61,15 @@ export default function LiveClassesHub() {
   const published = allClasses.filter(c => !c.status || c.status === "published");
   const liveClasses = published.filter(c => c.class_type === "live" || !c.class_type);
 
-  const upcoming = liveClasses.filter(c => c.scheduled_at && new Date(c.scheduled_at).getTime() > now)
+  const TEN_MIN = 10 * 60 * 1000;
+  const upcoming = liveClasses.filter(c => c.scheduled_at && new Date(c.scheduled_at).getTime() > now + TEN_MIN)
     .sort((a, b) => new Date(a.scheduled_at) - new Date(b.scheduled_at));
 
-  // "ongoing" = no scheduled time, OR started within the last 4 hours
+  // "ongoing" = no scheduled time, OR within 10 min before start, OR started within the last 4 hours
   const ongoing = liveClasses.filter(c => {
     if (!c.scheduled_at) return true;
     const ms = new Date(c.scheduled_at).getTime();
-    return ms <= now && ms + 4 * 60 * 60 * 1000 > now;
+    return ms - TEN_MIN <= now && ms + 4 * 60 * 60 * 1000 > now;
   });
 
   // past classes that are outside the ongoing window but still have a zoom link
