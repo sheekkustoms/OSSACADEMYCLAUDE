@@ -123,7 +123,7 @@ export default function LiveClassesHub() {
                 <Radio className="w-4 h-4 text-[#999]" /> Previous Sessions
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {past.map(cls => <LiveCard key={cls.id} cls={cls} />)}
+                {past.map(cls => <LiveCard key={cls.id} cls={cls} isPast />)}
               </div>
             </section>
           )}
@@ -133,7 +133,7 @@ export default function LiveClassesHub() {
   );
 }
 
-function LiveCard({ cls, isLive }) {
+function LiveCard({ cls, isLive, isPast }) {
   return (
     <div className="bg-white border border-[#EEEEEE] rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all">
       {cls.thumbnail_url ? (
@@ -158,7 +158,7 @@ function LiveCard({ cls, isLive }) {
         {cls.scheduled_at && !isLive && <Countdown targetDate={cls.scheduled_at} />}
         {cls.description && <p className="text-xs text-[#666] line-clamp-2">{cls.description}</p>}
         <div className="flex gap-2 pt-2 border-t border-[#F5F5F5]">
-          {cls.zoom_url && (
+          {!isPast && cls.zoom_url && (
             <a href={cls.zoom_url} target="_blank" rel="noopener noreferrer" className="flex-1">
               <Button size="sm" className="w-full bg-red-500 hover:bg-red-600 text-white gap-1.5 text-xs font-semibold rounded-xl h-8">
                 <ExternalLink className="w-3.5 h-3.5" /> Join Class
