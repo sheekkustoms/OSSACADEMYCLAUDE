@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { db, getCurrentUser, signIn, signUp, signOut, updateMe, uploadFile } from '@/lib/supabase';
 import { useQuery } from "@tanstack/react-query";
 import { Trophy, Zap, Award, Target, Flame, Calendar } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -21,18 +21,18 @@ export default function Leaderboard() {
 
   const { data: allPoints = [] } = useQuery({
     queryKey: ["leaderboard"],
-    queryFn: () => base44.entities.UserPoints.list("-total_xp", 100),
+    queryFn: () => db.UserPoints.list("-total_xp", 100),
   });
 
   const { data: user } = useQuery({
     queryKey: ["currentUser"],
-    queryFn: () => base44.auth.me(),
+    queryFn: getCurrentUser,
   });
 
   // Fetch all user profiles to get avatar URLs
   const { data: allUsers = [] } = useQuery({
     queryKey: ["allUserProfiles"],
-    queryFn: () => base44.entities.User.list(),
+    queryFn: () => db.User.list(),
     staleTime: 60000,
   });
 
@@ -44,17 +44,17 @@ export default function Leaderboard() {
 
   const { data: weeklyChallengeSettings = [] } = useQuery({
     queryKey: ["weeklyChallengeSettings"],
-    queryFn: () => base44.entities.WeeklyChallengeSettings.list(),
+    queryFn: () => db.WeeklyChallengeSettings.list(),
   });
 
   const { data: weeklyChallengeQuestions = [] } = useQuery({
     queryKey: ["weeklyChallengeQuestions"],
-    queryFn: () => base44.entities.WeeklyChallengeQuestion.list(),
+    queryFn: () => db.WeeklyChallengeQuestion.list(),
   });
 
   const { data: dailyChallenges = [] } = useQuery({
     queryKey: ["myChallenges", user?.email],
-    queryFn: () => user?.email ? base44.entities.DailyChallenge.filter({ user_email: user.email }, "-challenge_date", 10) : Promise.resolve([]),
+    queryFn: () => user?.email ? db.DailyChallenge.filter({ user_email: user.email }, "-challenge_date", 10) : Promise.resolve([]),
     enabled: !!user?.email,
   });
 

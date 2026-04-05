@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { db, getCurrentUser, signIn, signUp, signOut, updateMe, uploadFile } from '@/lib/supabase';
 import { useQuery } from "@tanstack/react-query";
 import ProfileHeader from "../components/profile/ProfileHeader";
 import ProfileStats from "../components/profile/ProfileStats";
@@ -10,17 +10,14 @@ export default function MemberProfile() {
   const urlParams = new URLSearchParams(window.location.search);
   const profileEmail = urlParams.get("email");
 
-  const { data: currentUser } = useQuery({ queryKey: ["currentUser"], queryFn: () => base44.auth.me() });
+  const { data: currentUser } = useQuery({ queryKey: ["currentUser"], queryFn: getCurrentUser });
 
   // If no email param, show own profile
   const targetEmail = profileEmail || currentUser?.email;
 
   const { data: allUsers = [] } = useQuery({
     queryKey: ["allUsersForProfile"],
-    queryFn: async () => {
-      const res = await base44.functions.invoke('getAllUsers', {});
-      return res.data?.users || [];
-    },
+    queryFn: () => db.User.list('-created_date', 500),
     staleTime: 60000,
   });
 
@@ -30,30 +27,30 @@ export default function MemberProfile() {
 
   const { data: userPoints } = useQuery({
     queryKey: ["profilePoints", targetEmail],
-    queryFn: () => base44.entities.UserPoints.filter({ user_email: targetEmail }),
+    queryFn: () => db.UserPoints.filter({ user_email: targetEmail }),
     enabled: !!targetEmail,
   });
 
   const { data: enrollments = [] } = useQuery({
     queryKey: ["profileEnrollments", targetEmail],
-    queryFn: () => base44.entities.Enrollment.filter({ user_email: targetEmail }),
+    queryFn: () => db.Enrollment.filter({ user_email: targetEmail }),
     enabled: !!targetEmail,
   });
 
   const { data: courses = [] } = useQuery({
     queryKey: ["allCourses"],
-    queryFn: () => base44.entities.Course.list("-created_date", 200),
+    queryFn: () => db.Course.list("-created_date", 200),
   });
 
   const { data: posts = [] } = useQuery({
     queryKey: ["profilePosts", targetEmail],
-    queryFn: () => base44.entities.CommunityPost.filter({ author_email: targetEmail }),
+    queryFn: () => db.CommunityPost.filter({ author_email: targetEmail }),
     enabled: !!targetEmail,
   });
 
   const { data: comments = [] } = useQuery({
     queryKey: ["profileComments", targetEmail],
-    queryFn: () => base44.entities.Comment.filter({ author_email: targetEmail }),
+    queryFn: () => db.Comment.filter({ author_email: targetEmail }),
     enabled: !!targetEmail,
   });
 

@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { base44 } from "@/api/base44Client";
+import { db, getCurrentUser, signIn, signUp, signOut, updateMe, uploadFile } from '@/lib/supabase';
 import { useQuery } from "@tanstack/react-query";
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { BookOpen, Award, TrendingUp, Zap } from "lucide-react";
@@ -18,34 +18,34 @@ const BadgeIcon = ({ badgeName }) => {
 export default function UserProgress() {
   const { data: user } = useQuery({
     queryKey: ["currentUser"],
-    queryFn: () => base44.auth.me(),
+    queryFn: getCurrentUser,
   });
 
   const { data: userPoints = [] } = useQuery({
     queryKey: ["myPoints", user?.email],
-    queryFn: () => base44.entities.UserPoints.filter({ user_email: user?.email }),
+    queryFn: () => db.UserPoints.filter({ user_email: user?.email }),
     enabled: !!user?.email,
   });
 
   const { data: enrollments = [] } = useQuery({
     queryKey: ["myEnrollments", user?.email],
-    queryFn: () => base44.entities.Enrollment.filter({ user_email: user?.email }),
+    queryFn: () => db.Enrollment.filter({ user_email: user?.email }),
     enabled: !!user?.email,
   });
 
   const { data: courses = [] } = useQuery({
     queryKey: ["allCourses"],
-    queryFn: () => base44.entities.Course.list(),
+    queryFn: () => db.Course.list(),
   });
 
   const { data: lessons = [] } = useQuery({
     queryKey: ["allLessons"],
-    queryFn: () => base44.entities.Lesson.list(),
+    queryFn: () => db.Lesson.list(),
   });
 
   const { data: dailyChallenges = [] } = useQuery({
     queryKey: ["myDailyChallenges", user?.email],
-    queryFn: () => base44.entities.DailyChallenge.filter({ user_email: user?.email }),
+    queryFn: () => db.DailyChallenge.filter({ user_email: user?.email }),
     enabled: !!user?.email,
   });
 

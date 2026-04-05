@@ -1,6 +1,6 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { db, getCurrentUser, signIn, signUp, signOut, updateMe, uploadFile } from '@/lib/supabase';
 import { ShieldOff } from "lucide-react";
 
 const DEFAULT_MESSAGE = "Your membership is currently inactive. Please contact administration or make sure your $99/month subscription is active on sewsheek.com.";
@@ -8,13 +8,13 @@ const DEFAULT_MESSAGE = "Your membership is currently inactive. Please contact a
 export default function MembershipGate({ user, children }) {
   const { data: settingsArr = [] } = useQuery({
     queryKey: ["membershipSettings"],
-    queryFn: () => base44.entities.MembershipSettings.list(),
+    queryFn: () => db.MembershipSettings.list(),
     staleTime: 60000,
   });
 
   const { data: memberships = [], isLoading } = useQuery({
     queryKey: ["myMembership", user?.email],
-    queryFn: () => base44.entities.MembershipStatus.filter({ user_email: user.email }),
+    queryFn: () => db.MembershipStatus.filter({ user_email: user.email }),
     enabled: !!user?.email,
     staleTime: 60000,
   });

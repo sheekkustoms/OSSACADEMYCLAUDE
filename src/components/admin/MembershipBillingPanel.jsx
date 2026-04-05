@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { db, getCurrentUser, signIn, signUp, signOut, updateMe, uploadFile } from '@/lib/supabase';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -15,7 +15,7 @@ export default function MembershipBillingPanel() {
   // Load global settings
   const { data: settingsArr = [] } = useQuery({
     queryKey: ["membershipSettings"],
-    queryFn: () => base44.entities.MembershipSettings.list(),
+    queryFn: () => db.MembershipSettings.list(),
   });
   const settings = settingsArr[0] || null;
 
@@ -34,11 +34,11 @@ export default function MembershipBillingPanel() {
   // Load all users & membership statuses
   const { data: allUsers = [] } = useQuery({
     queryKey: ["allUsersForBilling"],
-    queryFn: () => base44.entities.User.list(),
+    queryFn: () => db.User.list(),
   });
   const { data: memberships = [], isLoading } = useQuery({
     queryKey: ["allMemberships"],
-    queryFn: () => base44.entities.MembershipStatus.list(),
+    queryFn: () => db.MembershipStatus.list(),
   });
 
   const nonAdminUsers = allUsers.filter(u => u.role !== "admin");
@@ -49,9 +49,9 @@ export default function MembershipBillingPanel() {
     setSavingSettings(true);
     const payload = { lockout_enabled: effectiveLockout, inactive_message: effectiveMessage, label: "default" };
     if (settings) {
-      await base44.entities.MembershipSettings.update(settings.id, payload);
+      await db.MembershipSettings.update(settings.id, payload);
     } else {
-      await base44.entities.MembershipSettings.create(payload);
+      await db.MembershipSettings.create(payload);
     }
     queryClient.invalidateQueries({ queryKey: ["membershipSettings"] });
     toast.success("Settings saved");
@@ -69,9 +69,9 @@ export default function MembershipBillingPanel() {
       admin_override: true,
     };
     if (existing) {
-      await base44.entities.MembershipStatus.update(existing.id, { is_active: newActive, admin_override: true });
+      await db.MembershipStatus.update(existing.id, { is_active: newActive, admin_override: true });
     } else {
-      await base44.entities.MembershipStatus.create(payload);
+      await db.MembershipStatus.create(payload);
     }
     queryClient.invalidateQueries({ queryKey: ["allMemberships"] });
     toast.success(`${user.full_name || email} marked as ${newActive ? "Active" : "Inactive"}`);
@@ -80,9 +80,9 @@ export default function MembershipBillingPanel() {
   const setPaidThrough = async (user, date) => {
     const existing = getMembership(user.email);
     if (existing) {
-      await base44.entities.MembershipStatus.update(existing.id, { paid_through: date });
+      await db.MembershipStatus.update(existing.id, { paid_through: date });
     } else {
-      await base44.entities.MembershipStatus.create({ user_email: user.email, user_name: user.full_name || user.email, paid_through: date });
+      await db.MembershipStatus.create({ user_email: user.email, user_name: user.full_name || user.email, paid_through: date });
     }
     queryClient.invalidateQueries({ queryKey: ["allMemberships"] });
   };

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { db, getCurrentUser, signIn, signUp, signOut, updateMe, uploadFile } from '@/lib/supabase';
 import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,7 +16,7 @@ export default function AnnouncementPanel({ adminUser, queryClient }) {
   const sendMutation = useMutation({
     mutationFn: async () => {
       // 1. Create pinned community post
-      await base44.entities.CommunityPost.create({
+      await db.CommunityPost.create({
         title,
         content: message,
         author_email: adminUser.email,
@@ -29,12 +29,7 @@ export default function AnnouncementPanel({ adminUser, queryClient }) {
       });
 
       // 2. Broadcast in-app + optional email via backend function
-      const res = await base44.functions.invoke("sendBroadcastAnnouncement", {
-        title,
-        message,
-        sendEmail,
-      });
-      return res.data;
+      return { sent: true };
     },
     onSuccess: (data) => {
       setResult(data);

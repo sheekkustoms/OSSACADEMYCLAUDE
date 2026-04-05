@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { db, getCurrentUser, signIn, signUp, signOut, updateMe, uploadFile } from '@/lib/supabase';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -87,7 +87,7 @@ export default function DailyChallenges() {
   const [revealed, setRevealed] = useState(false);
   const [quizResult, setQuizResult] = useState(null);
 
-  const { data: user } = useQuery({ queryKey: ["currentUser"], queryFn: () => base44.auth.me() });
+  const { data: user } = useQuery({ queryKey: ["currentUser"], queryFn: getCurrentUser });
 
   const { data: myPoints } = useQuery({
     queryKey: ["myPointsChallenge", user?.email],
@@ -97,18 +97,18 @@ export default function DailyChallenges() {
 
   const { data: settingsList = [] } = useQuery({
     queryKey: ["weeklyChallengeSettings"],
-    queryFn: () => base44.entities.WeeklyChallengeSettings.list(),
+    queryFn: () => db.WeeklyChallengeSettings.list(),
   });
 
   const { data: questions = [], isLoading: loadingQ } = useQuery({
     queryKey: ["weeklyChallengeQuestions"],
-    queryFn: () => base44.entities.WeeklyChallengeQuestion.list("order", 50),
+    queryFn: () => db.WeeklyChallengeQuestion.list("order", 50),
   });
 
   // Past challenge records for this user
   const { data: allChallenges = [] } = useQuery({
     queryKey: ["allChallenges", user?.email],
-    queryFn: () => base44.entities.DailyChallenge.filter({ user_email: user.email }),
+    queryFn: () => db.DailyChallenge.filter({ user_email: user.email }),
     enabled: !!user?.email,
   });
 
@@ -125,7 +125,7 @@ export default function DailyChallenges() {
       const xpEarned = isPerfect ? PERFECT_XP : score * PARTIAL_XP_PER_CORRECT;
       const earnedBadge = isPerfect && !myPoints?.badges?.includes("Quiz Master");
 
-      await base44.entities.DailyChallenge.create({
+      await db.DailyChallenge.create({
         user_email: user.email,
         challenge_date: THIS_WEEK,
         course_title: settings?.week_label || "Weekly Challenge",

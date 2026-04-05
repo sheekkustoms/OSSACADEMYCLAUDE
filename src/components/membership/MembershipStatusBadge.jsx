@@ -1,13 +1,13 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { base44 } from "@/api/base44Client";
+import { db, getCurrentUser, signIn, signUp, signOut, updateMe, uploadFile } from '@/lib/supabase';
 import { CheckCircle2, XCircle } from "lucide-react";
 import moment from "moment";
 
 export default function MembershipStatusBadge({ userEmail }) {
   const { data: memberships = [] } = useQuery({
     queryKey: ["myMembership", userEmail],
-    queryFn: () => base44.entities.MembershipStatus.filter({ user_email: userEmail }),
+    queryFn: () => db.MembershipStatus.filter({ user_email: userEmail }),
     enabled: !!userEmail,
     staleTime: 60000,
   });

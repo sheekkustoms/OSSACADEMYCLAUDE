@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { base44 } from "@/api/base44Client";
+import { db, getCurrentUser, signIn, signUp, signOut, updateMe, uploadFile } from '@/lib/supabase';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -125,12 +125,12 @@ export default function WeeklyChallengeManager() {
 
   const { data: settingsList = [] } = useQuery({
     queryKey: ["weeklyChallengeSettings"],
-    queryFn: () => base44.entities.WeeklyChallengeSettings.list(),
+    queryFn: () => db.WeeklyChallengeSettings.list(),
   });
 
   const { data: questions = [] } = useQuery({
     queryKey: ["weeklyChallengeQuestions"],
-    queryFn: () => base44.entities.WeeklyChallengeQuestion.list("order", 50),
+    queryFn: () => db.WeeklyChallengeQuestion.list("order", 50),
   });
 
   const settings = settingsList[0];
@@ -138,9 +138,9 @@ export default function WeeklyChallengeManager() {
   const saveSetting = useMutation({
     mutationFn: async (data) => {
       if (settings?.id) {
-        return base44.entities.WeeklyChallengeSettings.update(settings.id, data);
+        return db.WeeklyChallengeSettings.update(settings.id, data);
       } else {
-        return base44.entities.WeeklyChallengeSettings.create(data);
+        return db.WeeklyChallengeSettings.create(data);
       }
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["weeklyChallengeSettings"] }),
@@ -148,16 +148,16 @@ export default function WeeklyChallengeManager() {
 
   const saveQuestion = async (id, data) => {
     if (id) {
-      await base44.entities.WeeklyChallengeQuestion.update(id, data);
+      await db.WeeklyChallengeQuestion.update(id, data);
     } else {
-      await base44.entities.WeeklyChallengeQuestion.create(data);
+      await db.WeeklyChallengeQuestion.create(data);
       setNewQ(null);
     }
     queryClient.invalidateQueries({ queryKey: ["weeklyChallengeQuestions"] });
   };
 
   const deleteQuestion = useMutation({
-    mutationFn: (id) => base44.entities.WeeklyChallengeQuestion.delete(id),
+    mutationFn: (id) => db.WeeklyChallengeQuestion.delete(id),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["weeklyChallengeQuestions"] }),
   });
 

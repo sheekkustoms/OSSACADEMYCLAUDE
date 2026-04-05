@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { base44 } from "@/api/base44Client";
+import { db, getCurrentUser, signIn, signUp, signOut, updateMe, uploadFile } from '@/lib/supabase';
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
@@ -49,7 +49,7 @@ function LessonEditor({ lesson, courseId, onDelete, index }) {
 
   const save = async () => {
     setSaving(true);
-    await base44.entities.Lesson.update(lesson.id, form);
+    await db.Lesson.update(lesson.id, form);
     queryClient.invalidateQueries({ queryKey: ["adminLessons", courseId] });
     setSaving(false);
     setExpanded(false);
@@ -133,18 +133,18 @@ function ModuleRow({ module, courseId, onDelete }) {
 
   const { data: lessons = [] } = useQuery({
     queryKey: ["moduleLessons", module.id],
-    queryFn: () => base44.entities.Lesson.filter({ module_id: module.id }),
+    queryFn: () => db.Lesson.filter({ module_id: module.id }),
   });
   const sortedLessons = [...lessons].sort((a, b) => (a.order || 0) - (b.order || 0));
 
   const saveTitle = async () => {
-    await base44.entities.Module.update(module.id, { title });
+    await db.Module.update(module.id, { title });
     queryClient.invalidateQueries({ queryKey: ["adminModules", courseId] });
     setEditingTitle(false);
   };
 
   const addLesson = async () => {
-    await base44.entities.Lesson.create({
+    await db.Lesson.create({
       course_id: courseId,
       module_id: module.id,
       title: `Lesson ${sortedLessons.length + 1}`,
@@ -158,7 +158,7 @@ function ModuleRow({ module, courseId, onDelete }) {
   };
 
   const deleteLesson = async (id) => {
-    await base44.entities.Lesson.delete(id);
+    await db.Lesson.delete(id);
     queryClient.invalidateQueries({ queryKey: ["moduleLessons", module.id] });
   };
 
@@ -231,14 +231,14 @@ function CourseEditor({ course, onClose }) {
 
   const { data: modules = [] } = useQuery({
     queryKey: ["adminModules", course.id],
-    queryFn: () => base44.entities.Module.filter({ course_id: course.id }),
+    queryFn: () => db.Module.filter({ course_id: course.id }),
   });
   const sortedModules = [...modules].sort((a, b) => (a.order || 0) - (b.order || 0));
 
   // Legacy: lessons not assigned to any module
   const { data: lessons = [] } = useQuery({
     queryKey: ["adminLessons", course.id],
-    queryFn: () => base44.entities.Lesson.filter({ course_id: course.id }),
+    queryFn: () => db.Lesson.filter({ course_id: course.id }),
   });
   const sortedLessons = [...lessons].sort((a, b) => (a.order || 0) - (b.order || 0));
 
@@ -246,7 +246,7 @@ function CourseEditor({ course, onClose }) {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploadingThumb(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const file_url = await uploadFile(file);
     setForm(f => ({ ...f, thumbnail_url: file_url }));
     setUploadingThumb(false);
   };
@@ -255,20 +255,20 @@ function CourseEditor({ course, onClose }) {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploadingPdf(true);
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const file_url = await uploadFile(file);
     setForm(f => ({ ...f, pdf_url: file_url }));
     setUploadingPdf(false);
   };
 
   const saveCourse = async () => {
     setSaving(true);
-    await base44.entities.Course.update(course.id, form);
+    await db.Course.update(course.id, form);
     queryClient.invalidateQueries({ queryKey: ["adminCourses"] });
     setSaving(false);
   };
 
   const addModule = async () => {
-    await base44.entities.Module.create({
+    await db.Module.create({
       course_id: course.id,
       title: `Module ${sortedModules.length + 1}`,
       order: sortedModules.length,
@@ -277,7 +277,7 @@ function CourseEditor({ course, onClose }) {
   };
 
   const deleteModule = async (id) => {
-    await base44.entities.Module.delete(id);
+    await db.Module.delete(id);
     queryClient.invalidateQueries({ queryKey: ["adminModules", course.id] });
   };
 
@@ -285,7 +285,7 @@ function CourseEditor({ course, onClose }) {
   const standaloneLesson = sortedLessons.filter(l => !l.module_id);
 
   const addLesson = async () => {
-    await base44.entities.Lesson.create({
+    await db.Lesson.create({
       course_id: course.id,
       title: `Lesson ${standaloneLesson.length + 1}`,
       description: "",
@@ -298,7 +298,7 @@ function CourseEditor({ course, onClose }) {
   };
 
   const deleteLesson = async (id) => {
-    await base44.entities.Lesson.delete(id);
+    await db.Lesson.delete(id);
     queryClient.invalidateQueries({ queryKey: ["adminLessons", course.id] });
   };
 
@@ -370,7 +370,7 @@ function CourseEditor({ course, onClose }) {
                     setBulkSaving(true);
                     const currentStandalone = sortedLessons.filter(l => !l.module_id);
                     await Promise.all(lines.map((url, i) =>
-                      base44.entities.Lesson.create({
+                      db.Lesson.create({
                         course_id: course.id,
                         title: `Lesson ${currentStandalone.length + i + 1}`,
                         description: "",
@@ -553,10 +553,10 @@ export default function CourseManager() {
   const [editingId, setEditingId] = useState(null);
   const [newForm, setNewForm] = useState({ title: "", description: "", category: "beginner_sewing", difficulty: "beginner", level: 1, xp_reward: 100, is_published: false });
 
-  const { data: user } = useQuery({ queryKey: ["currentUser"], queryFn: () => base44.auth.me() });
+  const { data: user } = useQuery({ queryKey: ["currentUser"], queryFn: getCurrentUser });
   const { data: courses = [] } = useQuery({
     queryKey: ["adminCourses"],
-    queryFn: () => base44.entities.Course.list("-created_date", 100),
+    queryFn: () => db.Course.list("-created_date", 100),
   });
 
   const sortedCourses = [...courses].sort((a, b) => (a.order || 0) - (b.order || 0));
@@ -572,14 +572,14 @@ export default function CourseManager() {
 
     // Update order for affected courses
     const updates = newOrder.map((course, idx) => 
-      base44.entities.Course.update(course.id, { order: idx })
+      db.Course.update(course.id, { order: idx })
     );
     await Promise.all(updates);
     queryClient.invalidateQueries({ queryKey: ["adminCourses"] });
   };
 
   const createCourse = useMutation({
-    mutationFn: () => base44.entities.Course.create({ ...newForm, lesson_count: 0 }),
+    mutationFn: () => db.Course.create({ ...newForm, lesson_count: 0 }),
     onSuccess: (created) => {
       queryClient.invalidateQueries({ queryKey: ["adminCourses"] });
       setShowNew(false);
@@ -589,12 +589,12 @@ export default function CourseManager() {
   });
 
   const deleteCourse = useMutation({
-    mutationFn: (id) => base44.entities.Course.delete(id),
+    mutationFn: (id) => db.Course.delete(id),
     onSuccess: () => { queryClient.invalidateQueries({ queryKey: ["adminCourses"] }); if (editingId) setEditingId(null); },
   });
 
   const togglePublish = useMutation({
-    mutationFn: ({ id, published }) => base44.entities.Course.update(id, { is_published: !published }),
+    mutationFn: ({ id, published }) => db.Course.update(id, { is_published: !published }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["adminCourses"] }),
   });
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import { db, getCurrentUser, signIn, signUp, signOut, updateMe, uploadFile } from '@/lib/supabase';
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -43,36 +43,36 @@ export default function Dashboard() {
 
   const { data: user } = useQuery({
     queryKey: ["currentUser"],
-    queryFn: () => base44.auth.me(),
+    queryFn: getCurrentUser,
     staleTime: 0,
     refetchInterval: 30000,
   });
 
   const { data: userPoints } = useQuery({
     queryKey: ["myPoints", user?.email],
-    queryFn: () => base44.entities.UserPoints.filter({ user_email: user.email }),
+    queryFn: () => db.UserPoints.filter({ user_email: user.email }),
     enabled: !!user?.email,
   });
 
   const { data: enrollments = [] } = useQuery({
     queryKey: ["myEnrollments", user?.email],
-    queryFn: () => base44.entities.Enrollment.filter({ user_email: user.email }),
+    queryFn: () => db.Enrollment.filter({ user_email: user.email }),
     enabled: !!user?.email,
   });
 
   const { data: courses = [] } = useQuery({
     queryKey: ["courses"],
-    queryFn: () => base44.entities.Course.list("-created_date", 100),
+    queryFn: () => db.Course.list("-created_date", 100),
   });
 
   const { data: lessons = [] } = useQuery({
     queryKey: ["lessons"],
-    queryFn: () => base44.entities.Lesson.list("-created_date", 200),
+    queryFn: () => db.Lesson.list("-created_date", 200),
   });
 
   const { data: allClasses = [] } = useQuery({
     queryKey: ["allClassesHub"],
-    queryFn: () => base44.entities.LiveClass.list("-created_date", 200),
+    queryFn: () => db.LiveClass.list("-created_date", 200),
     staleTime: 30000,
   });
 
