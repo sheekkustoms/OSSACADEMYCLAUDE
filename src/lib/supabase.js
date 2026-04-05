@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://jvcsnnkdermzxiwndkal.supabase.co';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2Y3NubmtkZXJtenhpd25ka2FsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzNjY3NzQsImV4cCI6MjA5MDk0Mjc3NH0.7yLIOSqp6lZMRXvgdVOsQPfBjHcKTKyftbxzKftVN5I';
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
@@ -99,7 +99,6 @@ export const db = {
   MembershipPlan:          entity('membership_plan'),
   MembershipStatus:        entity('membership_status'),
   MembershipSettings:      entity('membership_settings'),
-  MemberSubscription:      entity('member_subscription'),
   CommunityPost:           entity('community_post'),
   Comment:                 entity('comment'),
 };
